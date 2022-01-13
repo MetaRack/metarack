@@ -114,10 +114,10 @@ LND1 = new Landscape(0, 0, rackwidth, rackheight, 15);
 VCO2.i['CV'].connect(LND1.boxes.i['SIZE']);
 SCL1.o['GATE'].connect(LND1.i['BOX_GATE']);
 
-DLYCTRL = engine.add_control('Delay', -7.28, 0.5, -7.50, -7.20, 0, 1, 'MELODY');
-TMPCTRL = engine.add_control('Tempo', 0.5, 0.3, 0, 1, 0, 1, 'GLOBAL', 15);
-PITCHCTRL = engine.add_control('Pitch', 0.4, 1, 0, 1, -2, 4, 'MELODY');
-VARCTRL = engine.add_control('Variance', 5, -7.28, 0, 10, -7.30, -7.27, 'MELODY');
+DLYCTRL = engine.add_control('Delay', -7.29, 0.3 + 0.1*(1 - 2*rackrand()), -7.50, -7.20, 0, 1, 'MELODY');
+TMPCTRL = engine.add_control('Tempo', 0.5 + 0.2*(1 - 2*rackrand()), 0.3 + 0.1*(1 - 2*rackrand()), 0, 1, 0, 1, 'GLOBAL', 15);
+PITCHCTRL = engine.add_control('Pitch', 0.3, 0.7 + 0.5*(1 - 2*rackrand()), 0, 1, -2, 4, 'MELODY');
+VARCTRL = engine.add_control('Variance', 5, -7.29 + 0.007*(1 - 2*rackrand()), 0, 10, -7.30, -7.27, 'MELODY');
 FLTRCTRL = engine.add_control('Filter', -1 + 0.3*(1 - 2*rackrand()), 1 + 0.5*(1 - 2*rackrand()), -2, 0, 0, 2.5, 'NOISE');
 NOISEMIXCTRL = engine.add_control('Noise', 0.8 + 0.5*(1 - 2*rackrand()), 3 + (1 - 2*rackrand()), 0.1, 2, 0, 10, 'NOISE');
 
