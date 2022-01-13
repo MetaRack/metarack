@@ -1,5 +1,11 @@
+<p align="center">
+  <img width="600" height="450" src="https://media.giphy.com/media/BYtdKil4uF281YWoEY/giphy.gif">
+</p>
+
 # cryptorack
 Javascript modular synthesizer with NFT in mind 🤦
+
+Try online: [https://ferluht.github.io/cryptorack/](https://ferluht.github.io/cryptorack/)
 
 # how to
 In general Cryptorack is a simple declarative API allowing you to describe some modular patch, create your own visuals using [p5js](https://p5js.org), modulate them from each other and run the whole thing in browser.
@@ -29,3 +35,6 @@ Visual modules are very similar to audio ones, they also implement draw() and pr
 
 # licensing
 By default commercial use (incl. NFTs and all this crypto shit) is not allowed. For commercial use please contact ilya.belikov@phystech.edu and I will ask you to share some very small percentage of your revenue.
+
+# acknowledgements
+All the graphics are made using [p5js](https://p5js.org) and the project itself was inspired by [fxhash.xyz](https://fxhash.xyz) platform
