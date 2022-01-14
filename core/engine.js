@@ -165,6 +165,13 @@ class Engine {
 
   process_visuals() { for (const v of this.visuals) v.process(); }
 
+  compute_preview(seconds) {
+    for (var i = 0; i < sample_rate * seconds; i++) {
+      this.process();
+      if (i % this.visuals_process_divider == 0) this.process_visuals();
+    }
+  }
+
   draw_label() {
     if (!this.sbf) {
       let sbf_w = this.width * this.label_width;

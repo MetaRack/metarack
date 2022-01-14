@@ -12,10 +12,14 @@ class SkyBoxes extends Visual {
 
     this.da = 0;
     this.a = 0;
+
+    for (var i = 0; i < 20 * rackrand(); i ++)
+      this.boxes.push([rackrand() * (this.width - 100) + 50, rackrand() * this.height - 100, 1 + 4 * (10 - rackrand() * 9)]);
   }
 
   star(x, y, size, rays) {
     beginShape();
+    // fill(visuals_negative_color);
     this.da = Math.PI / rays;
     this.a = 0;
     for (var i = 0; i < 2 * rays; i++) {
@@ -29,26 +33,27 @@ class SkyBoxes extends Visual {
     strokeWeight(1.5); strokeJoin(ROUND); fill(255);
 
     for (var i = 0; i < this.boxes.length; i ++) {
-      if (visuals_background_color < 128) stroke(70 + (this.boxes[i][2] / 30) * 185);
-      if (visuals_background_color > 128) stroke(70 + (1 - this.boxes[i][2] / 30) * 185); 
+      if (daytime == 'night') stroke(70 + (this.boxes[i][2] / 30) * 185);
+      if (daytime == 'day') stroke(70 + (1 - this.boxes[i][2] / 30) * 185); 
       noFill();
-      // rect(x + this.x + this.boxes[i][0] - this.boxes[i][2] / 2, y + this.y + this.boxes[i][1] - this.boxes[i][2] / 2, this.boxes[i][2], this.boxes[i][2]);
-      this.star(x + this.x + this.boxes[i][0], y + this.y + this.boxes[i][1], this.boxes[i][2], 4);
-      this.boxes[i][2] = this.boxes[i][2] - 0.7;
-    }
-
-    for (var i = 0; i < this.boxes.length; i ++) {
-      if (this.boxes[i][2] < 4) {
-        delete this.boxes[i][2];
-      }
+      if (daytime == 'night') this.star(x + this.x + this.boxes[i][0], y + this.y + this.boxes[i][1], this.boxes[i][2], 4);
+      if (daytime == 'day') rect(x + this.x + this.boxes[i][0] - this.boxes[i][2] / 2, y + this.y + this.boxes[i][1] - this.boxes[i][2] / 2, this.boxes[i][2], this.boxes[i][2]);
     }
   }
 
   process() {
     this.val = this.i['GATE'].get();
     if ((this.val != this.last_val) && (this.val > this.last_val)) {
-      this.boxes.push([rackrand() * (this.width - 100) + 50, rackrand() * this.height - 100, 1 + 4 * (10 - this.i['SIZE'].get())]);
+      this.boxes.push([rackrand() * (this.width - 100) + 50, rackrand() * this.height - 100, 1 + 3 * (10 - this.i['SIZE'].get())]);
     }
+
+    for (var i = 0; i < this.boxes.length; i ++) {
+      this.boxes[i][2] = this.boxes[i][2] - 0.005;
+      if (this.boxes[i][2] < 4) {
+        delete this.boxes[i][2];
+      }
+    }
+
     this.last_val = this.val;
   }
   

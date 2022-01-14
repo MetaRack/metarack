@@ -108,7 +108,7 @@ class Control {
     if (this.enable_random_movement) ellipse(this.ax, Math.min(this.ay, this.height + y - 6), 3, 3);
 
     textSize(15);
-    fill(255 - visuals_background_color);
+    fill(visuals_negative_color);
     textAlign(LEFT, CENTER);
     strokeWeight(0.3);
     text(this.text, this.ax + 10, Math.min(this.ay, this.height + y) + 20);

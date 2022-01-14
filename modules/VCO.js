@@ -40,15 +40,15 @@ class VCO extends Module {
   process() {
     this.type = this.i['WAVE'].get();
     if (this.type >= 0) {
-      this.value = Math.sin(this.phase) * (1 - this.type) + (this.phase / TWO_PI * 2 - 1) * this.type;
+      this.value = Math.sin(this.phase) * (1 - this.type) + (this.phase / Math.PI * 4 - 1) * this.type;
     } else {
-      this.value = Math.sin(this.phase) * (1 + this.type) - ((this.phase < PI * (this.i['PW'].get() + 1) ) * 2 - 1) * this.type;
+      this.value = Math.sin(this.phase) * (1 + this.type) - ((this.phase < Math.PI * (this.i['PW'].get() + 1) ) * 2 - 1) * this.type;
     }
     this.o['OUT'].set( this.value * this.i['AMP'].get() );
     this.mod = this._alpha * (this.i['CV'].get() + this.i['FM'].get()) + (1 - this._alpha) * this.mod;
     this.phase += this.delta * Math.pow(2, this.mod);
     this.scope.process( this.o['OUT'].get() )
-    if (this.phase > TWO_PI) this.phase -= TWO_PI;
+    if (this.phase > Math.PI * 2) this.phase -= Math.PI * 2;
     this.o['PHASE_OUT'].set(this.phase);
   }
 }

@@ -93,6 +93,14 @@
 
     <script type="text/javascript">
       fxpreview();
+
+      function fn_onclick() {
+        if(!audioContext) {
+          engine_run();
+        }
+      }
+
+      document.body.addEventListener('click', fn_onclick, true); 
       document.body.onkeyup = function(e){
         if(e.keyCode == 32){
           if(!audioContext) {
