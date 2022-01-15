@@ -15,8 +15,8 @@ class TextSetDisplay {
   }
 
   fill_sbf(i) {
-    let w = this.sbf[i].width / 2;
-    let h = this.sbf[i].height / 2;
+    let w = this.sbf[i].width;
+    let h = this.sbf[i].height;
     let sw = 1.5 * this.scale;
     let rounding = 1 * this.scale;
 

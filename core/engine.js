@@ -40,9 +40,9 @@ class Engine {
     this.controls_description = '';
     this.copyright = '';
 
-    this.h1 = 23;
-    this.h2 = 20;
-    this.h3 = 17;
+    this.h1 = 30;
+    this.h2 = 27;
+    this.h3 = 23;
   }
 
   add_control(name, def_x, def_y, min_x, max_x, min_y, max_y, group, radius=10) {
@@ -257,7 +257,7 @@ class Engine {
       this.sbf.fill(70);
       this.sbf.textAlign(RIGHT, TOP);
       this.sbf.strokeWeight(0.3 * textscale);
-      this.sbf.text(this.copyright, sbf_w * 1.35, y_offset);
+      this.sbf.text(this.copyright, this.sbf.width * 0.9, y_offset);
     }
     image(this.sbf, this.x + this.width * (1 - this.label_width), this.y + this.height, this.sbf.width / upscale_buffers, this.sbf.height / upscale_buffers);
   }

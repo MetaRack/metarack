@@ -11,8 +11,8 @@ class Land extends Visual {
   }
 
   fill_sbf() {
-    let w = this.sbf.width / 2;
-    let h = this.sbf.height / 2;
+    let w = this.sbf.width;
+    let h = this.sbf.height;
     let sw = 4 * this.scale;
 
     let n = this.num_points;

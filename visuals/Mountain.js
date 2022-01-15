@@ -14,8 +14,8 @@ class Mountain extends Visual {
   }
 
   fill_sbf() {
-    let w = this.sbf.width / 2;
-    let h = this.sbf.height / 2;
+    let w = this.sbf.width;
+    let h = this.sbf.height;
     let sw = 1 * this.scale;
 
     let n = this.num_points;
@@ -93,7 +93,7 @@ class Mountain extends Visual {
     }
     this.cx = x + this.width / 2 * this.scale;
     this.cy = y + this.height / 2 * this.scale;
-    image(this.sbf, x + this.x, y + this.y, this.sbf.width / upscale_buffers, this.sbf.height / upscale_buffers);
+    image(this.sbf, x + this.x, y + this.y, this.sbf.width / upscale_buffers * 2, this.sbf.height / upscale_buffers * 2);
   }
 
   draw_to_buffer(x, y, scale, imbuffer) {
@@ -103,7 +103,7 @@ class Mountain extends Visual {
     }
     this.cx = x + this.width / 2 * this.scale;
     this.cy = y + this.height / 2 * this.scale;
-    imbuffer.image(this.sbf, x + this.x, y + this.y, this.sbf.width / upscale_buffers, this.sbf.height / upscale_buffers);
+    imbuffer.image(this.sbf, x + this.x - this.sbf.width / upscale_buffers, y + this.y - this.sbf.height / upscale_buffers, this.sbf.width / upscale_buffers * 2, this.sbf.height / upscale_buffers * 2);
   }
 
 }

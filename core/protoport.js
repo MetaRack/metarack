@@ -29,8 +29,8 @@ class ProtoPort {
   }
 
   fill_sbf() {
-    let w = this.sbf.width / 2;
-    let h = this.sbf.height / 2;
+    let w = this.sbf.width;
+    let h = this.sbf.height;
     let sw = 1 * this.scale;
 
     this.sbf.noStroke(); this.sbf.fill(this.style.hole);
@@ -41,8 +41,8 @@ class ProtoPort {
   }
 
   fill_nbf() {
-    let w = this.nbf.width / 2;
-    let h = this.nbf.height / 2;
+    let w = this.nbf.width;
+    let h = this.nbf.height;
     let sw = 1 * this.scale;
     this.nbf.stroke(this.style.ring); this.nbf.strokeWeight(sw); this.nbf.strokeJoin(ROUND); //this.nbf.fill(this.style.label);
     this.nbf.rect(sw / 2, sw / 2, w - sw, h - sw);

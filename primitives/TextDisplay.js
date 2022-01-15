@@ -17,8 +17,8 @@ class TextDisplay {
     }
 
     fill_sbf() {
-      let w = this.sbf.width / 2;
-      let h = this.sbf.height / 2;
+      let w = this.sbf.width;
+      let h = this.sbf.height;
       let sw = 1.5 * this.scale;
       let rounding = 1 * this.scale;
       this.sbf.stroke(60); this.sbf.strokeWeight(sw); this.sbf.strokeJoin(ROUND); this.sbf.fill(255);

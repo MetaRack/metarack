@@ -23,8 +23,8 @@ class Landscape extends Visual {
   }
 
   fill_sbf() {
-    let w = this.sbf.width / 2;
-    let h = this.sbf.height / 2;
+    let w = this.sbf.width;
+    let h = this.sbf.height;
 
     // for (var i = 0; i < this.num_mountains; i++) {
     //   let m_height = (20 + (10 + rackrand() * 40) * rackrand()) * this.scale;
@@ -33,9 +33,9 @@ class Landscape extends Visual {
     //   this.mountains.push(new Mountain(m_x, h - m_height, 9, m_width, m_height));
     // }
     for (var i = 0; i < this.num_mountains; i++) {
-      let m_height = (40 + (50 + rackrand() * 200) * rackrand()) * this.scale;
+      let m_height = (40 + (50 + rackrand() * 150) * rackrand()) * this.scale;
       let m_width = (300 + 100 * rackrand()) * this.scale;
-      let m_x = w - (w / 2 * rackrand());
+      let m_x = w * 1.1 - (w / 2 * rackrand());
       this.mountains.push(new Mountain(m_x, h - m_height, 9, m_width, m_height));
     }
     this.mountains.sort((a,b) => (a.height < b.height) ? 1 : ((b.height < a.height) ? -1 : 0))

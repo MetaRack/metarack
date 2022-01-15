@@ -2,7 +2,7 @@ var rackrand = fxrand;
 let engine;
 rackwidth = document.documentElement.clientWidth;
 rackheight = document.documentElement.clientHeight;
-upscale_buffers = 3;
+upscale_buffers = 2;
 fps = 24;
 sample_rate = 44100;
 background_color = 255;

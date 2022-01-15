@@ -114,32 +114,33 @@ LND1 = new Landscape(0, 0, rackwidth, rackheight, 15);
 VCO2.i['CV'].connect(LND1.boxes.i['SIZE']);
 SCL1.o['GATE'].connect(LND1.i['BOX_GATE']);
 
-DLYCTRL = engine.add_control('Delay', -7.29, 0.3 + 0.1*(1 - 2*rackrand()), -7.50, -7.20, 0, 1, 'MELODY');
-TMPCTRL = engine.add_control('Tempo', 0.5 + 0.2*(1 - 2*rackrand()), 0.3 + 0.1*(1 - 2*rackrand()), 0, 1, 0, 1, 'GLOBAL', 15);
+BASSCTRL = engine.add_control('Bass', 3 + 1 * (1 - 2*rackrand()), -0.2, -7, 7, -1, 1, 'MELODY');
+TMPCTRL = engine.add_control('Tempo', 0.5 + 0.2*(1 - 2*rackrand()), 0.4 + 0.1*(1 - 2*rackrand()), 0, 1, 0, 1, 'GLOBAL', 15);
 PITCHCTRL = engine.add_control('Pitch', 0.4 + 0.2*(1 - 2*rackrand()), 0.7 + 0.5*(1 - 2*rackrand()), 0, 1, -2, 4, 'MELODY');
 VARCTRL = engine.add_control('Variance', 5, -7.29 + 0.007*(1 - 2*rackrand()), 0, 10, -7.30, -7.27, 'MELODY');
 FLTRCTRL = engine.add_control('Filter', -1 + 0.3*(1 - 2*rackrand()), 1 + 0.5*(1 - 2*rackrand()), -2, 0, 0, 2.5, 'NOISE');
 NOISEMIXCTRL = engine.add_control('Noise', 0.8 + 0.5*(1 - 2*rackrand()), 3 + (1 - 2*rackrand()), 0.1, 2, 0, 10, 'NOISE');
 
-engine.patch_name = `Ambient Landscapes v1`;
+engine.patch_name = `Ambient Landscapes`;
 engine.patch_description = `Audiovisual modular synthesizer`;
 engine.patch_parameters = `Scale: ${SCL1.get_scale()}\nSeq: ${SEQ1.get_sequence(0)}`;
 engine.controls_description = `click / space ~ start\nmouse ~ drag dots to change params\n"e" while dragging ~ toggle dot drift\n"v" ~ full screen (better performance)\n"r" ~ reset dots to initial positions`;
-engine.copyright = `© @ferluht, @alexeev, 2022`
+engine.copyright = `© ferluht, alexeev, 2022`
 
 function draw_background(x, y, scale) {
 
   LND1.draw(x, y);
 
-  let delay_time = -7.337// + (1 - engine.my) * 0.1;
-  let dw_cv = engine.mx * 20 - 10;
-  engine.cursor_text = `Delay time CV: ${delay_time.toFixed(4)}\nDelay D/W CV: ${dw_cv.toFixed(2)}`;
   DLY1.i['TIME'].set(VARCTRL.get_y());
 
   VCO1.set_frequency(64 - (TMPCTRL.get_x() * 6) / 16);
   VCO4.set_frequency(TMPCTRL.get_x() * 6);
 
   SCL1.i['CV'].set(PITCHCTRL.get_y());
+
+  BGATE1.i['P'].set(BASSCTRL.get_x());
+
+  FLTR5.i['FREQ'].set(BASSCTRL.get_y());
 
   VCO7.i['FM'].set(FLTRCTRL.get_x());
   VCO3.i['AMP'].set(NOISEMIXCTRL.get_x());
