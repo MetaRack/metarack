@@ -125,7 +125,7 @@ engine.patch_name = `Ambient Landscapes`;
 engine.patch_description = `Audiovisual modular synthesizer`;
 engine.patch_parameters = `Scale: ${SCL1.get_scale()}\nSeq: ${SEQ1.get_sequence(0)}`;
 engine.controls_description = `click / space ~ start\nmouse ~ drag dots to change params\n"e" while dragging ~ toggle dot drift\n"v" ~ full screen (better performance)\n"r" ~ reset dots to initial positions`;
-engine.copyright = `© ferluht, alexeev, 2022`
+engine.copyright = `© ferluht, alexexeev, 2022`
 
 function draw_background(x, y, scale) {
 
