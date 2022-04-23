@@ -114,13 +114,14 @@ class GraphicObject {
 // PORT
 
 class ProtoPort extends GraphicObject {
-  constructor({x=10, y=10, r=7, name='', style=new PortStyle(), visible=true, isinput=false}={}) {
+  constructor({x=10, y=10, r=7, name='', style=new PortStyle(), default_value=0, visible=true, isinput=false}={}) {
     super({x:x, y:y, w:r*2, h:r*2, name:name, visible:visible});
     this.channels = 1;
     this.isinput = isinput;
     this.in_wire = null;
     this.wires = [];
-    this.value = 0;
+    this.default_value = default_value;
+    this.value = this.default_value;
     this.style = style;
     this.port = this;
     this.modname = '';
@@ -170,6 +171,7 @@ class ProtoPort extends GraphicObject {
     if (this == w.b) w.b = null;
     this.changed = true;
     if (this.gparent) this.gparent.changed = true;
+    this.value = this.default_value;
   }
 
   spawn_or_get_wire() {
@@ -183,13 +185,57 @@ class ProtoPort extends GraphicObject {
   }
 }
 
+class Led extends GraphicObject {
+  constructor({x=0, y=0, r=10, brightness=1} = {}) {
+    super ({x:x, y:y, w:2*r, h:r*2, name:'Led'});
+    this.brightness = brightness;
+  }
+
+  set(b) {
+    if (b != this.brightness) this.changed = true;
+    this.brightness = b;
+  }
+
+  draw_cbf(buf, w, h) {
+    let sw = 1;
+    buf.stroke(60); buf.strokeWeight(sw); buf.fill(255);
+    buf.circle(w/2, h/2, w - 2*sw);
+  }
+
+  draw_sbf(buf, w, h) {
+    buf.noStroke(); buf.fill(this.brightness);
+    buf.circle(w/2, h/2, w*0.8);
+  }
+}
+
+class Button extends GraphicObject {
+  constructor({x=0, y=0, r=10, state=false} = {}) {
+    super ({x:x, y:y, w:2*r, h:r*2, name:'Button'});
+    this.state = state;
+  }
+
+  draw_cbf(buf, w, h) {
+    let sw = 1;
+    buf.stroke(60); buf.strokeWeight(sw); buf.fill(0);
+    buf.circle(w/2, h/2, w - 2*sw);
+  }
+
+  mouse_pressed(x, y, dx, dy) {
+    this.state = !this.state;
+  }
+
+  get() {
+    return this.state;
+  }
+}
+
 class Port extends GraphicObject {
-  constructor({x=0, y=0, r=10, name='', style=new PortStyle(), visible=true, isinput=false}={}) {
+  constructor({x=0, y=0, r=10, name='', style=new PortStyle(), default_value=0, visible=true, isinput=false}={}) {
     super({x:x, y:y, w:2*r, h:r*3, name:name, visible:visible});
     let pr = r * Math.pow(7 / this.w, 0.8);
     let px = this.w / 2 - pr;
     let py = this.h / 1.5 / 2 - pr;
-    this.port = new ProtoPort({x:px, y:py, r:pr, name:name});
+    this.port = new ProtoPort({x:px, y:py, r:pr, name:name, default_value: default_value});
     this.attach(this.port);
   }
 

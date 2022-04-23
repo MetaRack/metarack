@@ -39,8 +39,8 @@ class RawScope extends GraphicObject {
 
       this.delta = (w - this.offset * 2) / this.size;
       for (var j = 0; j < this.size - 1; j++) { 
-        this.y1 = -this.buffer[(this.i + j + 1) % this.size] * h / 3 / 10 + h / 2;
-        this.y2 = -this.buffer[(this.i + j + 2) % this.size] * h / 3 / 10 + h / 2;
+        this.y1 = -this.buffer[(this.i + j + 1) % this.size] * h / 1 / 10 + h / 2;
+        this.y2 = -this.buffer[(this.i + j + 2) % this.size] * h / 1 / 10 + h / 2;
         buf.line(x + this.offset + j * this.delta, y + this.y1, x + this.offset + (j + 1) * this.delta, y + this.y2);
       }
       this.drawn = true;

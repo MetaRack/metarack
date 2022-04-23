@@ -29,32 +29,37 @@ engine.set_wire_style(ws);
 // 	if (rackrand() > 0.2) VCOs[i - 1].o['OUT'].connect(VCOs[i].i['CV']);
 // }
 
+VCO1 = new VCO(261);
+VCO2 = new VCO(0.5);
+RVRB1 = new DattorroReverb();
+ADSR1 = new ADSR();
+VCA1 = new VCA();
 
-n = 2 + Math.floor(rackrand() * 6);
-for(var i = 0; i < n; i ++) {
-  let j = Math.floor(rackrand() * 6);
+// n = 2 + Math.floor(rackrand() * 6);
+// for(var i = 0; i < n; i ++) {
+//   let j = Math.floor(rackrand() * 6);
 
-  switch (j) {
-    case 0: 
-      new VCO(261);
-      break;
-    case 1:
-      new ADSR(261);
-      break;
-    case 2:
-      new VCA();
-      break;
-    case 3:
-      new ResonantFilter('LP');
-      break;
-    case 4:
-      new DattorroReverb();
-      break;
-    case 5:
-      new Delay();
-      break;
-  }
-}
+//   switch (j) {
+//     case 0: 
+//       new VCO(261);
+//       break;
+//     case 1:
+//       new ADSR(261);
+//       break;
+//     case 2:
+//       new VCA();
+//       break;
+//     case 3:
+//       new ResonantFilter('LP');
+//       break;
+//     case 4:
+//       new DattorroReverb();
+//       break;
+//     case 5:
+//       new Delay();
+//       break;
+//   }
+// }
 
 engine.sequential_place_modules();
 

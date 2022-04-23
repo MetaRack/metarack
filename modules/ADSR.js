@@ -31,7 +31,7 @@ class ADSR extends Module {
       switch(this.stage) {
         case 'R':
           this.stage = 'A';
-          this.phase = Math.pow(this.o['OUT'].get(), 2) * A;
+          this.phase = Math.pow(this.o['OUT'].get() / 10, 2) * A;
         case 'A':
           env = Math.sqrt(this.phase / A);
           if (env >= 1) {
@@ -47,7 +47,7 @@ class ADSR extends Module {
           if (env <= S) this.stage = 'S';
           break;
         case 'S':
-          env = this.o['OUT'].get();
+          env = this.o['OUT'].get() / 10;
           break;
 
       }
@@ -58,7 +58,7 @@ class ADSR extends Module {
         case 'S':
           this.stage = 'R';
           this.phase = 0.001;
-          this.switch_level = this.o['OUT'].get();
+          this.switch_level = this.o['OUT'].get() / 10;
         case 'R':
           env = (1 - Math.sqrt(this.phase / R)) * this.switch_level;
           if (env <= 0) env = 0;
@@ -66,7 +66,7 @@ class ADSR extends Module {
       }
     }
 
-    this.o['OUT'].set(env);
+    this.o['OUT'].set(env * 10);
     // console.log(env * 20 - 10, this.o['OUT'].get());
     // this.scope.process( this.o['OUT'].get() * 20 - 10 )
     this.phase += 0.001;
