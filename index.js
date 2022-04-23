@@ -30,7 +30,7 @@ engine.set_wire_style(ws);
 // }
 
 VCO1 = new VCO(261);
-VCO2 = new VCO(0.5);
+CLKD = new Clock(120);
 RVRB1 = new DattorroReverb();
 ADSR1 = new ADSR();
 VCA1 = new VCA();

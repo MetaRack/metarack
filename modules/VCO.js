@@ -9,7 +9,8 @@ class VCO extends Module {
     this.scope = new RawScope({x: this.w * 0.05, y:this.h * 0.05, w:this.w - this.w * 0.1, h:this.h*0.25, size:30, divider:64});
     this.attach(this.scope);
 
-    let cv = -2 + Math.floor(5 * rackrand()) - 0.01 + rackrand() * 0.02;
+    //let cv = -2 + Math.floor(5 * rackrand()) - 0.01 + rackrand() * 0.02;
+    let cv = 0;
     this.add_input(new InputEncoder({x:hp2px(1), y:42, r:9, val: cv, vmin:-10, name:'CV'}));
     this.add_input(new InputEncoder({x:hp2px(5.5), y:42, r:9, val: 0, name:'FM'}));
     this.add_input(new InputEncoder({x:hp2px(1), y:70, r:9, vmin:-10, val:10, name:'WAVE'})); //-10 + rackrand() * 20, name:'WAVE'}));
