@@ -418,9 +418,9 @@ class Wire extends GraphicObject {
     let midy = Math.max(p1[1], p2[1]);
     let c = 0;
     let midx1 = (midx + p1[0]) / 2 + this.a.get() * c;
-    let midy1 = midy + Math.min(Math.abs(p1[1] - p2[1]) * Math.abs(p1[0] - p2[0]) / 1e2, 20) + this.a.get() * c;
+    let midy1 = midy + Math.min(Math.abs(p1[0] - p2[0]) * Math.abs(p1[0] - p2[0]) / 1e2, 20) + this.a.get() * c;
     let midx2 = (midx + p2[0]) / 2 + this.a.get() * c;
-    let midy2 = midy + Math.min(Math.abs(p1[1] - p2[1]) * Math.abs(p1[0] - p2[0]) / 1e2, 20) + this.a.get() * c;
+    let midy2 = midy + Math.min(Math.abs(p1[0] - p2[0]) * Math.abs(p1[0] - p2[0]) / 1e2, 20) + this.a.get() * c;
 
     while (midy1 > maxy) midy1 -= 10;
     while (midy2 > maxy) midy2 -= 10;
