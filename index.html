@@ -3,13 +3,14 @@
   html, body {
     height: 100%;
     margin: 0;
+    overflow: hidden;
   }
 </style>
 <html>
   <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
     <meta charset="UTF-8">
-    <title>Cryptorack</title>
+    <title>MetaRack</title>
     <script id="fxhash-snippet">
       //---- do not edit the following code (you can indent as you wish)
       let alphabet = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"
@@ -43,17 +44,18 @@
 
     <script language="javascript" type="text/javascript" src="./lib/p5.js"></script>
 
-    <script language="javascript" type="text/javascript" src="./core/settings.js"></script>
+    <!-- <script language="javascript" type="text/javascript" src="./core/settings.js"></script>
     <script language="javascript" type="text/javascript" src="./core/protoport.js"></script>
     <script language="javascript" type="text/javascript" src="./core/wire.js"></script>
     <script language="javascript" type="text/javascript" src="./core/protomodule.js"></script>
     <script language="javascript" type="text/javascript" src="./core/protovisual.js"></script>
-    <script language="javascript" type="text/javascript" src="./core/speaker.js"></script>
-    <script language="javascript" type="text/javascript" src="./core/control.js"></script>
     <script language="javascript" type="text/javascript" src="./core/engine.js"></script>
     <script language="javascript" type="text/javascript" src="./core/port.js"></script>
     <script language="javascript" type="text/javascript" src="./core/module.js"></script>
     <script language="javascript" type="text/javascript" src="./core/visual.js"></script>
+ -->
+    <script language="javascript" type="text/javascript" src="./core/settings.js"></script>
+    <script language="javascript" type="text/javascript" src="./core/cryptorack_core.js"></script>
 
     <script language="javascript" type="text/javascript" src="./primitives/RawScope.js"></script>
     <script language="javascript" type="text/javascript" src="./primitives/LevelDisplay.js"></script>
@@ -78,12 +80,7 @@
     <script language="javascript" type="text/javascript" src="./modules/Sequencer.js"></script>
     <script language="javascript" type="text/javascript" src="./modules/Filter.js"></script>
     <script language="javascript" type="text/javascript" src="./modules/BernoulliGate.js"></script>
-
-    <script language="javascript" type="text/javascript" src="./visuals/Mountain.js"></script>
-    <script language="javascript" type="text/javascript" src="./visuals/CelestialBody.js"></script>
-    <script language="javascript" type="text/javascript" src="./visuals/Land.js"></script>
-    <script language="javascript" type="text/javascript" src="./visuals/Landscape.js"></script>
-    <script language="javascript" type="text/javascript" src="./visuals/SkyBoxes.js"></script>
+    <script language="javascript" type="text/javascript" src="./modules/Audio.js"></script>
 
     <!-- <button>Play</button> -->
     <script language="javascript" type="text/javascript" src="./index.js"></script>
@@ -107,6 +104,5 @@
       }
     </script>
 
-    <a class="github-fork-ribbon" href="https://github.com/ferluht/cryptorack" data-ribbon="View on GitHub" title="View on GitHub">View on GitHub</a>
   </body>
 </html>

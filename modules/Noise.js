@@ -4,9 +4,9 @@ class GateNoise extends Module {
     this.scope = new RawScope(0, 0, 20, 30, 'scope', 20);
     this.holding = false;
 
-    this.add_input(new Port(10, 38, 7, 'GATE'));
-    this.add_input(new Port(10, 50, 7, 'TYPE'));
-    this.add_output(new Port(10, 62, 7, 'OUT'));
+    this.add_input(new Port({x:10, y:38, r:7, name:'GATE'}));
+    this.add_input(new Port({x:10, y:50, r:7, name:'TYPE'}));
+    this.add_output(new Port({x:10, y:62, r:7, name:'OUT'}));
   }
 
   draw(x, y, scale) {
@@ -34,7 +34,7 @@ class Noise extends Module {
     super(name, x, y, 20, 70);
     this.scope = new RawScope(0, 0, 20, 30, 'scope', 32);
 
-    this.add_output(new Port(10, 62, 7, 'OUT'));
+    this.add_output(new Port({x:10, y:62, r:7, name:'OUT'}));
   }
 
   draw(x, y, scale) {

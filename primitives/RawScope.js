@@ -1,10 +1,6 @@
-class RawScope {
-    constructor(x, y, width, height, name, size=32, divider=256, offset=5) {
-      this.x = x;
-      this.y = y;
-      this.width = width;
-      this.height = height;
-      this.name = name;
+class RawScope extends GraphicObject {
+    constructor({x=0, y=0, w=10, h=10, name='RawScope', size=32, divider=256, offset=4}={}) {
+      super({x:x, y:y, w:w, h:h, name:name});
       this.size = size;
       this.divider = divider;
       this.i = 0;
@@ -15,66 +11,56 @@ class RawScope {
       this.i = 0;
       for (var j = 0; j < this.size; j ++) this.buffer.push(0);
 
-      this.sbf;
-      this.scale = -1;
-
       this.delta = 0;
       this.y1 = 0;
       this.y2 = 0;
+
+      this.filled = false;
+      this.drawn = false;
     }
 
-    fill_sbf() {
-      let w = this.sbf.width;
-      let h = this.sbf.height;
-      let sw = 1.5 * this.scale;
-      let rounding = 1 * this.scale;
-      this.sbf.stroke(60); this.sbf.strokeWeight(sw); this.sbf.strokeJoin(ROUND); this.sbf.fill(255);
-      this.sbf.rect(sw / 2, sw / 2, w - sw, h - sw, rounding, rounding, rounding, rounding);
+    draw_cbf(buf, w, h) {
+      let sw = 5;
+      let rounding = 5; 
+      buf.stroke(60); buf.strokeWeight(sw); buf.strokeJoin(ROUND); buf.fill(255);
+      buf.rect(sw / 2, sw / 2, w - sw, h - sw, rounding, rounding, rounding, rounding);
 
-      // this.sbf.stroke(60); this.sbf.strokeWeight(sw / 4);
-      // for (var i = 1; i < 4; i++) {
-      //   this.sbf.line(sw / 2, h * 0.25 * i, sw * 2, h * 0.25 * i);
-      //   this.sbf.line(w - sw * 2, h * 0.25 * i, w - sw / 2, h * 0.25 * i);
-      // }
-      // for (var i = 1; i < 5; i++) {
-      //   this.sbf.line(sw / 2 + w * 0.2 * i, sw / 2, sw / 2 + w * 0.2 * i, sw * 2);
-      //   this.sbf.line(sw / 2 + w * 0.2 * i, h - sw * 2, sw / 2 + w * 0.2 * i, h - sw / 2);
-      // }
+      buf.stroke(60);
+      for (var i = 1; i < 20; i ++) {
+        if (i % 5 == 0) buf.strokeWeight(0.5);
+        else buf.strokeWeight(0.05);
+        buf.line(i * w * 0.05, sw, i * w * 0.05, h - sw);
+        buf.line(sw, i * h * 0.05, w - sw, i * h * 0.05);
+      }
     }
 
-    create_fill_buffers() {
-      let sbf_w = this.width * this.scale;
-      let sbf_h = this.height * this.scale;
-      this.sbf = createGraphics(sbf_w * upscale_buffers, sbf_h * upscale_buffers);
-      this.sbf.background(0,0,0,0);   
-      this.fill_sbf();
-    }
+    draw_dbf(buf, x, y, w, h) {
+      buf.stroke(60); buf.strokeWeight(0.5); buf.noFill();
 
-    draw_signal(x, y, scale) {
-      stroke(60); strokeWeight(0.5 * scale); noFill();
-
-      this.delta = (this.width - this.offset * 2) / this.size;
+      this.delta = (w - this.offset * 2) / this.size;
       for (var j = 0; j < this.size - 1; j++) { 
-        this.y1 = -this.buffer[(this.i + j + 1) % this.size] * this.height / 3 * scale + y + this.y + this.height / 2 * scale;
-        this.y2 = -this.buffer[(this.i + j + 2) % this.size] * this.height / 3 * scale + y + this.y + this.height / 2 * scale;
-        line(x + this.x + (this.offset + j * this.delta) * scale, this.y1, x + this.x + (this.offset + (j + 1) * this.delta) * scale, this.y2);
+        this.y1 = -this.buffer[(this.i + j + 1) % this.size] * h / 3 / 10 + h / 2;
+        this.y2 = -this.buffer[(this.i + j + 2) % this.size] * h / 3 / 10 + h / 2;
+        buf.line(x + this.offset + j * this.delta, y + this.y1, x + this.offset + (j + 1) * this.delta, y + this.y2);
       }
+      this.drawn = true;
     }
 
-    draw(x, y, scale) {
-      if (scale != this.scale) {
-        this.scale = scale;
-        this.create_fill_buffers();
+    trig() {
+      if (this.drawn && this.filled) { 
+        this.i = -1;
+        this.sample_counter = 0;
+        this.filled = false;
       }
-      image(this.sbf, x + this.x, y + this.y, this.sbf.width / upscale_buffers, this.sbf.height / upscale_buffers);
-      this.draw_signal(x, y, scale);
     }
 
     process(sample) {
-      if (this.sample_counter % this.divider == 0) {
-        this.i = this.sample_counter / this.divider;
-        this.buffer[this.i] = sample / 10;
-        if (this.i >= this.size) this.sample_counter = -1;
+      if (this.filled) return;
+      if (this.sample_counter > this.divider) {
+        this.i ++;
+        this.buffer[this.i] = sample;
+        if (this.i == this.size - 1) { this.i = -1; this.filled = true; this.drawn = false; }
+        this.sample_counter = 0;
       }
       this.sample_counter ++;
     }

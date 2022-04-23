@@ -4,9 +4,9 @@ class SampleAndHold extends Module {
     this.scope = new RawScope(0, 0, 20, 30);
     this.holding = false;
 
-    this.add_input(new Port(10, 38, 7, 'GATE'));
-    this.add_input(new Port(10, 50, 7, 'IN'));
-    this.add_output(new Port(10, 62, 7, 'OUT'));
+    this.add_input(new Port({x:10, y:38, r:7, name:'GATE'}));
+    this.add_input(new Port({x:10, y:50, r:7, name:'IN'}));
+    this.add_output(new Port({x:10, y:62, r:7, name:'OUT'}));
   }
 
   draw(x, y, scale) {

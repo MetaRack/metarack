@@ -1,33 +1,27 @@
 class ADSR extends Module {
-  constructor(name, x=-1, y=-1, style = new ModuleStyle()) {
-    super(name, x, y, 30, 70, style);
+
+  constructor() {
+    super({w:hp2px(4)});
     this.phase = 0;
     this.stage = 'R';
     this.switch_level = 0;
 
     this.scope = new RawScope(0, 0, 30, 30);
+    // this.attach(this.scope);
 
-    this.add_input(new Port(8, 38, 7, 'A'));
-    this.add_input(new Port(22, 38, 7, 'D'));
-    this.add_input(new Port(8, 50, 7, 'S'));
-    this.add_input(new Port(22, 50, 7, 'R'));
-    this.add_input(new Port(8, 62, 7, 'GATE'));
-    this.add_output(new Port(22, 62, 7, 'OUT'));
-  }
-
-  draw(x, y, scale) {
-    x += this.o['OUT'].get() * 0.05;
-    y += this.o['OUT'].get() * 0.05;
-    
-    super.draw(x, y, scale);
-    this.scope.draw(x + this.x, y + this.y, scale);
+    this.add_control(new Encoder({x:hp2px(0.6), y:6, r:7, vmin:0, vmax:10, val:1, name:'A'}));
+    this.add_control(new Encoder({x:hp2px(0.6), y:26, r:7, vmin:0, vmax:10, val:1, name:'D'}));
+    this.add_control(new Encoder({x:hp2px(0.6), y:46, r:7, vmin:0, vmax:1, val:0.1, name:'S'}));
+    this.add_control(new Encoder({x:hp2px(0.6), y:66, r:7, vmin:0, vmax:50, val:30, name:'R'}));
+    this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'GATE'}));
+    this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
   }
 
   process() {
-    let A = this.i['A'].get() * 10 + 0.1;
-    let D = this.i['D'].get() * 10 + 0.1;
-    let S = this.i['S'].get() + 0.000001;
-    let R = this.i['R'].get() * 50 + 0.1;
+    let A = this.c['A'].get() + 0.1;
+    let D = this.c['D'].get() + 0.1;
+    let S = this.c['S'].get() + 0.000001;
+    let R = this.c['R'].get() + 0.1;
 
     var env = 0;
     var lin = 0;
@@ -41,6 +35,7 @@ class ADSR extends Module {
         case 'A':
           env = Math.sqrt(this.phase / A);
           if (env >= 1) {
+            console.log('A->D');
             this.stage = 'D';
             this.switch_level = env;
           }
@@ -72,7 +67,8 @@ class ADSR extends Module {
     }
 
     this.o['OUT'].set(env);
-    this.scope.process( this.o['OUT'].get() * 20 - 10 )
+    // console.log(env * 20 - 10, this.o['OUT'].get());
+    // this.scope.process( this.o['OUT'].get() * 20 - 10 )
     this.phase += 0.001;
   }
 }

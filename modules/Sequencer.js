@@ -15,11 +15,11 @@ class Sequencer extends Module {
 
     this.scope = new RawScope(0, 0, 30, 30, 'scope', 30, 128);
 
-    this.add_input(new Port(8, 38, 7, 'GATE'));
-    this.add_output(new Port(8, 50, 7, 'OUT1'));
-    this.add_output(new Port(22, 50, 7, 'OUT2'));
-    this.add_output(new Port(8, 62, 7, 'OUT3'));
-    this.add_output(new Port(22, 62, 7, 'OUT4'));
+    this.add_input(new Port({x:8, y:38, r:7, name:'GATE'}));
+    this.add_output(new Port({x:8, y:50, r:7, name:'OUT1'}));
+    this.add_output(new Port({x:22, y:50, r:7, name:'OUT2'}));
+    this.add_output(new Port({x:8, y:62, r:7, name:'OUT3'}));
+    this.add_output(new Port({x:22, y:62, r:7, name:'OUT4'}));
   }
 
   set_sequence(chan, seq) {

@@ -40,12 +40,12 @@ class Scale extends Module {
 
     this.scope = new RawScope(0, 0, 30, 30, 'scope', 30, 128);
 
-    this.add_input(new Port(8, 38, 7, 'CV'));
-    this.add_input(new Port(22, 38, 7, 'IN'));
-    this.add_output(new Port(8, 50, 7, '1ST'));
-    this.add_output(new Port(22, 50, 7, '2ST'));
-    this.add_output(new Port(8, 62, 7, '3ST'));
-    this.add_output(new Port(22, 62, 7, 'GATE'));
+    this.add_input(new Port({x:8, y:38, r:7, name:'CV'}));
+    this.add_input(new Port({x:22, y:38, r:7, name:'IN'}));
+    this.add_output(new Port({x:8, y:50, r:7, name:'1ST'}));
+    this.add_output(new Port({x:22, y:50, r:7, name:'2ST'}));
+    this.add_output(new Port({x:8, y:62, r:7, name:'3ST'}));
+    this.add_output(new Port({x:22, y:62, r:7, name:'GATE'}));
 
     this.gate_length = 100;
     this.gate_counter = 0;
