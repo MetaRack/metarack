@@ -220,6 +220,10 @@ class Button extends GraphicObject {
     buf.circle(w/2, h/2, w - 2*sw);
   }
 
+  set(s) {
+    this.state = s;
+  }
+
   mouse_pressed(x, y, dx, dy) {
     this.state = !this.state;
   }
@@ -273,6 +277,8 @@ class Encoder extends GraphicObject {
 
     this.rc = 0.8;
     this.r = 0;
+
+    this.precision = Math.min(2, 2 - Math.floor(Math.log10(Math.abs(vmax - vmin) / 20)));
   }
 
   val2ang(val) {
@@ -315,7 +321,7 @@ class Encoder extends GraphicObject {
     buf.fill(60);
     buf.textAlign(CENTER, CENTER);
     buf.strokeWeight(sw);
-    buf.text(this.base_val.toFixed(2), w / 2, h / 3);
+    buf.text(this.base_val.toFixed(this.precision), w / 2, h / 3);
     buf.text(this.name.substring(0,4), w / 2, h * 5 / 6 + 1);
   }
 
@@ -333,6 +339,81 @@ class Encoder extends GraphicObject {
 
   save() { return this.base_val.toFixed(6); }
   load(s) { this.base_val = parseFloat(s); this.changed = true; }
+}
+
+class StepEncoder extends Encoder {
+  constructor({x=0, y=0, r=10, name='?', val=5, vmin=-10, vmax=10, mod=0.1, step=1, nonzero=true}={}) {
+    if (nonzero)
+      super({x:x, y:y, r:r, name:name, val:val, vmin:(vmin+step), vmax:vmax, mod:mod});
+    else
+      super({x:x, y:y, r:r, name:name, val:val, vmin:vmin, vmax:vmax, mod:mod});
+    this.nonzero = nonzero;
+    this.step = step;
+    this.y0 = 0;
+    this.dval = val;
+  }
+
+  mouse_dragged(x, y, dx, dy) { 
+    this.dval -= dy / 500 * (this.vmax - this.vmin);
+    if (Math.abs(this.dval) > this.step) {
+      this.base_val += Math.sign(this.dval) * this.step;
+      this.dval -= Math.sign(this.dval) * this.step;
+    }
+    if (this.base_val > this.vmax) this.base_val = this.vmax;
+    if (this.base_val < this.vmin) this.base_val = this.vmin + 0.0001;
+    this.changed=true;
+  }
+
+  mouse_pressed(x, y, dx, dy) { super.mouse_pressed(x, y, dx, dy); this.y0 = y; }
+
+  draw_sbf(buf, w, h) {
+    this.r = w / 2 * this.rc;
+    let sw = 3;
+    sw = 4;
+    buf.stroke(60); buf.strokeWeight(sw); buf.noFill();
+    this.ang_high = this.val2ang(this.base_val) + HALF_PI;
+    if (this.ang_high - HALF_PI > 0.05) 
+      buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, HALF_PI, this.ang_high - 0.05);
+    else 
+      buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, this.ang_high - 0.05, HALF_PI);
+    sw = 2;
+    buf.strokeWeight(sw);
+    buf.line(w / 2 + Math.cos(this.ang_high) * (this.r - 5), w / 2 + Math.sin(this.ang_high) * (this.r - 5), 
+             w / 2 + Math.cos(this.ang_high) * (this.r + 1), w / 2 + Math.sin(this.ang_high) * (this.r + 1));
+
+    sw = 1;
+    buf.stroke(60); buf.strokeWeight(sw); buf.fill(255);
+    buf.rect(sw + w * 0.1, h / 1.5 + sw + h * 0.05, w - 2 * sw - w * 0.2, h / 3 - 2 * sw - h * 0.1);
+
+    sw = 0.1;
+    buf.textSize(w / 4);
+    buf.fill(60);
+    buf.textAlign(CENTER, CENTER);
+    buf.strokeWeight(sw);
+    if ((this.base_val <= 0) && (this.nonzero)) 
+      buf.text((this.base_val - this.step).toFixed(this.precision), w / 2, h / 3);
+    else
+      buf.text(this.base_val.toFixed(this.precision), w / 2, h / 3);
+    buf.text(this.name.substring(0,4), w / 2, h * 5 / 6 + 1);
+  }
+
+  get(){ 
+    if ((this.base_val <= 0) && (this.nonzero)) {
+      return (this.base_val - this.step);
+    }
+    else {
+      return this.base_val; 
+    }
+  }
+
+  save() { 
+    if ((this.base_val <= 0) && (this.nonzero)) {
+      return (this.base_val - this.step).toFixed(6);
+    }
+    else {
+      return this.base_val.toFixed(6); 
+    }
+  }
 }
 
 class InputEncoder extends Encoder {

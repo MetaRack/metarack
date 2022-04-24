@@ -10,7 +10,7 @@ class VCO extends Module {
     this.attach(this.scope);
 
     //let cv = -2 + Math.floor(5 * rackrand()) - 0.01 + rackrand() * 0.02;
-    let cv = 0;
+    let cv = 0.0001;
     this.add_input(new InputEncoder({x:hp2px(1), y:42, r:9, val: cv, vmin:-10, name:'CV'}));
     this.add_input(new InputEncoder({x:hp2px(5.5), y:42, r:9, val: 0, name:'FM'}));
     this.add_input(new InputEncoder({x:hp2px(1), y:70, r:9, vmin:-10, val:10, name:'WAVE'})); //-10 + rackrand() * 20, name:'WAVE'}));
