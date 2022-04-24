@@ -66,9 +66,16 @@ class Clock extends Module {
   }
 
   draw_dbf (buf, x, y, w, h) {
-    if (this.i['BPM'].changed || this.c['DIV1'].changed || this.c['DIV2'].changed || this.c['DIV3'].changed)
+    if (this.i['BPM'].changed || this.c['DIV1'].changed || this.c['DIV2'].changed || this.c['DIV3'].changed) {
       this.set_bpm(this.i['BPM'].get())
+      for (var i = 0; i < 3; i++) {
+        if (this.c['DIV' + (i+1).toString()].changed)
+          this.sample_counter_row[i] = this.fmod(this.sample_counter, this.sample_threshold_row[i]);
+      }
+    }
   }
+
+  fmod (a,b) { return Number((a - (Math.floor(a / b) * b)).toPrecision(8)); };
 
   process() {
     if (this.sample_counter > this.sample_threshold) {
@@ -138,22 +145,22 @@ class Clock extends Module {
         this.sample_counter_row[i]++
 
       if (this.sample_counter > this.sample_threshold * 2) {
-        this.sample_counter = 0;
+        this.sample_counter -= this.sample_threshold * 2;
         this.o['CLK'].set(0);
         this.clock_led.set(255);
       }
 
       if (this.sample_counter_row[0] > this.sample_threshold_row[0] * 2) {
         this.o['CLK 1'].set(0);
-        this.sample_counter_row[0] = 0;
+        this.sample_counter_row[0] -= this.sample_threshold_row[0] * 2;
       }
       if (this.sample_counter_row[1] > this.sample_threshold_row[1] * 2) {
         this.o['CLK 2'].set(0);
-        this.sample_counter_row[1] = 0;
+        this.sample_counter_row[1] -= this.sample_threshold_row[1] * 2;
       }
       if (this.sample_counter_row[2] > this.sample_threshold_row[2] * 2) {
         this.o['CLK 3'].set(0);
-        this.sample_counter_row[2] = 0;
+        this.sample_counter_row[2] -= this.sample_threshold_row[2] * 2;
       }
     }
   }
