@@ -31,8 +31,9 @@ engine.set_wire_style(ws);
 
 VCO1 = new VCO(261);
 CLKD = new Clock(120);
-GATE64 = new GateSequencer();
-RVRB1 = new DattorroReverb();
+FLTR1 = new ResonantFilter();
+NOIS1 = new Noise();
+SH1 = new SampleAndHold();
 ADSR1 = new ADSR();
 VCA1 = new VCA();
 
