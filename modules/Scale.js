@@ -1,51 +1,46 @@
 class Scale extends Module {
-  constructor(name, base_note=null, type=null, x=-1, y=-1) {
-    super(name, x, y, 30, 70);
+  constructor(root='C', scale=1) {
+    super({w:hp2px(4)});
 
-    this.note_names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    //this.note_names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
-    this.scales = {
-      'Major': [0, 2, 4, 5, 7, 9, 11],
-      'HarmMajor': [0, 2, 4, 5, 7, 8, 11],
-      'MelMajor': [0, 2, 4, 5, 7, 8, 10],
-      'Minor': [0, 2, 3, 5, 7, 8, 10],
-      'HarmMinor': [0, 2, 3, 5, 7, 8, 11],
-      'MelMinor': [0, 2, 3, 5, 7, 9, 11],
-      'Mixolydian': [0, 2, 4, 5, 7, 9, 10],
-      'HungarianMajor': [0, 3, 4, 6, 7, 9, 10],
-      'HungarianMinor': [0, 2, 3, 6, 7, 8, 11]
-    }
+    // this.scales = {
+    //   'Major': [0, 2, 4, 5, 7, 9, 11],
+    //   'Minor': [0, 2, 3, 5, 7, 8, 10],
+    //   'HarmMinor': [0, 2, 3, 5, 7, 8, 11],
+    //   'Mixolydian': [0, 2, 4, 5, 7, 9, 10],
+    //   'MelMinor': [0, 2, 3, 5, 7, 9, 11],
+    //   'HarmMajor': [0, 2, 4, 5, 7, 8, 11],
+    //   'MelMajor': [0, 2, 4, 5, 7, 8, 10],
+    //   'HungarianMajor': [0, 3, 4, 6, 7, 9, 10],
+    //   'HungarianMinor': [0, 2, 3, 6, 7, 8, 11]
+    // }
 
-    if (!base_note) this.base_note = this.note_names[Math.floor(rackrand() * this.note_names.length)];
-    else this.base_note = base_note;
-    if (!type) this.type = Object.keys(this.scales)[Math.floor(rackrand() * Object.keys(this.scales).length)];
-    else this.type = type;
+    this.scales = [
+      [0, 2, 4, 5, 7, 9, 11],
+      [0, 2, 3, 5, 7, 8, 10],
+      [0, 2, 3, 5, 7, 8, 11],
+      [0, 2, 4, 5, 7, 9, 10],
+      [0, 2, 3, 5, 7, 9, 11],
+      [0, 2, 4, 5, 7, 8, 11],
+      [0, 2, 4, 5, 7, 8, 10],
+      [0, 3, 4, 6, 7, 9, 10],
+      [0, 2, 3, 6, 7, 8, 11]
+    ]
+    this.add_control(new Encoder({x:hp2px(0.6), y:6, r:7, vmin:1, vmax:12, val:1, precision:0, name:'ROOT'}));
+    this.add_control(new Encoder({x:hp2px(0.6), y:26, r:7, vmin:1, vmax:9, val:1, precision:0, name:'SCL'}));
+    this.add_input(new Port({x:hp2px(0.8), y:48, r:6, name:'IN'}));
+    this.add_input(new Port({x:hp2px(0.8), y:68, r:6, name:'CV'}));
+    this.add_output(new Port({x:hp2px(0.8), y:88, r:6, name:'GATE'}));
+    this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
 
-    this.base_note_num = 0;
-
-    for (var i = 0; i < this.note_names.length; i++) {
-      if (this.base_note == this.note_names[i]) {
-        this.base_note_num = i;
-        break;
-      }
-    }
+    this.root = this.c['ROOT'].get().toFixed(0) - 1;
+    this.scale = this.c['SCL'].get().toFixed(0) - 1;
 
     this.semitones = [];
-
-    for (var j = 0; j < this.scales[this.type].length; j++) { 
-      this.semitones.push((this.base_note_num + this.scales[this.type][j]) % 12);
+    for (var j = 0; j < this.scales[this.scale].length; j++) { 
+      this.semitones.push((this.root + this.scales[this.scale][j]) % 12);
     }
-
-    this.textdisplay = new TextSetDisplay (0, 0, 30, 30, this.note_names, 60);
-
-    this.scope = new RawScope(0, 0, 30, 30, 'scope', 30, 128);
-
-    this.add_input(new Port({x:8, y:38, r:7, name:'CV'}));
-    this.add_input(new Port({x:22, y:38, r:7, name:'IN'}));
-    this.add_output(new Port({x:8, y:50, r:7, name:'1ST'}));
-    this.add_output(new Port({x:22, y:50, r:7, name:'2ST'}));
-    this.add_output(new Port({x:8, y:62, r:7, name:'3ST'}));
-    this.add_output(new Port({x:22, y:62, r:7, name:'GATE'}));
 
     this.gate_length = 100;
     this.gate_counter = 0;
@@ -59,24 +54,34 @@ class Scale extends Module {
   }
 
   get_scale() {
-    return `${this.base_note} ${this.type}`;
+    return `${this.root} ${this.scale}`;
   }
 
   get_closest_note(v) {
     this.cl_i = 0;
     this.v_frac = v - Math.floor(v);
-    for(var i = 0; i < this.semitones.length; i ++) {
-      if (Math.abs(this.semitones[i] - this.v_frac) < Math.abs(this.semitones[this.cl_i] - this.v_frac)) this.cl_i = i;
+    for(var i = 0; i < this.semitones.length; i++) {
+      if (Math.abs(this.semitones[i] / 12 - this.v_frac) < Math.abs(this.semitones[this.cl_i] / 12 - this.v_frac)) 
+        this.cl_i = i;
     }
-    return (Math.floor(v) + this.semitones[this.cl_i]);
+    return (Math.floor(v) + this.semitones[this.cl_i] / 12);
   }
 
-  draw(x, y, scale) {
-    x += this.o['1ST'].get() * 0.05;
-    y += this.o['1ST'].get() * 0.05;
-
-    super.draw(x, y, scale);
-    this.textdisplay.draw(x + this.x, y + this.y, scale);
+  draw_dbf (buf, x, y, w, h) {
+    if (this.c['ROOT'].changed) {
+      this.root = this.c['ROOT'].get().toFixed(0) - 1;
+      this.semitones = [];
+      for (var j = 0; j < this.scales[this.scale].length; j++) { 
+        this.semitones.push((this.root + this.scales[this.scale][j]) % 12);
+      }
+    }
+    if (this.c['SCL'].changed) {
+      this.scale = this.c['SCL'].get().toFixed(0) - 1;
+      this.semitones = [];
+      for (var j = 0; j < this.scales[this.scale].length; j++) { 
+        this.semitones.push((this.root + this.scales[this.scale][j]) % 12);
+      }
+    }
   }
 
   process() {
@@ -87,12 +92,12 @@ class Scale extends Module {
     this.last_value = this.value;
     this.value = this.get_closest_note(Math.round((this.i['IN'].get() + this.i['CV'].get()) * 12) / 12);
     if (this.gate_counter > 0) {
-      if (this.gate_counter == this.gate_length) this.o['1ST'].set( this.value );
-      this.o['GATE'].set( 10 );
+      if (this.gate_counter == this.gate_length) this.o['OUT'].set( this.value );
+      this.o['GATE'].set(10);
       this.gate_counter --;
     } else {
-      this.o['GATE'].set( -10 );
+      this.o['GATE'].set(-10);
     }
-    this.textdisplay.process(this.semitones[this.cl_i] * 12);
+    //this.textdisplay.process(this.semitones[this.cl_i] * 12);
   }
 }

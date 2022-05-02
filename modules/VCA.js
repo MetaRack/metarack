@@ -25,7 +25,8 @@ class VCA extends Module {
 
   process() {
     //this.led.set(this.button.get() * 255);
-    this.o['OUT'].set( this.i['IN'].get() * (Math.log(this.c['VOL'].get()/10 * this.i['CV'].get()/10 + 1)) );
+    //this.o['OUT'].set( this.i['IN'].get() * (Math.log(this.c['VOL'].get()/10 * this.i['CV'].get()/10 + 1)) );
+    this.o['OUT'].set( this.i['IN'].get() * ((this.c['VOL'].get()/10 * this.i['CV'].get()/10)) );
     // this.level.process(this.i['CV'].get() * 20 - 10);
   }
 }

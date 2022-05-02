@@ -5,7 +5,7 @@ class Clock extends Module {
 
     this.add_input(new Port({x:hp2px(0.6), y:16, r:7, default_value:0, name:'Reset'}));
     this.add_input(new Port({x:hp2px(3.6), y:16, r:7, default_value:0, name:'Run'}));
-    this.add_input(new InputEncoder({x:hp2px(6.6), y:16, r:7, vmin:0, vmax:300, val:120, name:'BPM'}));
+    this.add_input(new InputEncoder({x:hp2px(6.6), y:16, r:7, vmin:0, vmax:300, val:120, precision:0, name:'BPM'}));
 
     this.reset_led = new Led({x:hp2px(1.6), y:9, r:2});
     this.attach(this.reset_led);
@@ -41,7 +41,7 @@ class Clock extends Module {
 
     for (var i = 1; i < 4; i++) {
       this.add_output(new Port({x:hp2px(0.8 + (i-1)*3), y:88, r:6, name:'CLK ' + i.toString()}));
-      this.add_control(new StepEncoder({x:hp2px(0.8 + (i-1)*3), y:68, r:6, vmin:-4, vmax:4, val:1, step:1, nonzero:true, name:'DIV' + i.toString()}));
+      this.add_control(new StepEncoder({x:hp2px(0.8 + (i-1)*3), y:68, r:6, vmin:-4, vmax:4, val:1, step:1, precision:0, nonzero:true, name:'DIV' + i.toString()}));
       this.sample_counter_row[i-1] = 0;
       this.value_row[i-1] = 0;
     }
@@ -67,7 +67,7 @@ class Clock extends Module {
 
   draw_dbf (buf, x, y, w, h) {
     if (this.i['BPM'].changed || this.c['DIV1'].changed || this.c['DIV2'].changed || this.c['DIV3'].changed) {
-      this.set_bpm(this.i['BPM'].get())
+      this.set_bpm(this.i['BPM'].get().toFixed(0))
       for (var i = 0; i < 3; i++) {
         if (this.c['DIV' + (i+1).toString()].changed)
           this.sample_counter_row[i] = this.fmod(this.sample_counter, this.sample_threshold_row[i]);

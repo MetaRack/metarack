@@ -265,7 +265,7 @@ class Port extends GraphicObject {
 }
 
 class Encoder extends GraphicObject {
-  constructor({x=0, y=0, r=10, name='?', val=5, vmin=-10, vmax=10, mod=0.1}={}) {
+  constructor({x=0, y=0, r=10, name='?', val=5, vmin=-10, vmax=10, precision=6, mod=0.1}={}) {
     super({x:x, y:y, w:2*r, h:3*r, name:name});
     this.base_val = val;
     this.vmin = vmin;
@@ -278,7 +278,8 @@ class Encoder extends GraphicObject {
     this.rc = 0.8;
     this.r = 0;
 
-    this.precision = Math.min(2, 2 - Math.floor(Math.log10(Math.abs(vmax - vmin) / 20)));
+    this.precision = Math.min(precision, Math.min(2, 2 - Math.floor(Math.log10(Math.abs(vmax - vmin) / 20))));
+    //this.precision = Math.min(2, 2 - Math.floor(Math.log10(Math.abs(vmax - vmin) / 20)));
   }
 
   val2ang(val) {
@@ -302,7 +303,7 @@ class Encoder extends GraphicObject {
     let sw = 3;
     sw = 4;
     buf.stroke(60); buf.strokeWeight(sw); buf.noFill();
-    this.ang_high = this.val2ang(this.base_val) + HALF_PI;
+    this.ang_high = this.val2ang(this.base_val.toFixed(this.precision)) + HALF_PI;
     if (this.ang_high - HALF_PI > 0.05) 
       buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, HALF_PI, this.ang_high - 0.05);
     else 
@@ -707,7 +708,7 @@ class Engine extends GraphicObject {
     this.drag_enabled = false;
     this.scale_enabled = false;
 
-    this.rows = 1;
+    this.rows = 2;
   }
 
   draw(x, y) {

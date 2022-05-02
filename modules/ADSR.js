@@ -31,7 +31,8 @@ class ADSR extends Module {
       switch(this.stage) {
         case 'R':
           this.stage = 'A';
-          this.phase = Math.pow(this.o['OUT'].get() / 10, 2) * A;
+          //this.phase = Math.pow(this.o['OUT'].get() / 10, 2) * A;
+          this.phase = Math.pow(env / 10, 2) * A;
         case 'A':
           env = Math.sqrt(this.phase / A);
           if (env >= 1) {

@@ -52,6 +52,7 @@ class RawScope extends GraphicObject {
         this.sample_counter = 0;
         this.filled = false;
       }
+      // this.changed = true;
     }
 
     process(sample) {
