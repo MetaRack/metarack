@@ -14,8 +14,6 @@ class Juno extends Module {
     	this.add_control(new Encoder({x:hp2px(6.6), y:66, r:7, vmin:0, vmax:1, val:1, name:'VAM'}));
     	this.add_control(new Encoder({x:hp2px(6.6), y:86, r:7, vmin:0, vmax:1, val:0, name:'SVAM'}));
 
-    	
-
 		this.add_input(new Port({x:hp2px(0.8), y:28, r:6, name:'GATE'}));
 		this.add_input(new Port({x:hp2px(0.8), y:8, r:6, name:'PTCH'}));
     	this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));

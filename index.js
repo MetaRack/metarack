@@ -33,60 +33,35 @@ engine.set_wire_style(ws);
 // 	if (rackrand() > 0.2) VCOs[i - 1].o['OUT'].connect(VCOs[i].i['CV']);
 // }
 
-CLKD = new Clock(120);
-JNO = new Juno();
-NOIS = new Noise();
-SH = new SampleAndHold();
-QNT1 = new Scale();
-OCT = new Offset();
-FLTR = new ResonantFilter('LP', 8000);
-CHRS = new Chorus();
-RVR = new DattorroReverb();
-RVR2 = new DattorroReverb();
-MIX = new Bus();
-MIX2 = new Bus();
-MIX6 = new Bus();
-SEQ = new GateSequencer();
-KICK = new Kick();
-KICK2 = new Kick();
-HAT = new Hat();
-HAT2 = new Hat();
-FLTR1 = new ResonantFilter('LP', 8000);
-RVR1 = new DattorroReverb();
-MIX1 = new Mixer();
-MIX5 = new Mixer();
-MIX4 = new Bus();
-
-
 // CLKD = new Clock(120);
+// JNO = new Juno();
+// NOIS = new Noise();
+// SH = new SampleAndHold();
+// QNT1 = new Scale();
+// OCT = new Offset();
+// FLTR = new ResonantFilter('LP', 8000);
+// CHRS = new Chorus();
+// RVR = new DattorroReverb();
+// RVR2 = new DattorroReverb();
+// MIX = new Bus();
+// MIX2 = new Bus();
+// MIX6 = new Bus();
+// SEQ = new GateSequencer();
 // KICK = new Kick();
 // KICK2 = new Kick();
 // HAT = new Hat();
 // HAT2 = new Hat();
-// SEQ = new GateSequencer();
-// MIX = new Mixer();
+// FLTR1 = new ResonantFilter('LP', 8000);
+// RVR1 = new DattorroReverb();
+// MIX1 = new Mixer();
+// MIX5 = new Mixer();
+// MIX4 = new Bus();
 
-// SVCO1 = new SVCO(261);
-// FLTR = new ResonantFilter('LP', 8000);
-// SVCO2 = new SVCO(258.5);
-// SH = new SampleAndHold();
-
-// SH2 = new SampleAndHold();
-// SH3 = new SampleAndHold();
-// SH4 = new SampleAndHold();
-// OCT = new Offset();
-// OCT2 = new Offset();
-// QNT1 = new Scale();
-// QNT2 = new Scale();
-// QNT3 = new Scale();
-// SVCO3 = new SVCO(261);
-// SVCO4 = new SVCO(130.5);
-// SVCO5 = new SVCO(522);
-// MIX2 = new Mixer();
-// MIX3 = new Mixer();
-// //VCO1 = new VCO(260.7);
-// RVR = new DattorroReverb();
-
+CLKD = new Clock(120);
+QNT1 = new Scale();
+JNO = new Juno();
+SEQ = new StepSequencer();
+OCT = new Offset();
 
 // n = 2 + Math.floor(rackrand() * 6);
 // for(var i = 0; i < n; i ++) {
