@@ -49,7 +49,7 @@ class SimpleOnePoleFilter extends Module {
 class ResonantFilter extends Module {
   constructor({type='LP', freq=440}={}) {
     super({w:hp2px(4)});
-    this.scope = new TextDisplay(0, 0, 20, 18);
+    // this.scope = new TextDisplay(0, 0, 20, 18);
 
     this.type = type;
     this.base_freq = freq;
@@ -58,24 +58,26 @@ class ResonantFilter extends Module {
 
     this.freq = this.base_freq;
 
-    this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, name:'FREQ'}));
-    this.add_input(new InputEncoder({x:hp2px(0.6), y:66, r:7, name:'RES'}));
+    this.add_control(new Encoder({x:hp2px(0.6), y:26, r:7, vmin:30, vmax:8000, val:700, name:'FREQ'}));
+    this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, val:0, name:'CV'}));
+    this.add_input(new InputEncoder({x:hp2px(0.6), y:66, r:7, val:0, vmin:0, vmax:20, name:'RES'}));
     this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'IN'}));
     this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
   }
 
-  draw_cbf(buf, w, h) {
-    super.draw_cbf(buf, w, h);
-    let sw = 2;
-    let rounding = 5;
-    buf.stroke(60); buf.strokeWeight(sw); buf.fill(255);
-    buf.rect(sw + w * 0.05, sw + 30, w * 0.9 - 2 * sw, h * 0.3 - 2 * sw, rounding, rounding, rounding, rounding);
-  }
+  // draw_cbf(buf, w, h) {
+  //   super.draw_cbf(buf, w, h);
+  //   let sw = 2;
+  //   let rounding = 5;
+  //   buf.stroke(60); buf.strokeWeight(sw); buf.fill(255);
+  //   buf.rect(sw + w * 0.05, sw + 30, w * 0.9 - 2 * sw, h * 0.3 - 2 * sw, rounding, rounding, rounding, rounding);
+  // }
 
   process() {
-    this.freq = this.base_freq * Math.pow(2, this.i['FREQ'].get());
+    this.base_freq = this.c['FREQ'].get();
+    this.freq = this.base_freq * Math.pow(2, this.i['CV'].get());
     this.ladder.setCutoffFreq(this.freq);
-    this.ladder.setResonance((this.i['RES'].get() + 10) / 20);
+    this.ladder.setResonance((this.i['RES'].get()) / 20);
     this.ladder.input = this.i['IN'].get() / 5;
     this.ladder.process();
     switch (this.type) {

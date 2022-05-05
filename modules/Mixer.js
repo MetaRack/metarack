@@ -69,7 +69,7 @@ class Bus extends Module {
       this.value += this.i[name].get() * this.amp[this.j];
       this.j++;
     }
-    this.o['OUT'].set(this.value);
+    this.o['OUT'].set(this.value / 2);
   }
 }
 
@@ -101,7 +101,7 @@ class Mixer extends Module {
       this.value += this.i[name].get() * this.amp[this.j];
       this.j++;
     }
-    this.o['OUT'].set(this.value);
+    this.o['OUT'].set(this.value / 4);
   }
 }
 

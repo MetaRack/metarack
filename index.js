@@ -57,11 +57,71 @@ engine.set_wire_style(ws);
 // MIX5 = new Mixer();
 // MIX4 = new Bus();
 
+
+// SVSO1 = new SVCO(130);
+// SVSO2 = new SVCO(260);
+// SVSO3 = new SVCO(1);
+
+
+////KICK///ADD ADSR1 OUT TO SVCO1 FM AND FILTER CV
+// CLKD = new Clock(120);
+// SVSO2 = new SVCO(50);
+// ADSR1 = new ADSR();
+// ADSR2 = new ADSR();
+// FLTR = new ResonantFilter('LP', 6000);
+// VCA1 = new VCA();
+////KICK///
+
+
+////SNARE/////
+// CLKD = new Clock(120);
+// SVSO1 = new SVCO(200);
+// SVSO2 = new SVCO(600);
+// SVSO3 = new SVCO(450);
+// SVSO4 = new SVCO(900);
+// MIX = new Mixer();
+// ADSR1 = new ADSR();
+// ADSR2 = new ADSR();
+// NOIS = new Noise();
+// VCA1 = new VCA();
+// VCA2 = new VCA();
+// MIX1 = new Bus();
+// MIX2 = new Bus();
+// MIX3 = new Bus();
+// FLTR = new ResonantFilter({type:'LP', freq:6000});
+// FLTR2 = new ResonantFilter({type:'HP', freq:6000});
+////SNARE/////
+
 CLKD = new Clock(120);
-QNT1 = new Scale();
-JNO = new Juno();
-SEQ = new StepSequencer();
-OCT = new Offset();
+CHRS = new Chorus();
+SNR = new Snare();
+KCK = new Kick();
+HT1 = new Hat();
+HT2 = new Hat();
+STR = new Saturn();
+STR2 = new Saturn();
+MIX = new Mixer();
+BUS1 = new Bus();
+BUS2 = new Bus();
+GS = new GateSequencer();
+RVR1 = new DattorroReverb();
+
+// SVSO4 = new SVCO(520);
+// ADSR1 = new ADSR();
+// ADSR2 = new ADSR();
+// VCA1 = new VCA();
+// VCA1 = new VCA();
+// VCA1 = new VCA();
+// MIX1 = new Bus();
+// MIX2 = new Bus();
+// MIX3 = new Bus();
+// NOIS = new Noise();
+// CHRS = new Chorus();
+
+
+// FLTR2 = new ResonantFilter('HP', 6000);
+// RVR1 = new DattorroReverb();
+
 
 // n = 2 + Math.floor(rackrand() * 6);
 // for(var i = 0; i < n; i ++) {

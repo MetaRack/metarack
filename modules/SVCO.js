@@ -3,7 +3,7 @@ class SVCO extends Module {
   constructor(freq=261) {
     super({w:hp2px(4)});
 
-    this.add_control(new Encoder({x:hp2px(0.6), y:6, r:7, vmin:0.001, vmax:800, val:freq, name:'FREQ'}));
+    this.add_control(new Encoder({x:hp2px(0.6), y:6, r:7, vmin:0.001, vmax:1600, val:freq, name:'FREQ'}));
     this.add_input(new InputEncoder({x:hp2px(0.6), y:26, r:7, val:0, name:'FM'}));
     this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, vmin:-10, val:0, name:'WAVE'}));
     this.add_input(new InputEncoder({x:hp2px(0.6), y:66, r:7, vmin:0, vmax:1, val:0.5, name:'PW'}));

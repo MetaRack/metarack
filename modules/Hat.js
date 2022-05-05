@@ -23,9 +23,9 @@ class Hat extends Module {
 		this.HP2 = new OnePoleHPFilter();
 		this.HP3 = new LadderFilter();
 
-		this.HP1.setCutoffFreq(6000 * (this.T + 1) / 5);
-		this.HP2.setCutoffFreq(6000 * (this.T + 1) / 5);
-		this.HP3.setCutoffFreq(6000 * (this.M + 1) / 5);
+		this.HP1.setCutoffFreq(3500 * (this.T + 1) / 5);
+		this.HP2.setCutoffFreq(3500 * (this.T + 1) / 5);
+		this.HP3.setCutoffFreq(3500 * (this.M + 1) / 5);
 
 		this.HP1.setResonance((1.5 + 10) / 20);
 		this.HP3.setResonance((1.5 + 10) / 20);
@@ -44,12 +44,12 @@ class Hat extends Module {
 		 }
 		 if (this.c['T'].changed) {
 		 	this.T = this.c['T'].get();
-		 	this.HP1.setCutoffFreq(8000 * (this.T + 1) / 5);
-			this.HP2.setCutoffFreq(8000 * (this.T + 1) / 5);
+		 	this.HP1.setCutoffFreq(3500 * (this.T + 1) / 5);
+			this.HP2.setCutoffFreq(3500 * (this.T + 1) / 5);
 		 }
 		 if (this.c['C'].changed) {
 		 	this.C = this.c['C'].get();
-		 	this.HP3.setCutoffFreq(8000 * (this.C + 1) / 5);
+		 	this.HP3.setCutoffFreq(3500 * (this.C + 1) / 5);
 		 }
 	}
 
