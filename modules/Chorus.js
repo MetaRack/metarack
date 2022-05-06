@@ -1,18 +1,19 @@
 class Chorus extends Module {
 	constructor() {
 		super({w:hp2px(4)});
-		this.add_control(new Encoder({x:hp2px(0.6), y:26, r:7, vmin:0, vmax:1, val:1, name:'LVL'}));
-   		this.add_control(new Encoder({x:hp2px(0.6), y:46, r:7, vmin:0, vmax:5, val:0.2, name:'RATE'}));
+		this.add_input(new InputEncoder({x:hp2px(0.6), y:6, r:7, vmin:1, vmax:4, val:2, name:'TIME'}));
+		this.add_input(new InputEncoder({x:hp2px(0.6), y:26, r:7, vmin:0, vmax:4, val:1, name:'LVL'}));
+   		this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, vmin:0, vmax:5, val:0.2, name:'RATE'}));
 		this.add_input(new Port({x:hp2px(0.8), y:68, r:6, name:'IN'}));
 		this.add_output(new Port({x:hp2px(0.8), y:88, r:6, name:'OUTL'}));
     	this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUTR'}));
 
-    	this.level = this.c['LVL'].get();
-    	this.rate = this.c['RATE'].get();
+    	this.base_time = this.i['TIME'].get() / 100;
+    	this.level = this.i['LVL'].get();
+    	this.rate = this.i['RATE'].get();
     	this.LFO = new VCOPrim(this.rate);
     	this.DelayL = new DelayPrim();
     	this.DelayR = new DelayPrim();
-    	this.base_time = 0.003;
     	this.DelayL.time = this.base_time;
     	this.DelayR.time = this.base_time;
     	this.in = 0;
@@ -20,20 +21,25 @@ class Chorus extends Module {
     	this.outr = 0;
 	}
 
-	draw_dbf (buf, x, y, w, h) {
-		this.level = this.c['LVL'].get();
-    	this.rate = this.c['RATE'].get();
-    	this.LFO.set_frequency(this.rate);
-	}
+	// draw_dbf (buf, x, y, w, h) {
+	// 	this.level = this.i['LVL'].get();
+ //    	this.rate = this.i['RATE'].get();
+ //    	this.LFO.set_frequency(this.rate);
+	// }
 
 	process() {
+		this.base_time = this.i['TIME'].get() / 100;
+		this.level = this.i['LVL'].get();
+    	this.rate = this.i['RATE'].get();
+    	this.LFO.set_frequency(this.rate);
 		this.in = this.i['IN'].get();
 
-		this.DelayL.time = this.base_time * Math.pow(2, Math.abs(this.LFO.out) / 20 * this.level);
-		this.DelayR.time = this.base_time / Math.pow(2, Math.abs(this.LFO.out) / 20 * this.level);
+		this.DelayL.time = this.base_time * Math.pow(2, Math.abs(this.LFO.out) / 10 * this.level);
+		this.DelayR.time = this.base_time * Math.pow(2, -1*Math.abs(this.LFO.out) / 10 * this.level);
 		this.DelayL.in = this.in;
 		this.DelayR.in = this.in;
 
+		this.LFO.process();
 		this.DelayL.process();
 		this.DelayR.process();
 

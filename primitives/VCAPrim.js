@@ -7,6 +7,7 @@ class VCAPrim {
 	}
 
 	process () {
-		this.out = this.in * (Math.log(this.vol/10 * this.cv/10 + 1));
+		//this.out = this.in * (Math.log(this.vol/10 * this.cv/10 + 1));
+		this.out = this.in * this.vol/10 * this.cv/10 ;
 	}
 }

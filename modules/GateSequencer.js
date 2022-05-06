@@ -11,7 +11,7 @@ class GateSequencer extends Module {
     this.attach(this.reset_button);
 
     this.add_input(new Port({x:hp2px(4.6), y:16, r:7, name:'CLK'}));
-    this.add_control(new Encoder({x:hp2px(8.6), y:16, r:7, vmin:1, vmax:16, val:8, precision:0, name:'STPS'}));
+    this.add_input(new InputEncoder({x:hp2px(8.6), y:16, r:7, vmin:1, vmax:16, val:8, precision:0, name:'STPS'}));
     for (i = 0; i < 4; i++) {
     	this.add_output(new Port({x:hp2px(18 + i*3), y:108, r:6, name:'OUT ' + (i+1).toString()}));
     }
@@ -19,7 +19,7 @@ class GateSequencer extends Module {
     this.prev_gate = 0;
     this.curr_gate = 0;
     this.step = 0;
-    this.steps = this.c['STPS'].get();
+    this.steps = this.i['STPS'].get();
     this.gate_flag = new Array(4);
     this.gate_counter = new Array(4);
 
@@ -53,7 +53,7 @@ class GateSequencer extends Module {
   }
 
   draw_dbf (buf, x, y, w, h) {
-  	this.steps = this.c['STPS'].get().toFixed(0);
+  	this.steps = this.i['STPS'].get().toFixed(0);
   	if (this.steps < 1) this.steps = 1;
   	this.step %= this.steps;
   }
@@ -143,7 +143,7 @@ class StepSequencer extends Module {
     this.attach(this.reset_button);
 
     this.add_input(new Port({x:hp2px(4.6), y:16, r:7, name:'CLK'}));
-    this.add_control(new Encoder({x:hp2px(8.6), y:16, r:7, vmin:1, vmax:8, val:8, precision:0, name:'STPS'}));
+    this.add_input(new InputEncoder({x:hp2px(8.6), y:16, r:7, vmin:1, vmax:8, val:8, precision:0, name:'STPS'}));
     for (i = 0; i < 3; i++) {
       this.add_output(new Port({x:hp2px(18 + i*3), y:16, r:7, name:'ROW ' + (i+1).toString()}));
     }
@@ -152,7 +152,7 @@ class StepSequencer extends Module {
     this.prev_gate = 0;
     this.curr_gate = 0;
     this.step = 0;
-    this.steps = this.c['STPS'].get();
+    this.steps = this.i['STPS'].get();
 
     this.is_reset = false;
     this.no_gate = false;
@@ -168,7 +168,7 @@ class StepSequencer extends Module {
 
     for (var i = 0; i < 3; i++) {
       for (var j = 0; j < 8; j++) {
-        this.add_control(new Encoder({x:hp2px(0.6 + 3.5*j + Math.floor(j/4)*1.5), y:(42 + i*20), r:7, vmin:-10, vmax:10, val:0, precision:2, name:i.toString() + j.toString()}));
+        this.add_input(new InputEncoder({x:hp2px(0.6 + 3.5*j + Math.floor(j/4)*1.5), y:(42 + i*20), r:7, vmin:-10, vmax:10, val:0, precision:2, name:i.toString() + j.toString()}));
       }
     }
 
@@ -185,7 +185,7 @@ class StepSequencer extends Module {
   }
 
   draw_dbf (buf, x, y, w, h) {
-    this.steps = this.c['STPS'].get().toFixed(0);
+    this.steps = this.i['STPS'].get().toFixed(0);
     if (this.steps < 1) this.steps = 1;
     this.step %= this.steps;
   }
@@ -220,7 +220,7 @@ class StepSequencer extends Module {
       this.o['GATE'].set(this.button_row[0].get());
 
       for (var i = 0; i < 3; i++) {
-        this.o['ROW ' + (i+1).toString()].set(this.c[i.toString() + '0'].get());
+        this.o['ROW ' + (i+1).toString()].set(this.i[i.toString() + '0'].get());
       }
 
       this.reset_led.set(0);
@@ -236,7 +236,7 @@ class StepSequencer extends Module {
       this.o['OUT ' + (i+1).toString()].set(this.button_row[i][0].get());
 
       for (var i = 0; i < 3; i++) {
-        this.o['ROW ' + (i+1).toString()].set(this.c[i.toString() + '0'].get());
+        this.o['ROW ' + (i+1).toString()].set(this.i[i.toString() + '0'].get());
       }
 
     }
@@ -255,7 +255,7 @@ class StepSequencer extends Module {
 
     for (var i = 0; i < 3; i++) {
       if (this.button_row[this.step].get())
-        this.o['ROW ' + (i+1).toString()].set(this.c[i.toString() + this.step.toString()].get());
+        this.o['ROW ' + (i+1).toString()].set(this.i[i.toString() + this.step.toString()].get());
     }
 
 

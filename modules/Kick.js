@@ -1,17 +1,17 @@
 class Kick extends Module {
 	constructor () {
 		super({w:hp2px(4)});
-		this.add_control(new Encoder({x:hp2px(0.6), y:6, r:7, vmin:0, vmax:10, val:5.06, name:'M'}));
-	    this.add_control(new Encoder({x:hp2px(0.6), y:26, r:7, vmin:0, vmax:10, val:9.96, name:'N'}));
-	    this.add_control(new Encoder({x:hp2px(0.6), y:46, r:7, vmin:0, vmax:0.9, val:0.5, name:'T'}));
-	    this.add_control(new Encoder({x:hp2px(0.6), y:66, r:7, vmin:1000, vmax:3000, val:1200, name:'C'}));
+		this.add_input(new InputEncoder({x:hp2px(0.6), y:6, r:7, vmin:0, vmax:10, val:5.06, name:'M'}));
+	    this.add_input(new InputEncoder({x:hp2px(0.6), y:26, r:7, vmin:0, vmax:10, val:9.96, name:'N'}));
+	    this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, vmin:0, vmax:0.9, val:0.5, name:'T'}));
+	    this.add_input(new InputEncoder({x:hp2px(0.6), y:66, r:7, vmin:1000, vmax:3000, val:1200, name:'C'}));
 		this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
 		this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'GATE'}));
 
-		this.M = this.c['M'].get();
-		this.N = this.c['N'].get();
-		this.T = this.c['T'].get();
-		this.C = this.c['C'].get();
+		this.M = this.i['M'].get();
+		this.N = this.i['N'].get();
+		this.T = this.i['T'].get();
+		this.C = this.i['C'].get();
 
 		// this.ADSR = new ADSRPrim (this.A / 10, 1 + this.D / 5, 0, 0);
 		// this.ADSR2 = new ADSRPrim (this.A / 10, 1 + this.D / 5, 0, 0);
@@ -26,19 +26,19 @@ class Kick extends Module {
 	}
 
 	draw_dbf (buf, x, y, w, h) {
-		 if (this.c['M'].changed) {
-		 	this.M = this.c['M'].get();
+		 if (this.i['M'].changed) {
+		 	this.M = this.i['M'].get();
 		 	this.ADSR.set_param(0.12, this.M, 0.05, 2.30);
 		 }
-		 if (this.c['N'].changed) {
-		 	this.N = this.c['N'].get();
+		 if (this.i['N'].changed) {
+		 	this.N = this.i['N'].get();
 		 	this.ADSR2.set_param(0.14, this.N, 0.1, 30);
 		 }
-		 if (this.c['T'].changed) {
-		 	this.T = this.c['T'].get();
+		 if (this.i['T'].changed) {
+		 	this.T = this.i['T'].get();
 		 }
-		 if (this.c['C'].changed) {
-		 	this.C = this.c['C'].get();
+		 if (this.i['C'].changed) {
+		 	this.C = this.i['C'].get();
 		 	this.LP.setCutoffFreq(this.C);
 		 }
 	}
@@ -69,17 +69,17 @@ class Kick extends Module {
 class Snare extends Module {
 	constructor () {
 		super({w:hp2px(4)});
-		this.add_control(new Encoder({x:hp2px(0.6), y:6, r:7, vmin:0.1, vmax:2, val:1, name:'M'}));
-	    this.add_control(new Encoder({x:hp2px(0.6), y:26, r:7, vmin:0, vmax:1, val:0.5, name:'N'}));
-	    this.add_control(new Encoder({x:hp2px(0.6), y:46, r:7, vmin:-0.5, vmax:0.5, val:0, name:'T'}));
-	    this.add_control(new Encoder({x:hp2px(0.6), y:66, r:7, vmin:500, vmax:3000, val:700, name:'C'}));
+		this.add_input(new InputEncoder({x:hp2px(0.6), y:6, r:7, vmin:0.1, vmax:2, val:1, name:'M'}));
+	    this.add_input(new InputEncoder({x:hp2px(0.6), y:26, r:7, vmin:0, vmax:1, val:0.5, name:'N'}));
+	    this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, vmin:-0.5, vmax:0.5, val:0, name:'T'}));
+	    this.add_input(new InputEncoder({x:hp2px(0.6), y:66, r:7, vmin:500, vmax:3000, val:700, name:'C'}));
 		this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
 		this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'GATE'}));
 
-		this.M = this.c['M'].get();
-		this.N = this.c['N'].get();
-		this.T = this.c['T'].get();
-		this.C = this.c['C'].get();
+		this.M = this.i['M'].get();
+		this.N = this.i['N'].get();
+		this.T = this.i['T'].get();
+		this.C = this.i['C'].get();
 
 		// this.ADSR = new ADSRPrim (this.A / 10, 1 + this.D / 5, 0, 0);
 		// this.ADSR2 = new ADSRPrim (this.A / 10, 1 + this.D / 5, 0, 0);
@@ -112,17 +112,17 @@ class Snare extends Module {
 	}
 
 	draw_dbf (buf, x, y, w, h) {
-		 if (this.c['M'].changed) {
-		 	this.M = this.c['M'].get();
+		 if (this.i['M'].changed) {
+		 	this.M = this.i['M'].get();
 		 }
-		 if (this.c['N'].changed) {
-		 	this.N = this.c['N'].get();
+		 if (this.i['N'].changed) {
+		 	this.N = this.i['N'].get();
 		 }
-		 if (this.c['T'].changed) {
-		 	this.T = this.c['T'].get();
+		 if (this.i['T'].changed) {
+		 	this.T = this.i['T'].get();
 		 }
-		 if (this.c['C'].changed) {
-		 	this.C = this.c['C'].get();
+		 if (this.i['C'].changed) {
+		 	this.C = this.i['C'].get();
 		 }
 	}
 

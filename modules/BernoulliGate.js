@@ -1,30 +1,23 @@
 class BernoulliGate extends Module {
-  constructor(name, x=-1, y=-1) {
-    super(name, x, y, 20, 70);
-    this.scope = new RawScope(0, 0, 20, 30);
+  constructor() {
+    super({w:hp2px(4)});
     this.gate = 0;
     this.last_gate = 0;
     this.state = -10;
 
-    this.add_input(new Port({x:10, y:38, r:7, name:'IN'}));
-    this.add_input(new Port({x:10, y:50, r:7, name:'P'}));
-    this.add_output(new Port({x:10, y:62, r:7, name:'OUT'}));
-  }
-
-  draw(x, y, scale) {
-    x += this.o['OUT'].get() * 0.05;
-    y += this.o['OUT'].get() * 0.05;
-
-    super.draw(x, y, scale);
-    this.scope.draw(x + this.x, y + this.y, scale);
+    this.add_control(new Encoder({x:hp2px(0.6), y:66, r:7, vmin:0, vmax:1, val:1, name:'P'}));
+    this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
+    this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'IN'}));
   }
 
   process() {
     this.gate = this.i['IN'].get();
-    if ((this.last_gate < 0 && this.gate > 0) && (rackrand() < (this.i['P'].get() / 10))) this.state = 10;
-    if (this.last_gate > 0 && this.gate < 0) this.state = -10;
+    if (((this.last_gate == 0) && (this.gate > 0)) && (rackrand() < (this.c['P'].get()))) 
+      this.state = 10;
+    else
+      this.state = 0;
+    //if (this.last_gate > 0 && this.gate < 0) this.state = -10;
     this.o['OUT'].set( this.state );
     this.last_gate = this.gate;
-    this.scope.process( this.o['OUT'].get() )
   }
 }

@@ -47,26 +47,25 @@ class Bus extends Module {
     this.amp = new Array(2);
     for (var i = 0; i < 2; i++) {
       this.add_input(new Port({x:hp2px(0.6), y:(46 + i*40), r:7, default_value:0, name:'IN' + (i+1).toString()}));
-      this.add_control(new Encoder({x:hp2px(0.6), y:(26 + i*40), r:7, vmin:0, vmax:1, val:1, name:'AMP' + (i+1).toString()}));
-      this.amp[i] = this.c['AMP' + (i+1).toString()].get();
+      this.add_input(new InputEncoder({x:hp2px(0.6), y:(26 + i*40), r:7, vmin:0, vmax:1, val:1, name:'AMP' + (i+1).toString()}));
+      this.amp[i] = this.i['AMP' + (i+1).toString()].get();
     }
     this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
     this.value = 0;
   }
 
-  draw_dbf (buf, x, y, w, h) {
-    for (var i = 0; i < 2; i++) {
-      if (this.c['AMP' + (i+1).toString()].changed) {
-        this.amp[i] = this.c['AMP' + (i+1).toString()].get();
-      }
-    }
-  }
+  // draw_dbf (buf, x, y, w, h) {
+    
+  // }
 
   process() {
+    for (var i = 0; i < 2; i++) 
+        this.amp[i] = this.i['AMP' + (i+1).toString()].get();
+
     this.value = 0;
     this.j = 0;
-    for (var name in this.i) {
-      this.value += this.i[name].get() * this.amp[this.j];
+    for (var i = 0; i < 2; i++) {
+      this.value += this.i['IN' + (i+1).toString()].get() * this.amp[this.j];
       this.j++;
     }
     this.o['OUT'].set(this.value / 2);
@@ -79,26 +78,26 @@ class Mixer extends Module {
     this.amp = new Array(4);
     for (var i = 0; i < 4; i++) {
       this.add_input(new Port({x:hp2px(0.6 + i*3), y:36, r:7, default_value:0, name:'IN' + (i+1).toString()}));
-      this.add_control(new Encoder({x:hp2px(0.6 + i*3), y:11, r:7, vmin:0, vmax:1, val:1, name:'AMP' + (i+1).toString()}));
-      this.amp[i] = this.c['AMP' + (i+1).toString()].get();
+      this.add_input(new InputEncoder({x:hp2px(0.6 + i*3), y:11, r:7, vmin:0, vmax:1, val:1, name:'AMP' + (i+1).toString()}));
+      this.amp[i] = this.i['AMP' + (i+1).toString()].get();
     }
     this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
     this.value = 0;
   }
 
-  draw_dbf (buf, x, y, w, h) {
-    for (var i = 0; i < 4; i++) {
-      if (this.c['AMP' + (i+1).toString()].changed) {
-        this.amp[i] = this.c['AMP' + (i+1).toString()].get();
-      }
-    }
-  }
+  // draw_dbf (buf, x, y, w, h) {
+    
+  // }
 
   process() {
+    for (var i = 0; i < 4; i++) {
+        this.amp[i] = this.i['AMP' + (i+1).toString()].get();
+    }
+
     this.value = 0;
     this.j = 0;
-    for (var name in this.i) {
-      this.value += this.i[name].get() * this.amp[this.j];
+    for (var i = 0; i < 4; i++) {
+      this.value += this.i['IN' + (i+1).toString()].get() * this.amp[this.j];
       this.j++;
     }
     this.o['OUT'].set(this.value / 4);

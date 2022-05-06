@@ -1,13 +1,13 @@
 class Saturn extends Module {
 	constructor () {
 		super({w:hp2px(4)});
-		this.add_control(new Encoder({x:hp2px(0.6), y:46, r:7, vmin:0, vmax:10, val:1, name:'GAIN'}));
-	    this.add_control(new Encoder({x:hp2px(0.6), y:66, r:7, vmin:0, vmax:10, val:10, name:'LVL'}));
+		this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, vmin:0, vmax:10, val:1, name:'GAIN'}));
+	    this.add_input(new InputEncoder({x:hp2px(0.6), y:66, r:7, vmin:0, vmax:10, val:10, name:'LVL'}));
 		this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
 		this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'IN'}));
 
-		this.gain = this.c['GAIN'].get();
-		this.level = this.c['LVL'].get();
+		this.gain = this.i['GAIN'].get();
+		this.level = this.i['LVL'].get();
 		this.in = 0;
 		this.out = 0;
 	}
@@ -25,8 +25,8 @@ class Saturn extends Module {
 	}
 
 	process() {
-		this.gain = this.c['GAIN'].get();
-		this.level = this.c['LVL'].get();
+		this.gain = this.i['GAIN'].get();
+		this.level = this.i['LVL'].get();
 		this.in = this.i['IN'].get();
 
 		this.in = this.in * this.gain;
