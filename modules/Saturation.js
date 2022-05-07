@@ -1,47 +1,78 @@
 class Saturn extends Module {
 	constructor () {
 		super({w:hp2px(4)});
-		this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, vmin:0, vmax:10, val:1, name:'GAIN'}));
-	    this.add_input(new InputEncoder({x:hp2px(0.6), y:66, r:7, vmin:0, vmax:10, val:10, name:'LVL'}));
+		this.add_input(new InputEncoder({x:hp2px(0.6), y:66, r:7, vmin:0, vmax:1, val:0, name:'SAT'}));
+		this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, vmin:0, vmax:4, val:0, name:'FOLD'}));
 		this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
 		this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'IN'}));
 
-		this.gain = this.i['GAIN'].get();
-		this.level = this.i['LVL'].get();
+		this.fold_coeff = 1;
+		this.sat = (this.i['SAT'].get() * 4) + 1; 
 		this.in = 0;
 		this.out = 0;
+		this.LP = new LadderFilter();
+		this.LP.setResonance(0);
+		this.LP.setCutoffFreq(1500);
 	}
 
-	sigmoid(x)
-	{
-	    if (Math.abs(x) < 10)
-	        return x * (15 - 5 * x * x);
-	    else {
-	    	if (x > 0)
-	    		return 10;
-	    	else 
-	    		return -10;
-	    }
+	sigmoid(x) {
+	    // if (Math.abs(x) < 10)
+	    //     return x * (15 - 5 * x * x);
+	    // else {
+	    // 	if (x > 0)
+	    // 		return 10;
+	    // 	else 
+	    // 		return -10;
+	    // }
+	    if (Math.abs(x) < 1)
+	    	return x * (1.5 - 0.5 * x * x);//Math.exp(x) / (Math.exp(x) + 1);
+	    else 
+	    	return 1 * Math.sign(x);
+	}
+
+	saturate(x, t) {
+		if (Math.abs(x)<t)
+	        return x;
+	    else
+	    {
+	        if (x > 0)
+	            return t + (1-t)*this.sigmoid((x-t)/((1-t)*1.5));//t + (1-t)*Math.tanh((x-t)/(1-t));//;
+	        else
+	            return -(t + (1-t)*this.sigmoid((-x-t)/((1-t)*1.5)));//-(t + (1-t)*Math.tanh((-x-t)/(1-t)));//;
+    	}
 	}
 
 	process() {
-		this.gain = this.i['GAIN'].get();
-		this.level = this.i['LVL'].get();
+		this.sat = (this.i['SAT'].get() * 4) + 1;
+
 		this.in = this.i['IN'].get();
+		this.in = this.in * this.sat;
 
-		this.in = this.in * this.gain;
+		this.out = this.in * (this.i['FOLD'].get() + 1);
 
-		if (Math.abs(this.in) < this.level)
-	        this.out = this.in;
-	    else
-	    {
-	        // if (this.in > 0)
-	        //     this.out = this.level + (1 - this.level) * sigmoid((this.in - this.level)/((1 - this.level) * 1.5));
-	        // else
-	        //     this.out = -(this.level + (1 - this.level) * sigmoid((-this.in - this.level) / ((1 - this.level) * 1.5)));
-	        this.out = this.level * Math.sign(this.out);
-	    }
+		while (this.out > 1) {
+			this.out = (this.out - 1) * -1;
+			this.out += 1;
+			while (this.out < 0) this.out *= -1;
+		}
+		while (this.out < -1) {
+			this.out = (this.out + 1) * -1;
+			this.out -= 1;
+			while (this.out > 0) this.out *= -1;
+		}
+		// if (this.out < -1) {
+		// 	this.out = (this.out) * -1;
+		// 	while (this.out > 0) this.out += -1;
+		// }
 
-	    this.o['OUT'].set(this.out);
+		this.out = this.saturate(this.out, 0);
+		this.LP.input = this.out;
+		this.LP.process();
+
+		this.out = this.LP.lowpass();	  
+
+		
+
+		this.o['OUT'].set(this.out);
 	}
 }

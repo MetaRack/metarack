@@ -7,7 +7,8 @@ class Juno extends Module {
    		this.add_input(new InputEncoder({x:hp2px(3.6), y:46, r:7, vmin:0, vmax:1, val:0.1, name:'S'}));
     	this.add_input(new InputEncoder({x:hp2px(3.6), y:66, r:7, vmin:0, vmax:50, val:30, name:'R'}));
 		this.add_input(new InputEncoder({x:hp2px(3.6), y:86, r:7, vmin:50, vmax:8000, val:1500, name:'COFF'}));
-		this.add_input(new InputEncoder({x:hp2px(3.6), y:106, r:7, vmin:0, vmax:2, val:0.5, name:'MOD'}));
+		//this.add_output(new InputEncoder({x:hp2px(3.6), y:106, r:7, vmin:0, vmax:2, val:0.5, name:'MOD'}));
+		this.add_output(new Port({x:hp2px(3.8), y:108, r:6, name:'ENV'}));
 
     	this.add_input(new InputEncoder({x:hp2px(6.6), y:6, r:7, vmin:-10, vmax:10, val:0, name:'VWV'}));
     	this.add_input(new InputEncoder({x:hp2px(6.6), y:26, r:7, vmin:-10, vmax:10, val:0, name:'SVWV'}));
@@ -18,6 +19,7 @@ class Juno extends Module {
 
 		this.add_input(new Port({x:hp2px(0.8), y:28, r:6, name:'GATE'}));
 		this.add_input(new Port({x:hp2px(0.8), y:8, r:6, name:'PTCH'}));
+		//this.add_input(new InputEncoder({x:hp2px(0.8), y:8, r:6, name:'PTCH'}));
     	this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
 
 		this.ADSR = new ADSRPrim();
@@ -35,7 +37,7 @@ class Juno extends Module {
 		this.pw = this.i['PWLV'].get();
 		this.vco_amp = this.i['VAM'].get();
 		this.subvco_amp = this.i['SVAM'].get();
-		this.freq_mod = this.i['MOD'].get();
+		//this.freq_mod = this.i['MOD'].get();
 		this.kybd = this.i['KYBD'].get();
 
 		this.A = this.i['A'].get();
@@ -63,7 +65,7 @@ class Juno extends Module {
 		this.vco_amp = this.i['VAM'].get();
 		this.subvco_amp = this.i['SVAM'].get();
 		this.freq = this.i['COFF'].get();
-		this.freq_mod = this.i['MOD'].get();
+		//this.freq_mod = this.i['MOD'].get();
 		this.kybd = this.i['KYBD'].get();
 		this.A = this.i['A'].get();
 		this.D = this.i['D'].get();
@@ -81,7 +83,7 @@ class Juno extends Module {
 		this.VCO.wave = this.wave;
 		this.subVCO.wave = this.subwave;
 
-		this.Filter.setCutoffFreq(this.freq * Math.pow(2, this.pitch * this.kybd + this.ADSR.out / 3 * this.freq_mod));
+		this.Filter.setCutoffFreq(this.freq * Math.pow(2, this.pitch * this.kybd))// + this.ADSR.out / 3 * this.freq_mod));
 
 		this.VCO.pw = 0.5 + this.LFO.out * this.pw;
 		this.out = (this.VCO.out * this.vco_amp + this.subVCO.out * this.subvco_amp) / 2 * (this.ADSR.out/10);
@@ -94,6 +96,7 @@ class Juno extends Module {
 		this.LFO.process();
 		this.Filter.process();
 
+		this.o['ENV'].set(this.ADSR.out);
 		this.o['OUT'].set(this.Filter.lowpass());
 	}
 }

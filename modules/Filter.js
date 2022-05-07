@@ -58,7 +58,7 @@ class ResonantFilter extends Module {
 
     this.freq = this.base_freq;
 
-    this.add_control(new Encoder({x:hp2px(0.6), y:26, r:7, vmin:30, vmax:8000, val:700, name:'FREQ'}));
+    this.add_control(new Encoder({x:hp2px(0.6), y:26, r:7, vmin:30, vmax:8000, val:freq, name:'FREQ'}));
     this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, val:0, name:'CV'}));
     this.add_input(new InputEncoder({x:hp2px(0.6), y:66, r:7, val:0, vmin:0, vmax:20, name:'RES'}));
     this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'IN'}));

@@ -93,26 +93,8 @@ engine.set_wire_style(ws);
 ////SNARE/////
 
 CLKD = new Clock(120);
-JNO = new Juno();
-NOIS = new Noise();
-SH = new SampleAndHold();
-QNT1 = new Scale();
-OCT = new Offset();
-//BG = new BernoulliGate();
-RVR = new DattorroReverb();
-MIX5 = new Bus();
-CHR = new Chorus();
-
-SQ = new StepSequencer();
 SEQ = new GateSequencer();
-SNR = new Snare();
-HAT = new Hat();
 KICK = new Kick();
-RVR = new DattorroReverb();
-MIX = new Mixer();
-MIX3 = new Bus();
-MIX4 = new Bus();
-MIX6 = new Bus();
 SAT = new Saturn();
 // SVSO4 = new SVCO(520);
 // ADSR1 = new ADSR();
