@@ -93,8 +93,10 @@ engine.set_wire_style(ws);
 ////SNARE/////
 
 CLKD = new Clock(120);
-SEQ = new GateSequencer();
-KICK = new Kick();
+JNO = new Juno();
+NOIS = new Noise();
+SH = new SampleAndHold();
+QNT1 = new Scale();
 SAT = new Saturn();
 // SVSO4 = new SVCO(520);
 // ADSR1 = new ADSR();

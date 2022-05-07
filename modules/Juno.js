@@ -18,8 +18,8 @@ class Juno extends Module {
     	this.add_input(new InputEncoder({x:hp2px(6.6), y:106, r:7, vmin:0, vmax:1, val:1, name:'KYBD'}));
 
 		this.add_input(new Port({x:hp2px(0.8), y:28, r:6, name:'GATE'}));
-		this.add_input(new Port({x:hp2px(0.8), y:8, r:6, name:'PTCH'}));
-		//this.add_input(new InputEncoder({x:hp2px(0.8), y:8, r:6, name:'PTCH'}));
+		//this.add_input(new Port({x:hp2px(0.8), y:8, r:6, name:'PTCH'}));
+		this.add_input(new InputEncoder({x:hp2px(0.6), y:6, r:7, mod:10, val:0, name:'PTCH'}));
     	this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
 
 		this.ADSR = new ADSRPrim();
