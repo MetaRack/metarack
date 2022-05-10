@@ -1,3 +1,80 @@
+class ExponentialFilterPrim{
+  constructor({type='LP', freq=4400}={}) {
+    this.type = type;
+    this.base_freq = freq;
+    this.freq = this.base_freq;
+
+    // this.add_control(new Encoder({x:hp2px(0.6), y:6, r:7, vmin:30, vmax:10000, val:freq, name:'FREQ'}));
+    // this.add_input(new InputEncoder({x:hp2px(0.6), y:26, r:7, val:0, name:'CV'}));
+    // this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, val:0, vmin:0, vmax:1, name:'RES'}));
+    // this.add_input(new Port({x:hp2px(0.8), y:68, r:6, name:'IN'}));
+    // this.add_output(new Port({x:hp2px(0.8), y:88, r:6, name:'LP'}));
+    // this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'HP'}));
+
+    this.com = 3;
+    this.delay_array = new Array(this.com);
+    this.sum = 0;
+    //this.coeff_in = this.c['FREQ'].get() / 10000;
+    this.coeff_in = this.freq / 10000;
+    this.coeff_del = 1 - this.coeff_in;
+    this.coeff_res = 0;
+    for (var i = 0; i < this.com; i++) {
+      this.delay_array[i] = new OneSampleDelay();
+    }
+
+    this.highpass_delay = new SampleDelay(this.com * 2);
+    this.delay_counter = 0;
+    this.cv = 0;
+    this.in = 0;
+    this.out = 0;
+    this.buf = 0;
+
+    this.lp = 0;
+    this.hp = 0;
+  }
+
+  process () {
+    this.buf = this.in;
+
+    this.highpass_delay.in = this.in;
+
+    //this.coeff_in = this.c['FREQ'].get() / 10000;
+    //this.coeff_res = this.i['RES'].get();
+    this.coeff_del = 1 - this.coeff_in;
+    this.out = 0;
+
+    this.delay_array[0].in = this.in * this.coeff_in + this.delay_array[0].out * this.coeff_del - this.delay_array[this.com - 1].out * this.coeff_res * this.coeff_in;
+    this.out = this.delay_array[0].out;
+    for (var i = 1; i < this.com; i++) {
+      this.delay_array[i].in = this.out * this.coeff_in + this.delay_array[i].out * this.coeff_del;
+      this.out = this.delay_array[i].out;
+    }
+    for (var i = 0; i < this.com; i++) {
+      this.delay_array[i].process();
+    }
+
+    // this.highpass_delay.process();
+
+    // this.highpass_delay.in = this.highpass_delay.out - this.out;
+
+    this.in = this.out
+    this.delay_array[0].in = this.in * this.coeff_in + this.delay_array[0].out * this.coeff_del - this.delay_array[this.com - 1].out * this.coeff_res * this.coeff_in;
+    this.out = this.delay_array[0].out;
+    for (var i = 1; i < this.com; i++) {
+      this.delay_array[i].in = this.out * this.coeff_in + this.delay_array[i].out * this.coeff_del;
+      this.out = this.delay_array[i].out;
+    }
+    for (var i = 0; i < this.com; i++) {
+      this.delay_array[i].process();
+    }
+
+    this.highpass_delay.process();
+
+    this.lp = this.out;
+    this.hp = this.highpass_delay.out - this.out;
+  }
+}
+
 class LadderFilter {
 
 	constructor() {

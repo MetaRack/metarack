@@ -5,6 +5,7 @@ rackheight = document.documentElement.clientHeight;
 upscale_buffers = 2;
 fps = 20;
 sample_rate = 44100;
+//sample_rate = 196000;
 background_color = 255;
 
 daytime = 'day'

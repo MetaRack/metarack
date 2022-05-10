@@ -16,16 +16,8 @@ class Saturn extends Module {
 	}
 
 	sigmoid(x) {
-	    // if (Math.abs(x) < 10)
-	    //     return x * (15 - 5 * x * x);
-	    // else {
-	    // 	if (x > 0)
-	    // 		return 10;
-	    // 	else 
-	    // 		return -10;
-	    // }
 	    if (Math.abs(x) < 1)
-	    	return x * (1.5 - 0.5 * x * x);//Math.exp(x) / (Math.exp(x) + 1);
+	    	return x * (1.5 - 0.5 * x * x);
 	    else 
 	    	return 1 * Math.sign(x);
 	}
@@ -36,9 +28,9 @@ class Saturn extends Module {
 	    else
 	    {
 	        if (x > 0)
-	            return t + (1-t)*this.sigmoid((x-t)/((1-t)*1.5));//t + (1-t)*Math.tanh((x-t)/(1-t));//;
+	            return t + (1-t)*this.sigmoid((x-t)/((1-t)*1.5));
 	        else
-	            return -(t + (1-t)*this.sigmoid((-x-t)/((1-t)*1.5)));//-(t + (1-t)*Math.tanh((-x-t)/(1-t)));//;
+	            return -(t + (1-t)*this.sigmoid((-x-t)/((1-t)*1.5)));
     	}
 	}
 
@@ -60,19 +52,12 @@ class Saturn extends Module {
 			this.out -= 1;
 			while (this.out > 0) this.out *= -1;
 		}
-		// if (this.out < -1) {
-		// 	this.out = (this.out) * -1;
-		// 	while (this.out > 0) this.out += -1;
-		// }
 
 		this.out = this.saturate(this.out, 0);
 		this.LP.input = this.out;
 		this.LP.process();
 
 		this.out = this.LP.lowpass();	  
-
-		
-
 		this.o['OUT'].set(this.out);
 	}
 }

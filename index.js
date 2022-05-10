@@ -93,11 +93,16 @@ engine.set_wire_style(ws);
 ////SNARE/////
 
 CLKD = new Clock(120);
-JNO = new Juno();
+JNO = new NonlinearLab();
 NOIS = new Noise();
 SH = new SampleAndHold();
 QNT1 = new Scale();
-SAT = new Saturn();
+OCT = new Offset();
+ST = new Saturn();
+MIX1 = new Bus();
+FL = new ExponentialFilter(1000);
+C = new Chorus();
+
 // SVSO4 = new SVCO(520);
 // ADSR1 = new ADSR();
 // ADSR2 = new ADSR();

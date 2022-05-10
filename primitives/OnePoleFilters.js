@@ -66,7 +66,6 @@ class OnePoleLPFilter {
 };
 
 
-
 class OnePoleHPFilter {
 
     constructor(cutoffFreq = 10, initSampleRate = sample_rate) {
@@ -121,8 +120,6 @@ class OnePoleHPFilter {
       return this.output;
     }
 };
-
-
 
 class DCBlocker {
 

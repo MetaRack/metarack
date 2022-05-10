@@ -20,9 +20,9 @@ class Delay extends Module {
   }
 
   process() {
-    this.delay_line.set_feedback( this.i['FB'].get());
-    this.delay_line.set_dry_wet( this.i['D/W'].get() );
-    this.delay_line.set_delay_time( this.i['TIME'].get());
+    this.delay_line.set_feedback(this.i['FB'].get());
+    this.delay_line.set_dry_wet(this.i['D/W'].get());
+    this.delay_line.set_delay_time(this.i['TIME'].get());
     this.o['OUT'].set( this.delay_line.process( this.i['IN'].get() ) );
   }
 }
