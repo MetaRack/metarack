@@ -17,6 +17,7 @@ class VCOPrim {
 	    this.mod = 0;
 	    this.mod_prev = 0;
 	    this.phase_inc = 0;
+	    this.phase_mod = 0;
 
 	    this._alpha = 0.01;
   	}
@@ -36,9 +37,9 @@ class VCOPrim {
   	process() {
 	    this.type = this.wave / 10;
 	    if (this.type >= 0) {
-	      this.value = Math.sin(this.phase) * (1 - this.type) + (this.phase / Math.PI - 1) * this.type;
+	      this.value = Math.sin(this.phase + this.phase_mod) * (1 - this.type) + ((this.phase + this.phase_mod) / Math.PI - 1) * this.type;
 	    } else {
-	      this.value = Math.sin(this.phase) * (1 + this.type) - ((this.phase < Math.PI * this.pw * 2 ) * 2 - 1) * this.type;
+	      this.value = Math.sin(this.phase + this.phase_mod) * (1 + this.type) - (((this.phase + this.phase_mod) < Math.PI * this.pw * 2 ) * 2 - 1) * this.type;
 	    }
 	    this.out = this.value * this.amp;
 	    this.mod = this._alpha * (this.cv + this.fm) + (1 - this._alpha) * this.mod;

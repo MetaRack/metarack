@@ -38,7 +38,7 @@ class Saturn extends Module {
 		this.sat = (this.i['SAT'].get() * 4) + 1;
 
 		this.in = this.i['IN'].get();
-		this.in = this.in * this.sat;
+		//this.in = this.in * this.sat;
 
 		this.out = this.in * (this.i['FOLD'].get() + 1);
 
@@ -53,6 +53,7 @@ class Saturn extends Module {
 			while (this.out > 0) this.out *= -1;
 		}
 
+		this.out = this.out * this.sat;
 		this.out = this.saturate(this.out, 0);
 		this.LP.input = this.out;
 		this.LP.process();

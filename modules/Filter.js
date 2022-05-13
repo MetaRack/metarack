@@ -1,3 +1,58 @@
+class SVF extends Module {
+    constructor({freq=440}={}) {
+    super({w:hp2px(7)});
+
+    this.add_control(new Encoder({x:hp2px(0.6), y:6, r:7, vmin:30, vmax:10000, val:freq, name:'FREQ'}));
+    this.add_input(new InputEncoder({x:hp2px(0.6), y:26, r:7, val:0, name:'CV'}));
+    this.add_input(new InputEncoder({x:hp2px(2.1), y:46, r:7, val:0, vmin:0, vmax:1, name:'RES'}));
+    this.add_input(new Port({x:hp2px(0.8), y:108, r:6, name:'IN'}));
+    this.add_output(new Port({x:hp2px(3.8), y:108, r:6, name:'OUT'}));
+
+    this.add_input(new InputEncoder({x:hp2px(3.6), y:6, r:7, val:0, vmin:-1, vmax:1, name:'CF'}));
+    this.add_input(new InputEncoder({x:hp2px(3.6), y:26, r:7, val:0, vmin:-1000, vmax:1000, name:'WDTH'}));
+
+    this.cf = this.i['CF'].get();
+    this.width = this.i['WDTH'].get();
+    this.LP = new ExponentialFilterPrim();
+    this.HP = new ExponentialFilterPrim();
+    this.freq = this.c['FREQ'].get();
+    this.cv = this.i['CV'].get();
+    this.res = this.i['RES'].get();
+    this.LP.freq = this.freq - this.width;
+    this.LP.cv = this.cv;
+    this.HP.freq = this.freq + this.width;
+    this.HP.cv = this.cv;
+   
+    this.in = 0;
+    this.out = 0;
+  }
+
+  process() {
+    this.in = this.i['IN'].get();
+    this.cf = this.i['CF'].get();
+    this.width = this.i['WDTH'].get();
+    this.freq = this.c['FREQ'].get();
+    this.cv = this.i['CV'].get();
+    this.res = this.i['RES'].get();
+    this.LP.freq = this.freq - this.width;
+    this.LP.cv = this.cv;
+    this.HP.freq = this.freq + this.width;
+    this.HP.cv = this.cv;
+    this.LP.coeff_res = this.res;
+    this.HP.coeff_res = this.res;
+
+    this.LP.in = this.in;
+    this.HP.in = this.in;
+
+    this.LP.process();
+    this.HP.process();
+
+    this.out = (this.LP.lp * this.cf) + (this.HP.hp * (1 - this.cf));
+
+    this.o['OUT'].set(this.out);
+  }
+}
+
 class ExponentialFilter extends Module {
   constructor({type='LP', freq=4400}={}) {
     super({w:hp2px(4)});
@@ -33,11 +88,13 @@ class ExponentialFilter extends Module {
 
   process () {
     this.in = this.i['IN'].get();
+    this.cv = this.i['CV'].get();
     this.buf = this.in;
 
     this.highpass_delay.in = this.in;
 
-    this.coeff_in = this.c['FREQ'].get() / 10000;
+    this.coeff_in = (this.c['FREQ'].get() * Math.pow(2, this.cv)) / 10000;
+    if (this.coeff_in > 1) this.coeff_in = 0.9999;
     this.coeff_res = this.i['RES'].get();
     this.coeff_del = 1 - this.coeff_in;
     this.out = 0;

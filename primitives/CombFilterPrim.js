@@ -5,6 +5,8 @@ class CombFilterPrim {
     // this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'IN'}));
 
     this.time = 183;
+    this.tone = 1;
+    this.fb = 1;
     this.cv = 0; 
     this.in = 0;
     this.out = 0;
@@ -15,7 +17,7 @@ class CombFilterPrim {
     // this.in = this.i['IN'].get();
     // this.cv = this.i['CV'].get();
     this.SD.delay = Math.floor(this.time / Math.pow(2, this.cv));
-    this.SD.in = this.in + this.SD.out;
+    this.SD.in = (this.in * this.fb + this.SD.out * this.tone);
     this.out = this.SD.out;
     // this.o['OUT'].set(this.out/100);
 

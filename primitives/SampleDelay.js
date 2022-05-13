@@ -34,7 +34,7 @@ class SampleDelay {
 
 class BigSampleDelay {
   constructor(delay = 50) {
-    this.max_buf = 2000;
+    this.max_buf = 10000;
     this.in = 0;
     this.delay = delay;
     this.buf = new Array(this.max_buf);

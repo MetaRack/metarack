@@ -33,91 +33,59 @@ engine.set_wire_style(ws);
 // 	if (rackrand() > 0.2) VCOs[i - 1].o['OUT'].connect(VCOs[i].i['CV']);
 // }
 
+function expr(t, c, p1, p2, p3, p4) {
+  return (((t / c) / 2 % (p1 * 13)) + 3) * 2 + (((t / c) / 4 % (p2 * 19)) >> (p3 * 3) + 1)  | (((t / c) ^ (p4) * 11))
+}
+
+CLKD = new Clock(120);
+// JNO = new NonlinearLab();
+// RVR1 = new DattorroReverb();
+// SAT = new Saturn();
+// C = new Chorus();
+// FL = new ExponentialFilter(1000);
+// Fil = new SVF();
+// MIX1 = new Bus();
+// BG = new BernoulliGate();
+// BB = new ByteBeat(expr);
+B = new Burst();
+AD = new ADSR();
+VCA1 = new VCA();
+VS = new SVCO(261);
+BG = new BernoulliGate();
+
+//GOOD BASS//
 // CLKD = new Clock(120);
-// JNO = new Juno();
+// JNO = new NonlinearLab();
 // NOIS = new Noise();
 // SH = new SampleAndHold();
 // QNT1 = new Scale();
 // OCT = new Offset();
-// FLTR = new ResonantFilter('LP', 8000);
-// CHRS = new Chorus();
-// RVR = new DattorroReverb();
-// RVR2 = new DattorroReverb();
-// MIX = new Bus();
-// MIX2 = new Bus();
-// MIX6 = new Bus();
-// SEQ = new GateSequencer();
-// KICK = new Kick();
-// KICK2 = new Kick();
-// HAT = new Hat();
-// HAT2 = new Hat();
-// FLTR1 = new ResonantFilter('LP', 8000);
-// RVR1 = new DattorroReverb();
+// Fil = new SVF();
+// Fil2 = new SVF();
 // MIX1 = new Mixer();
-// MIX5 = new Mixer();
-// MIX4 = new Bus();
+// SAT = new Saturn();
+// FL = new ExponentialFilter(1000);
+// C = new Chorus();
+// AD = new ADSR();
+// VCA1 = new VCA();
+// FL2 = new ExponentialFilter(1000);
+//GOOD BASS//
 
-
-// SVSO1 = new SVCO(130);
-// SVSO2 = new SVCO(260);
-// SVSO3 = new SVCO(1);
-
-
-////KICK///ADD ADSR1 OUT TO SVCO1 FM AND FILTER CV
+//PLUCK SOUND
 // CLKD = new Clock(120);
-// SVSO2 = new SVCO(50);
-// ADSR1 = new ADSR();
-// ADSR2 = new ADSR();
-// FLTR = new ResonantFilter('LP', 6000);
-// VCA1 = new VCA();
-////KICK///
-
-
-////SNARE/////
-// CLKD = new Clock(120);
-// SVSO1 = new SVCO(200);
-// SVSO2 = new SVCO(600);
-// SVSO3 = new SVCO(450);
-// SVSO4 = new SVCO(900);
-// MIX = new Mixer();
-// ADSR1 = new ADSR();
-// ADSR2 = new ADSR();
+// JNO = new NonlinearLab();
 // NOIS = new Noise();
-// VCA1 = new VCA();
-// VCA2 = new VCA();
+// SH = new SampleAndHold();
+// QNT1 = new Scale();
+// OCT = new Offset();
+// ST = new Saturn();
 // MIX1 = new Bus();
-// MIX2 = new Bus();
-// MIX3 = new Bus();
-// FLTR = new ResonantFilter({type:'LP', freq:6000});
-// FLTR2 = new ResonantFilter({type:'HP', freq:6000});
-////SNARE/////
-
-CLKD = new Clock(120);
-JNO = new NonlinearLab();
-NOIS = new Noise();
-SH = new SampleAndHold();
-QNT1 = new Scale();
-OCT = new Offset();
-ST = new Saturn();
-MIX1 = new Bus();
-FL = new ExponentialFilter(1000);
-C = new Chorus();
-
-// SVSO4 = new SVCO(520);
-// ADSR1 = new ADSR();
-// ADSR2 = new ADSR();
+// FL = new ExponentialFilter(1000);
+// C = new Chorus();
+// AD = new ADSR();
 // VCA1 = new VCA();
-// VCA1 = new VCA();
-// VCA1 = new VCA();
-// MIX1 = new Bus();
-// MIX2 = new Bus();
-// MIX3 = new Bus();
-// NOIS = new Noise();
-// CHRS = new Chorus();
+//PLUCK SOUND
 
-
-// FLTR2 = new ResonantFilter('HP', 6000);
-// RVR1 = new DattorroReverb();
 
 
 // n = 2 + Math.floor(rackrand() * 6);
