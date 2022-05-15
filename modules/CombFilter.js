@@ -16,7 +16,7 @@ class CombFilter extends Module {
 		this.in = this.i['IN'].get();
 		this.cv = this.i['CV'].get();
 		this.SD.delay = Math.floor(this.time / Math.pow(2, this.cv));
-		this.SD.in = this.in + this.SD.out;
+		this.SD.in = this.in - this.SD.out;
 		this.out = this.SD.out;
 		this.o['OUT'].set(this.out/100);
 

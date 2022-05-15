@@ -5,7 +5,7 @@ class BernoulliGate extends Module {
     this.last_gate = 0;
     this.state = 'l';
 
-    this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, vmin:0, vmax:1, val:1, name:'P'}));
+    this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, vmin:0, vmax:1, val:0.5, name:'P'}));
     this.add_output(new Port({x:hp2px(0.8), y:88, r:6, name:'OUTL'}));
     this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUTR'}));
     this.add_input(new Port({x:hp2px(0.8), y:68, r:6, name:'IN'}));

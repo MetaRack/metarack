@@ -10,7 +10,7 @@ class ByteBeat extends Module {
     this.add_input(new InputEncoder({x:hp2px(0.6), y:26, r:7, vmin:0, vmax:10, val:0, name:'P2'}));
     this.add_input(new InputEncoder({x:hp2px(3.6), y:6, r:7, vmin:0, vmax:10, val:0, name:'P3'}));
     this.add_input(new InputEncoder({x:hp2px(3.6), y:26, r:7, vmin:0, vmax:10, val:0, name:'P4'}));
-    this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, vmin:1, vmax:10, val:1, precision:0, name:'CLDV'}));
+    this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, vmin:1, vmax:4, val:2, precision:0, name:'CLDV'}));
     this.add_input(new InputEncoder({x:hp2px(3.6), y:46, r:7, vmin:1, vmax:10, val:1, precision:0, name:'VLDV'}));
     this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'CLK'}));
     this.add_output(new Port({x:hp2px(3.8), y:108, r:6, name:'OUT'}));
@@ -36,7 +36,8 @@ class ByteBeat extends Module {
     if (this.expr)
       this.value = this.expr(this.counter, this.vldv, this.p1, this.p2, this.p3, this.p4);
     this.o['OUT'].set((this.value % 0xFF) / 25.6 - 5);
-    this.o['CLK'].set(~(this.counter / (2048 * Math.pow(2, this.cldv)) & 1));
+    //this.o['CLK'].set(~(this.counter / (2048 * Math.pow(2, this.cldv)) & 1));
+    this.o['CLK'].set(Math.floor(this.counter / (2048 * Math.pow(2, this.cldv))) & 1);
     this.counter++;
   }
 }

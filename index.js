@@ -37,21 +37,15 @@ function expr(t, c, p1, p2, p3, p4) {
   return (((t / c) / 2 % (p1 * 13)) + 3) * 2 + (((t / c) / 4 % (p2 * 19)) >> (p3 * 3) + 1)  | (((t / c) ^ (p4) * 11))
 }
 
-CLKD = new Clock(120);
-// JNO = new NonlinearLab();
-// RVR1 = new DattorroReverb();
-// SAT = new Saturn();
-// C = new Chorus();
-// FL = new ExponentialFilter(1000);
-// Fil = new SVF();
-// MIX1 = new Bus();
-// BG = new BernoulliGate();
-// BB = new ByteBeat(expr);
-B = new Burst();
-AD = new ADSR();
-VCA1 = new VCA();
-VS = new SVCO(261);
+//CLKD = new Clock(120);
 BG = new BernoulliGate();
+JNO = new NonlinearLab();
+BB = new ByteBeat(expr);
+AD = new ADSR();
+V = new VCA();
+FL = new ExponentialFilter(1000);
+Fil = new SVF();
+CF = new CombFilter();
 
 //GOOD BASS//
 // CLKD = new Clock(120);
@@ -69,6 +63,7 @@ BG = new BernoulliGate();
 // AD = new ADSR();
 // VCA1 = new VCA();
 // FL2 = new ExponentialFilter(1000);
+// BG = new BernoulliGate();
 //GOOD BASS//
 
 //PLUCK SOUND

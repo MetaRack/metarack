@@ -7,6 +7,7 @@ class ADSRPrim {
 
     	this.gate = 0;
     	this.out = 0;
+    	this.prev_a = a;
 	 }	
 
 	 set_param (a, d, s, r) {
@@ -21,22 +22,27 @@ class ADSRPrim {
 	    var lin = 0;
 	    var sqr = 0;
 
+	    if (this.prev_a < 0.1) this.prev_a = 0.1;
+	    if (this.D < 0.1) this.D = 0.1;
+	    if (this.S < 0.000001) this.S = 0.000001;
+	    if (this.R < 0.1) this.R = 0.1;
+
 	    if (this.gate > 0) {
 	      switch(this.stage) {
 	        case 'R':
 	          this.stage = 'A';
-	          this.phase = Math.pow(this.out / 10, 2) * this.A;
+	          this.phase = Math.pow(this.out / 10, 2) * this.prev_a;
 	        case 'A':
-	          env = Math.sqrt(this.phase / this.A);
+	          env = Math.sqrt(this.phase / this.prev_a);
 	          if (env >= 1) {
-	            console.log('A->D');
+	            //console.log('A->D');
 	            this.stage = 'D';
 	            this.switch_level = env;
 	          }
 	          break;
 	        case 'D':
-	          sqr = this.S + (this.switch_level - Math.sqrt((this.phase - this.A) / this.D)) * (this.switch_level - this.S);
-	          lin = (this.phase - this.A) / this.D;
+	          sqr = this.S + (this.switch_level - Math.sqrt((this.phase - this.prev_a) / this.D)) * (this.switch_level - this.S);
+	          lin = (this.phase - this.prev_a) / this.D;
 	          env = sqr; //(1 - lin) * this.switch_level + lin * sqr;
 	          if (env <= this.S) this.stage = 'S';
 	          break;
@@ -46,9 +52,16 @@ class ADSRPrim {
 
 	      }
 	    } else {
+	      this.prev_a = this.A;
 	      switch (this.stage) {
 	        case 'A':
+	          this.stage = 'R';
+	          this.phase = 0.001;
+	          this.switch_level = this.out / 10;
 	        case 'D':
+	          this.stage = 'R';
+	          this.phase = 0.001;
+	          this.switch_level = this.out / 10;
 	        case 'S':
 	          this.stage = 'R';
 	          this.phase = 0.001;
@@ -60,7 +73,7 @@ class ADSRPrim {
 	      }
    		}
 
-	    this.out = env * 10;
+	    this.out = Math.min(env * 10, 10);
 	    // console.log(env * 20 - 10, this.out);
 	    // this.scope.process( this.out * 20 - 10 )
 	    this.phase += 0.001;

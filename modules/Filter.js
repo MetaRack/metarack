@@ -34,10 +34,21 @@ class SVF extends Module {
     this.freq = this.c['FREQ'].get();
     this.cv = this.i['CV'].get();
     this.res = this.i['RES'].get();
-    this.LP.freq = this.freq - this.width;
-    this.LP.cv = this.cv;
-    this.HP.freq = this.freq + this.width;
-    this.HP.cv = this.cv;
+
+    this.lp_freq = (this.freq * Math.pow(2, this.cv)) - this.width;
+    if ((this.lp_freq) < 0) 
+      this.lp_freq = 30;
+    if ((this.lp_freq) > 10000) 
+      this.lp_freq = 9999;
+    this.LP.freq = this.lp_freq;
+
+    this.hp_freq = (this.freq * Math.pow(2, this.cv)) + this.width;
+    if ((this.hp_freq) < 0) 
+      this.hp_freq = 30;
+    if ((this.hp_freq) > 10000) 
+      this.hp_freq = 9999;
+
+    this.HP.freq = this.hp_freq;
     this.LP.coeff_res = this.res;
     this.HP.coeff_res = this.res;
 
