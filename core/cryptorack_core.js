@@ -372,7 +372,7 @@ class Encoder extends GraphicObject {
     this.changed=true;
   }
   mouse_released(x, y, dx, dy) { this.changed = true; }
-  double_clicked(x, y, dx, dy) { this.base_val = this.def_val; this.mod = this.def_mod; this.changed = true; }
+  double_clicked(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = this.def_val; this.mod = this.def_mod; this.changed = true; }
 
   save() { return this.base_val.toFixed(6); }
   load(s) { this.base_val = parseFloat(s); this.changed = true; }
@@ -461,9 +461,6 @@ class InputEncoder extends Encoder {
     this.mod_coef = 0.1 * this.mod * (this.vmax - this.vmin);
     this.val = this.base_val;
     this.port.isinput = true;
-    this.prev_base_val = this.val;
-    this.sample_counter = 0;
-    this.filter = new ExponentialFilterPrim({freq:60});
   }
 
   draw_sbf(buf, w, h) {
@@ -496,7 +493,8 @@ class InputEncoder extends Encoder {
     if (this.changed) {
       this.c = this.sample_counter / (sample_rate / fps);
       this.sample_counter++;
-      this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
+      //this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
+      this.filter.in = ((Math.sin((this.c - 0.5) * Math.PI) / 2) + 0.5) * (this.base_val - this.prev_base_val) + this.prev_base_val;
       this.filter.process();
       return this.filter.lp + this.mod_coef * this.port.get();
       
