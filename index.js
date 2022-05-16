@@ -4,10 +4,11 @@ ws = new WireStyle(core=255, edge=80);
 
 
 //engine = new Engine({w:rackwidth * 0.8, h:rackheight / 2});
-engine = new Engine({w:rackwidth, h:rackheight});
+engine.set_size(rackwidth, rackheight);
 engine.set_module_style(ms);
 engine.set_port_style(ps);
 engine.set_wire_style(ws);
+engine.visible = true;
 
 // AUDIO
 // n = 2;
@@ -123,7 +124,7 @@ MIX1 = new RandomGenerator();
 //       break;
 //   }
 // }
-
+console.log(engine);
 engine.sequential_place_modules();
 
 // for (var i = 0; i < n; i ++) {
