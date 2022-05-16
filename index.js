@@ -2,11 +2,9 @@ ms = new ModuleStyle(panel=255, frame=60, shadow=70, name=40, lining=100, label=
 ps = new PortStyle(hole=255, ring=80, text=100, istext=true);
 ws = new WireStyle(core=255, edge=80);
 
-rackwidth *= 1.25
-rackheight *= 2
 
 //engine = new Engine({w:rackwidth * 0.8, h:rackheight / 2});
-engine = new Engine({w:rackwidth * 0.8, h:rackheight / 2});
+engine = new Engine({w:rackwidth, h:rackheight});
 engine.set_module_style(ms);
 engine.set_port_style(ps);
 engine.set_wire_style(ws);
@@ -150,25 +148,10 @@ engine.sequential_place_modules();
 function setup() {
   createCanvas(rackwidth, rackheight);
   frameRate(fps);
-  push();
-  translate(rackwidth * 0.1, rackheight / 4);
-  shearX(-0.9);
-  fill(180); strokeWeight(1); stroke(60);
-  rect(0, 0, rackwidth * 0.8, -30);
-  pop();
-  push();
-  translate(rackwidth * 0.9, rackheight * 1 / 4);
-  shearY(-0.66);
-  fill(180); strokeWeight(1); stroke(60);
-  rect(0, 0, 38, rackheight * 0.5);
-  pop();
 }
 
 function draw() { 
-	background(0,0,0,0); 
-	// shearY(PI * 0.01);
-	// shearX(-	PI * 0.01);
-	//engine.draw(rackwidth * 0.1, rackheight / 4);
+	background(0,0,0,0);
   engine.draw(0, 0); 
 }
 
