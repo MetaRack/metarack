@@ -15,7 +15,7 @@ function pow2(x, xr=0, y=1, c=1) {
 // STYLES
 
 class PortStyle {
-  constructor(hole=255, ring=80, text=60, hastext=true){
+  constructor(hole=45, ring=120, text=60, hastext=true){
     this.hole = hole;
     this.ring = ring;
     this.text = text;
@@ -24,14 +24,14 @@ class PortStyle {
 }
 
 class WireStyle {
-  constructor (core=255, edge=80) {
+  constructor (core=[100, 100, 180, 255], edge=40) {
     this.core = core;
     this.edge = edge;
   }
 }
 
 class ModuleStyle {
-  constructor(panel=255, frame=60, shadow=70, name=40, lining=180, label=255, background=255) {
+  constructor(panel=[140, 80, 100, 255], frame=10, shadow=70, name=40, lining=180, label=255, background=255) {
     this.panel = panel;
     this.frame = frame;
     this.shadow = shadow;
@@ -109,6 +109,7 @@ class GraphicObject {
   mouse_pressed(x, y, dx, dy) { console.warn(this.name + ' press method undefined'); }
   mouse_dragged(x, y, dx, dy) { console.warn(this.name + ' drag method undefined'); }
   mouse_released(x, y, dx, dy) { console.warn(this.name + ' release method undefined'); }
+  double_clicked(x, y, dx, dy) { console.warn(this.name + ' doubleclick method undefined'); }
 }
 
 // PORT
@@ -267,6 +268,8 @@ class Port extends GraphicObject {
 class Encoder extends GraphicObject {
   constructor({x=0, y=0, r=10, name='?', val=5, vmin=-10, vmax=10, precision=6, mod=0.1}={}) {
     super({x:x, y:y, w:2*r, h:3*r, name:name});
+    this.def_val = val;
+    this.def_mod = mod;
     this.base_val = val;
     this.vmin = vmin;
     this.vmax = vmax;
@@ -329,14 +332,15 @@ class Encoder extends GraphicObject {
   get() { return this.base_val; }
   set(v) { this.base_val = v; }
 
-  mouse_pressed(x, y, dx, dy) { this.changed=true; }
+  mouse_pressed(x, y, dx, dy) { this.changed = true; }
   mouse_dragged(x, y, dx, dy) { 
     this.base_val -= dy / 500 * (this.vmax - this.vmin); 
     if (this.base_val > this.vmax) this.base_val = this.vmax;
     if (this.base_val < this.vmin) this.base_val = this.vmin + 0.0001;
     this.changed=true;
   }
-  mouse_released(x, y, dx, dy) { this.changed=true; }
+  mouse_released(x, y, dx, dy) { this.changed = true; }
+  double_clicked(x, y, dx, dy) { this.base_val = this.def_val; this.mod = this.def_mod; this.changed = true; }
 
   save() { return this.base_val.toFixed(6); }
   load(s) { this.base_val = parseFloat(s); this.changed = true; }
@@ -589,9 +593,7 @@ class Module extends GraphicObject {
     let rounding = 5;
     buf.background(0,0,0,0);
 
-    buf.stroke(this.style.shadow); buf.strokeWeight(sw); buf.strokeJoin(ROUND); buf.fill(250);
-    buf.rect(sw / 2, sw / 2, w - sw, h - sw, rounding, rounding, rounding, rounding);
-    buf.stroke(this.style.frame); buf.strokeWeight(sw / 1.5); buf.noFill();
+    buf.stroke(this.style.shadow); buf.strokeWeight(sw); buf.strokeJoin(ROUND); buf.fill(this.style.panel);
     buf.rect(sw / 2, sw / 2, w - sw, h - sw, rounding, rounding, rounding, rounding);
 
     buf.stroke(this.style.lining); buf.strokeWeight(sw / 3);
@@ -643,6 +645,10 @@ class Module extends GraphicObject {
     buf.textAlign(CENTER, CENTER);
     buf.strokeWeight(sw);
     buf.text(this.name.substring(0, Math.floor((w - w / 3) / textWidth(this.name) * this.name.length * 0.7)), w / 2, 15);
+
+    sw = 1.5;
+    buf.stroke(this.style.frame); buf.strokeWeight(sw); buf.noFill();
+    buf.rect(sw / 2, sw / 2, w - sw, h - sw, rounding, rounding, rounding, rounding);
   }
 
   add_input(i) {
@@ -856,6 +862,13 @@ class Engine extends GraphicObject {
     this.focus = null;
   }
 
+  double_clicked(x, y, dx, dy) {
+    this.find_focus((x - this.x) / this.scale, (y - this.y) / this.scale);
+    if (this.focus != null) {
+      this.focus.double_clicked((x - this.x) / this.scale, (y - this.y) / this.scale, dx, dy);
+    }
+  }
+
   sequential_place_modules() {
     let x = this.spacing;
     let y = this.spacing;
@@ -918,6 +931,10 @@ function mouseDragged() {
 
 function mouseReleased() {
   engine.mouse_released(mouseX - engine.ax, mouseY - engine.ay, movedX, movedY);
+}
+
+function doubleClicked() {
+  engine.double_clicked(mouseX - engine.ax, mouseY - engine.ay, movedX, movedY);
 }
 
 function mouseWheel(event) {
