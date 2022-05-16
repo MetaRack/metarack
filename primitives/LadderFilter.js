@@ -87,7 +87,7 @@ class LadderFilter {
     this.prev_input = 0;
     this.output = 0;
 		this.reset();
-		this.setCutoffFreq(0);
+		this.setCutoffFreq(440);
 
     this.k1 = new Array(4);
     this.k2 = new Array(4);

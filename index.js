@@ -37,15 +37,17 @@ function expr(t, c, p1, p2, p3, p4) {
   return (((t / c) / 2 % (p1 * 13)) + 3) * 2 + (((t / c) / 4 % (p2 * 19)) >> (p3 * 3) + 1)  | (((t / c) ^ (p4) * 11))
 }
 
-//CLKD = new Clock(120);
-BG = new BernoulliGate();
-JNO = new NonlinearLab();
-BB = new ByteBeat(expr);
-AD = new ADSR();
-V = new VCA();
-FL = new ExponentialFilter(1000);
-Fil = new SVF();
-CF = new CombFilter();
+function expr2(t, c, p1, p2, p3, p4) {
+  return (t / c) / (2 + p3) * (((t / c) >> (7 + p2)) % 5)
+}
+
+CLKD = new Clock(120);
+P = new PingPong();
+S = new SVCO(261);
+S = new SVCO(1);
+D = new Delay();
+V = new VCO(261);
+MIX1 = new Mixer();
 
 //GOOD BASS//
 // CLKD = new Clock(120);

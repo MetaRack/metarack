@@ -23,15 +23,8 @@ class SVCO extends Module {
     this.VCO.set_frequency(f);
   }
 
-  // draw_dbf (buf, x, y, w, h) {
-  //   if (this.c['FREQ'].changed)
-  //     this.set_frequency(this.c['FREQ'].get());
-  // }
-
   process() {
   	this.VCO.set_frequency(this.c['FREQ'].get());
-  	//this.VCO.freq = this.c['FREQ'].get();
-    //this.VCO.delta = Math.PI * 2 / (sample_rate / this.VCO.freq);
   	this.VCO.fm = this.i['FM'].get();
     this.VCO.set_wave(this.i['WAVE'].get());
     this.VCO.pw = this.i['PW'].get();
