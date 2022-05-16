@@ -40,23 +40,28 @@ function expr2(t, c, p1, p2, p3, p4) {
   return (t / c) / (2 + p3) * (((t / c) >> (7 + p2)) % 5)
 }
 
-B1 = new ByteBeat(expr);
-B2 = new ByteBeat(expr2);
-FL = new ExponentialFilter(1000);
+S = new SVCO(261);
 D = new Delay();
+P = new PingPong();
 MIX1 = new RandomGenerator();
-RVR1 = new DattorroReverb();
-C = new Chorus();
-BS = new Bus();
+// B1 = new ByteBeat(expr);
+// B2 = new ByteBeat(expr2);
+// FL = new ExponentialFilter(1000);
+// D = new Delay();
+// MIX1 = new RandomGenerator();
+// RVR1 = new DattorroReverb();
+// C = new Chorus();
+// BS = new Bus();
+// cf = new CombFilter()
 
-BG = new BernoulliGate();
-BR = new Burst();
-JNO = new NonlinearLab();
-D1 = new Delay();
-D2 = new Delay();
-MIX2 = new Bus();
-MIX3 = new Bus();
-MIX4 = new Bus();
+// BG = new BernoulliGate();
+// BR = new Burst();
+// JNO = new NonlinearLab();
+// D1 = new Delay();
+// D2 = new Delay();
+// MIX2 = new Bus();
+// MIX3 = new Bus();
+// MIX4 = new Bus();
 
 //GOOD BASS//
 // CLKD = new Clock(120);

@@ -35,6 +35,8 @@ class PingPong extends Module {
 
     	this.delay_l = new DelayPrim();
     	this.delay_r = new DelayPrim();
+    	this.filter_r = new ExponentialFilterPrim({freq:4000});
+    	this.filter_l = new ExponentialFilterPrim({freq:4000});
     	this.ADSR_l = new ADSRPrim();
     	this.ADSR_l.set_param(0.1, 1, 2, 6);
     	this.ADSR_r = new ADSRPrim();
@@ -109,11 +111,18 @@ class PingPong extends Module {
 		if (this.inf_flag) {
 			this.delay_l.fb = 1;
 			this.delay_r.fb = 1;
+			
+			//this.filter_l.in = this.delay_l.out;
 			this.delay_l.in = this.delay_l.out//this.out_l;
+			
+			//this.filter_r.in = this.delay_r.out;
 			this.delay_r.in = this.delay_r.out;
 
-			this.out_l = this.delay_l.out//((this.delay_l.out * this.dw) + (this.in * (1 - this.dw)))// * this.ADSR_l.out / 10;
-			this.out_r = this.delay_r.out//((this.delay_r.out * this.dw) + (this.in * (1 - this.dw)))// * this.ADSR_r.out / 10;
+			this.filter_l.in = this.delay_l.out;
+			this.filter_r.in = this.delay_r.out;
+
+			this.out_l = this.filter_l.lp//((this.delay_l.out * this.dw) + (this.in * (1 - this.dw)))// * this.ADSR_l.out / 10;
+			this.out_r = this.filter_r.lp//((this.delay_r.out * this.dw) + (this.in * (1 - this.dw)))// * this.ADSR_r.out / 10;
 		}
 		else {
 			this.delay_l.in = this.in;
@@ -122,9 +131,10 @@ class PingPong extends Module {
 
 			// this.delay_l.in = this.in + this.out * this.fb;
 			// this.delay_r.in = this.in + this.out * this.fb;			
-
-			this.out_l = this.delay_l.out;// * this.ADSR_l.out / 10;
-			this.out_r = this.delay_r.out;// * this.ADSR_r.out / 10;
+			this.filter_l.in = this.delay_l.out;
+			this.out_l = this.filter_l.lp;// * this.ADSR_l.out / 10;
+			this.filter_r.in = this.delay_r.out;
+			this.out_r = this.filter_r.lp;// * this.ADSR_r.out / 10;
 		}
 
 		this.sample_counter_l++;
@@ -133,6 +143,8 @@ class PingPong extends Module {
 
 		this.delay_l.process();
     	this.delay_r.process();
+    	this.filter_l.process();
+    	this.filter_r.process();
     	this.ADSR_l.process();
     	this.ADSR_r.process();
 

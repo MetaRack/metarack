@@ -1,5 +1,5 @@
 class ExponentialFilterPrim{
-  constructor({type='LP', freq=4400}={}) {
+  constructor({type='LP', freq=440}={}) {
     this.type = type;
     this.base_freq = freq;
     this.freq = this.base_freq;
