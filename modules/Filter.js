@@ -1,3 +1,65 @@
+class BPFilter extends Module {
+    constructor({freq=440}={}) {
+    super({w:hp2px(7)});
+
+    this.add_control(new Encoder({x:hp2px(0.6), y:6, r:7, vmin:30, vmax:10000, val:freq, name:'FREQ'}));
+    this.add_input(new InputEncoder({x:hp2px(0.6), y:26, r:7, val:0, name:'CV'}));
+    this.add_input(new InputEncoder({x:hp2px(2.1), y:46, r:7, val:0, vmin:0, vmax:1, name:'RES'}));
+    this.add_input(new Port({x:hp2px(0.8), y:108, r:6, name:'IN'}));
+    this.add_output(new Port({x:hp2px(3.8), y:108, r:6, name:'OUT'}));
+    this.add_input(new InputEncoder({x:hp2px(3.6), y:26, r:7, val:0, vmin:0, vmax:1000, name:'WDTH'}));
+
+    this.width = this.i['WDTH'].get();
+    this.LP = new ExponentialFilterPrim();
+    this.HP = new ExponentialFilterPrim();
+    this.freq = this.c['FREQ'].get();
+    this.cv = this.i['CV'].get();
+    this.res = this.i['RES'].get();
+    this.LP.freq = this.freq + this.width;
+    this.LP.cv = this.cv;
+    this.HP.freq = this.freq - this.width;
+    this.HP.cv = this.cv;
+   
+    this.in = 0;
+    this.out = 0;
+  }
+
+  process() {
+    this.in = this.i['IN'].get();
+    this.width = this.i['WDTH'].get();
+    this.freq = this.c['FREQ'].get();
+    this.cv = this.i['CV'].get();
+    this.res = this.i['RES'].get();
+
+    this.lp_freq = (this.freq * Math.pow(2, this.cv)) + this.width;
+    if ((this.lp_freq) < 0) 
+      this.lp_freq = 30;
+    if ((this.lp_freq) > 10000) 
+      this.lp_freq = 9999;
+    this.LP.freq = this.lp_freq;
+
+    this.hp_freq = (this.freq * Math.pow(2, this.cv)) - this.width;
+    if ((this.hp_freq) < 0) 
+      this.hp_freq = 30;
+    if ((this.hp_freq) > 10000) 
+      this.hp_freq = 9999;
+
+    this.HP.freq = this.hp_freq;
+    this.LP.coeff_res = this.res;
+    this.HP.coeff_res = this.res;
+
+    this.LP.in = this.in;
+    this.HP.in = this.LP.lp;
+
+    this.LP.process();
+    this.HP.process();
+
+    this.out = (this.HP.hp);
+
+    this.o['OUT'].set(this.out);
+  }
+}
+
 class SVF extends Module {
     constructor({freq=440}={}) {
     super({w:hp2px(7)});
@@ -8,8 +70,8 @@ class SVF extends Module {
     this.add_input(new Port({x:hp2px(0.8), y:108, r:6, name:'IN'}));
     this.add_output(new Port({x:hp2px(3.8), y:108, r:6, name:'OUT'}));
 
-    this.add_input(new InputEncoder({x:hp2px(3.6), y:6, r:7, val:0, vmin:-1, vmax:1, name:'CF'}));
-    this.add_input(new InputEncoder({x:hp2px(3.6), y:26, r:7, val:0, vmin:-1000, vmax:1000, name:'WDTH'}));
+    this.add_input(new InputEncoder({x:hp2px(3.6), y:6, r:7, val:0.5, vmin:0, vmax:1, name:'CF'}));
+    this.add_input(new InputEncoder({x:hp2px(3.6), y:26, r:7, val:0, vmin:0, vmax:1000, name:'WDTH'}));
 
     this.cf = this.i['CF'].get();
     this.width = this.i['WDTH'].get();

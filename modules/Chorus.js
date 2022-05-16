@@ -16,6 +16,10 @@ class Chorus extends Module {
     	this.DelayR = new DelayPrim();
     	this.DelayL.time = this.base_time;
     	this.DelayR.time = this.base_time;
+    	this.DelayR.fb = 0.66;
+    	this.DelayR.dw = 0.5;
+    	this.DelayL.fb = 0.66;
+    	this.DelayL.dw = 0.5;
     	this.in = 0;
     	this.outl = 0;
     	this.outr = 0;

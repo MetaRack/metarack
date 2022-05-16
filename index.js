@@ -35,15 +35,27 @@ function expr(t, c, p1, p2, p3, p4) {
   return (((t / c) / 2 % (p1 * 13)) + 3) * 2 + (((t / c) / 4 % (p2 * 19)) >> (p3 * 3) + 1)  | (((t / c) ^ (p4) * 11))
 }
 
-//CLKD = new Clock(120);
-BG = new BernoulliGate();
-JNO = new NonlinearLab();
-BB = new ByteBeat(expr);
-AD = new ADSR();
-V = new VCA();
+function expr2(t, c, p1, p2, p3, p4) {
+  return (t / c) / (2 + p3) * (((t / c) >> (7 + p2)) % 5)
+}
+
+B1 = new ByteBeat(expr);
+B2 = new ByteBeat(expr2);
 FL = new ExponentialFilter(1000);
-Fil = new SVF();
-CF = new CombFilter();
+D = new Delay();
+MIX1 = new RandomGenerator();
+RVR1 = new DattorroReverb();
+C = new Chorus();
+BS = new Bus();
+
+BG = new BernoulliGate();
+BR = new Burst();
+JNO = new NonlinearLab();
+D1 = new Delay();
+D2 = new Delay();
+MIX2 = new Bus();
+MIX3 = new Bus();
+MIX4 = new Bus();
 
 //GOOD BASS//
 // CLKD = new Clock(120);
