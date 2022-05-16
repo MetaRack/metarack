@@ -33,8 +33,8 @@ class PingPong extends Module {
     	this.add_output(new Port({x:hp2px(4), y:110, r:4, name:'O/L'}));
     	this.add_output(new Port({x:hp2px(5.7), y:110, r:4, name:'O/R'}));
 
-    	this.delay_l = new SmoothSampleDelay(this.i['TIME'].get() * Math.pow(2, this.i['TM L'].get()));
-    	this.delay_r = new SmoothSampleDelay(this.i['TIME'].get() * Math.pow(2, this.i['TM R'].get()));
+    	this.delay_l = new DelayPrim();
+    	this.delay_r = new DelayPrim();
     	this.ADSR_l = new ADSRPrim();
     	this.ADSR_l.set_param(0.1, 1, 2, 6);
     	this.ADSR_r = new ADSRPrim();
@@ -59,17 +59,21 @@ class PingPong extends Module {
 
     	this.time_l = Math.min(9.9, this.time_l);
     	this.time_r = Math.min(9.9, this.time_r);
-    	this.clock_l = Math.floor(44100 * (this.time_l / 10));
-    	this.clock_r = Math.floor(44100 * (this.time_r / 10));
+    	this.clock_l = Math.floor(sample_rate * (this.time_l / 10));
+    	this.clock_r = Math.floor(sample_rate * (this.time_r / 10));
 
-    	this.delay_l.delay = this.clock_l;
-    	this.delay_r.delay = this.clock_r;
+    	this.delay_l.time = this.clock_l / sample_rate;
+    	this.delay_r.time = this.clock_r / sample_rate;
 
     	this.inf_flag = this.inf_button.get();
     	this.inf_led.set(!this.inf_flag * 255);
 
     	this.fb = this.i['FB'].get();
     	this.dw = this.i['D/W'].get();
+    	this.delay_l.fb = this.fb;
+    	this.delay_r.fb = this.fb;
+    	this.delay_l.dw = this.dw;
+    	this.delay_r.dw = this.dw;
 
     	this.in = this.i['I/L'].get();
     	this.out_l = 0;
@@ -103,22 +107,24 @@ class PingPong extends Module {
 		this.ADSR_r.gate = Math.floor(this.gate_r);
 
 		if (this.inf_flag) {
-			this.delay_l.in = this.out_l;
-			this.delay_r.in = this.out_r;
+			this.delay_l.fb = 1;
+			this.delay_r.fb = 1;
+			this.delay_l.in = this.delay_l.out//this.out_l;
+			this.delay_r.in = this.delay_r.out;
 
-			this.out_l = ((this.delay_l.out * this.dw) + (this.in * (1 - this.dw)))// * this.ADSR_l.out / 10;
-			this.out_r = ((this.delay_r.out * this.dw) + (this.in * (1 - this.dw)))// * this.ADSR_r.out / 10;
+			this.out_l = this.delay_l.out//((this.delay_l.out * this.dw) + (this.in * (1 - this.dw)))// * this.ADSR_l.out / 10;
+			this.out_r = this.delay_r.out//((this.delay_r.out * this.dw) + (this.in * (1 - this.dw)))// * this.ADSR_r.out / 10;
 		}
 		else {
-			this.delay_l.in = this.in * (1 - this.fb) + this.out_l * this.fb;
+			this.delay_l.in = this.in;
 			//this.delay_l.in = this.in;
-			this.delay_r.in = this.in * (1 - this.fb) + this.out_r * this.fb;
+			this.delay_r.in = this.in;
 
 			// this.delay_l.in = this.in + this.out * this.fb;
 			// this.delay_r.in = this.in + this.out * this.fb;			
 
-			this.out_l = ((this.delay_l.out * this.dw) + (this.in * (1 - this.dw)))// * this.ADSR_l.out / 10;
-			this.out_r = ((this.delay_r.out * this.dw) + (this.in * (1 - this.dw)))// * this.ADSR_r.out / 10;
+			this.out_l = this.delay_l.out;// * this.ADSR_l.out / 10;
+			this.out_r = this.delay_r.out;// * this.ADSR_r.out / 10;
 		}
 
 		this.sample_counter_l++;

@@ -110,6 +110,7 @@ class SmoothSampleDelay {
 
     if (this.prev_delay != this.delay) {
         this.consume_amount = this.prev_delay - this.delay;
+        //console.log(this.consume_amount);
         // if (this.prev_delay > this.delay)
         //   this.consume_dir = true;
         // else
@@ -117,8 +118,10 @@ class SmoothSampleDelay {
         this.prev_delay = this.delay;
         this.consume_flag = true;
         this.consume_begin = this.begin;
+        //console.log(this.consume_begin);
         this.begin = (this.end - this.delay + 1) % this.max_buf;
         if (this.begin < 0) this.begin += this.max_buf;
+        //console.log(this.begin);
     }
     else {
       this.begin += 1;
