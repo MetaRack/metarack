@@ -128,4 +128,5 @@ class DattorroReverb extends Module {
   }
 }
 
+engine.add_module_class(DattorroReverb);
 engine.add_module_class(Reverb);

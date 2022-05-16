@@ -50,7 +50,6 @@ class GraphicObject {
     this.set_size(w, h);
     this.gparent = null;
     this.gchildren = [];
-    // this.resize(w, h);
     this.visible = visible;
     this.cbf = null;
     this.sbf = null;
@@ -61,14 +60,6 @@ class GraphicObject {
     this.ax = 0;
     this.ay = 0;
   }
-
-  // resize(w, h) {
-  //   this.set_size(w, h);
-  //   this.cbf = null;
-  //   this.sbf = null;
-  //   this.dbf = null;
-  //   this.changed = true;
-  // }
 
   contains(x, y) { if (x < this.x || y < this.y || x > this.x + this.w || y > this.y + this.h) return false; return true; }
   set_position(x, y) { this.x = x; this.y = y; }
@@ -733,7 +724,7 @@ class Module extends GraphicObject {
 
   save() {
     let s = {
-      'name': this.name,
+      'name': this.constructor.name,
       'i': {},
       'c': {}
     };
@@ -885,6 +876,7 @@ class Engine extends GraphicObject {
     this.modules[mname] = m;
     m.name = mname;
     this.attach(m);
+    m.changed = true;
   }
 
   add_wire(w) { this.wires.push(w); this.wbf_changed = true; }
@@ -909,8 +901,7 @@ class Engine extends GraphicObject {
     this.wbf = null;
     this.wbf_changed = true;
 
-    this.AUDIO = new Audio();
-    console.log(this.AUDIO)
+    if (!this.AUDIO) this.AUDIO = new Audio();
     this.add_module(this.AUDIO);
   }
 
@@ -1022,20 +1013,29 @@ class Engine extends GraphicObject {
   }
 
   load_state(s) {
+    this.clean();
     s = JSON.parse(s);
     while (this.wires.length > 0) this.remove_wire(this.wires[0]); 
     for (const m of s['modules']) { 
-      this.modules[m['name']].refresh_io_names();
-      this.modules[m['name']].load(m); 
+      try {
+        if (m['name'] == 'Audio') continue;
+        let mod = new this.module_registry[m['name']]();
+        mod.refresh_io_names();
+        mod.load(m); 
+      } catch (error) {
+        console.log(m);
+        console.error(error);
+      }
     } 
     for (const w of s['wires']) { 
       try {
         this.modules[w['ma']].o[w['pa']].connect(this.modules[w['mb']].i[w['pb']]); 
       } catch (error) {
-        console.log(w['ma'], w['pa'], w['mb'], w['pb']);
+        console.log(w);
         console.error(error);
       }
     } 
+    this.sequential_place_modules();
   }
 }
 
@@ -1051,6 +1051,7 @@ function metamodule(m) {
 
 let audioContext;
 engine = new Engine({w:10, h:10, visible:false});
+engine.add_module_class(Audio);
 
 function mousePressed(event) {
   if (mouseX > engine.ax && mouseX < engine.ax + engine.w && mouseY > engine.ay && mouseY < engine.ay + engine.h) {
