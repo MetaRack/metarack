@@ -127,3 +127,5 @@ class DattorroReverb extends Module {
     this.o['OUT'].set(this.out_value);
   }
 }
+
+engine.add_module_class(Reverb);

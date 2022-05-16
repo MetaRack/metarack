@@ -95,3 +95,5 @@ class ADSR extends Module {
     this.phase += 0.001;
   }
 }
+
+engine.add_module_class(ADSR);

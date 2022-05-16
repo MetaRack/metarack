@@ -71,3 +71,5 @@ class Hat extends Module {
 		this.o['OUT'].set((this.HP1.highpass() + this.VCA2.out * 1.5) * 8);
 	}
 }
+
+engine.add_module_class(Hat);

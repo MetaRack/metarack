@@ -19,3 +19,5 @@ class Scope extends Module {
 	    }
 	}
 }
+
+engine.add_module_class(Scope);

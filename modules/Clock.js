@@ -165,3 +165,5 @@ class Clock extends Module {
     }
   }
 }
+
+engine.add_module_class(Clock);

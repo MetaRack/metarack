@@ -50,16 +50,25 @@ class GraphicObject {
     this.set_size(w, h);
     this.gparent = null;
     this.gchildren = [];
+    // this.resize(w, h);
+    this.visible = visible;
     this.cbf = null;
     this.sbf = null;
     this.dbf = null;
-    this.visible = visible;
     this.changed = true;
     this.focus = null;
     this.name = name;
     this.ax = 0;
     this.ay = 0;
   }
+
+  // resize(w, h) {
+  //   this.set_size(w, h);
+  //   this.cbf = null;
+  //   this.sbf = null;
+  //   this.dbf = null;
+  //   this.changed = true;
+  // }
 
   contains(x, y) { if (x < this.x || y < this.y || x > this.x + this.w || y > this.y + this.h) return false; return true; }
   set_position(x, y) { this.x = x; this.y = y; }
@@ -698,13 +707,66 @@ class Module extends GraphicObject {
   }
 }
 
+// AUDIO
+
+class Audio extends Module {
+
+  constructor() {
+    super({w:hp2px(4)});
+
+    this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'LEFT'}));
+    this.add_input(new Port({x:hp2px(0.8), y:108, r:6, name:'RIGHT'}));
+
+    this.L = 0;
+    this.R = 0;
+  }
+
+  draw_cbf(buf, w, h) {
+    super.draw_cbf(buf, w, h);
+    let sw = 1;
+    buf.stroke(60); buf.strokeWeight(sw); buf.fill(255);
+    buf.rect(sw + w * 0.2, sw + h * 0.63, w * 0.6 - 2 * sw, h * 0.038 - 2 * sw);
+
+    sw = 0.1;
+    buf.textSize(w * 0.18);
+    buf.fill(60);
+    buf.textAlign(CENTER, CENTER);
+    buf.strokeWeight(sw);
+    buf.text('LVLS', w / 2, sw*2 + h * 0.63 + h * 0.04 / 2);
+  }
+
+  draw_dbf(buf, x, y, w, h) {
+    buf.stroke(60);
+    buf.strokeWeight(0.4);
+    for (var i = 0; i < 10; i ++) {
+      if (Math.abs(this.L) > i) buf.fill(120);
+      else buf.fill(250);
+      buf.circle(x + w * 0.3, y + h * 0.6 - h * i * 0.057, w * (0.1 + 0.005 * i));
+      if (Math.abs(this.R) > i) buf.fill(120);
+      else buf.fill(250);
+      buf.circle(x + w * 0.7, y + h * 0.6 - h * i * 0.057, w * (0.1 + 0.005 * i));
+    }
+  }
+
+  process() {
+    if (this.i['RIGHT'].port.wires.length == 0) {
+      this.L = this.i['LEFT'].get();
+      this.R = this.L;
+    } else {
+      this.L = this.i['LEFT'].get();
+      this.R = this.i['RIGHT'].get();
+    }
+  }
+}
+
 // ENGINE
 
 class Engine extends GraphicObject {
-  constructor({w=rackwidth, h=rackheight}={}) {
-    super({w:w, h:h});
+  constructor({w=rackwidth, h=rackheight, visible=true}={}) {
+    super({w:w, h:h, visible:visible});
     this.clean();
     this.controls = {};
+    this.module_registry = {};
   
     this.module_style = new ModuleStyle();
     this.port_style = new PortStyle();
@@ -723,6 +785,7 @@ class Engine extends GraphicObject {
   }
 
   draw(x, y) {
+    if (!this.visible) return;
     this.ax = x; 
     this.ay = y;
     if (!this.cbf) {
@@ -770,6 +833,8 @@ class Engine extends GraphicObject {
     this.wbf_changed = false;
   }
 
+  add_module_class(mc) { this.module_registry[mc.name] = mc; }
+
   add_module(m) { 
     if (!this.modules_count[m.constructor.name]) this.modules_count[m.constructor.name] = 0;
     this.modules_count[m.constructor.name] ++;
@@ -802,6 +867,7 @@ class Engine extends GraphicObject {
     this.wbf_changed = true;
 
     this.AUDIO = new Audio();
+    console.log(this.AUDIO)
     this.add_module(this.AUDIO);
   }
 
@@ -930,10 +996,18 @@ class Engine extends GraphicObject {
   }
 }
 
+function metamodule(m) {
+  return function() {
+    const result = m();
+    engine.add_module_class(m);
+    return result;
+  }
+}
+
 // ADDITIONAL_METHODS
 
 let audioContext;
-// engine = new Engine({w:10, h:10});
+engine = new Engine({w:10, h:10, visible:false});
 
 function mousePressed(event) {
   if (mouseX > engine.ax && mouseX < engine.ax + engine.w && mouseY > engine.ay && mouseY < engine.ay + engine.h) {

@@ -52,3 +52,5 @@ class VCO extends Module {
     this.o['PHASE_OUT'].set(this.phase);
   }
 }
+
+engine.add_module_class(VCO);

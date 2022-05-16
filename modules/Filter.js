@@ -251,7 +251,6 @@ class SimpleOnePoleFilter extends Module {
   }
 }
 
-
 class ResonantFilter extends Module {
   constructor({type='LP', freq=440}={}) {
     super({w:hp2px(4)});
@@ -296,3 +295,9 @@ class ResonantFilter extends Module {
     }
   }
 }
+
+engine.add_module_class(BPFilter);
+engine.add_module_class(SVF);
+engine.add_module_class(ExponentialFilter);
+engine.add_module_class(SimpleOnePoleFilter);
+engine.add_module_class(ResonantFilter);

@@ -39,3 +39,5 @@ class RandomGenerator extends Module {
 		this.o['OUT'].set((this.out * this.scale * this.amp) + this.offset);
 	}
 }
+
+engine.add_module_class(RandomGenerator);

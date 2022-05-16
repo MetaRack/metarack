@@ -41,3 +41,5 @@ class ByteBeat extends Module {
     this.counter++;
   }
 }
+
+engine.add_module_class(ByteBeat);

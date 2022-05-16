@@ -270,3 +270,6 @@ class StepSequencer extends Module {
 
   }
 }
+
+engine.add_module_class(GateSequencer);
+engine.add_module_class(StepSequencer);

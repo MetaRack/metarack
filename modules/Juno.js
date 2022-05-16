@@ -361,3 +361,5 @@ class NonlinearLab extends Module {
 		// this.o['OUT'].set(this.out);
 	}
 }
+
+engine.add_module_class(Juno);

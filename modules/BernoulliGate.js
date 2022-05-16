@@ -44,3 +44,5 @@ class BernoulliGate extends Module {
     this.last_gate = this.gate;
   }
 }
+
+engine.add_module_class(BernoulliGate);
