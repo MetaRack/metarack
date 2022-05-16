@@ -153,3 +153,5 @@ class PingPong extends Module {
 		this.o['O/R'].set(this.out_r);
 	}
 }
+
+engine.add_module_class(PingPong);

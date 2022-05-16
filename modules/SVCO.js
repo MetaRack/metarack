@@ -33,3 +33,5 @@ class SVCO extends Module {
     this.o['OUT'].set(this.VCO.out);
   }
 }
+
+engine.add_module_class(SVCO);

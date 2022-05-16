@@ -67,3 +67,5 @@ class Sequencer extends Module {
     this.scope.process( this.o['OUT1'].get() )
   }
 }
+
+engine.add_module_class(Sequencer);

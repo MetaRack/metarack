@@ -53,3 +53,5 @@ class Chorus extends Module {
 		this.o['OUTR'].set(this.outr);
 	}
 }
+
+engine.add_module_class(Chorus);

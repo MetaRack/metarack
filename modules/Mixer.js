@@ -123,3 +123,7 @@ class Mixer100 extends Module {
     this.o['OUT'].set(this.value);
   }
 }
+
+engine.add_module_class(Bus);
+engine.add_module_class(Mixer);
+engine.add_module_class(Mixer100);

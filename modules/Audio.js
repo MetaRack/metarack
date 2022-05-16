@@ -49,6 +49,4 @@ class Audio extends Module {
       this.R = this.i['RIGHT'].get();
     }
   }
-
-  save() { return ''; }
 }

@@ -26,3 +26,5 @@ class Delay extends Module {
     this.o['OUT'].set( this.delay_line.process( this.i['IN'].get() ) );
   }
 }
+
+engine.add_module_class(Delay);

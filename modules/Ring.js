@@ -25,3 +25,5 @@ class Ring extends Module {
 		this.o['OUT'].set(this.Ring.out);
 	}
 }
+
+engine.add_module_class(Ring);

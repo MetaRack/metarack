@@ -31,3 +31,5 @@ class VCA extends Module {
     // this.level.process(this.i['CV'].get() * 20 - 10);
   }
 }
+
+engine.add_module_class(VCA);

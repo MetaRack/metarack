@@ -102,3 +102,5 @@ class Burst extends Module {
 		this.prev_burst = this.burst;
 	}
 }
+
+engine.add_module_class(Burst);

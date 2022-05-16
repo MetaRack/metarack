@@ -32,3 +32,5 @@ class CombFilter extends Module {
 		this.SD.process();
 	}
 }
+
+engine.add_module_class(CombFilter);

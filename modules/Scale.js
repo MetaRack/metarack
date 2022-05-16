@@ -101,3 +101,5 @@ class Scale extends Module {
     //this.textdisplay.process(this.semitones[this.cl_i] * 12);
   }
 }
+
+engine.add_module_class(Scale);

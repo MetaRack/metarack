@@ -57,3 +57,5 @@ class Noise extends Module {
     // this.scope.process( this.o['OUT'].get() )
   }
 }
+
+engine.add_module_class(Noise);
