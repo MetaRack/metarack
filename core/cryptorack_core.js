@@ -670,6 +670,11 @@ class Module extends GraphicObject {
     this.attach(c);
   }
 
+  refresh_io_names() {
+    for (var name in this.i) this.i[name].port.modname = this.name;
+    for (var name in this.o) this.o[name].port.modname = this.name;
+  }
+
   connect(oport, iport, scale=1, offset=0) {
     engine.add_wire(oport, iport, scale, offset);
   }
@@ -898,7 +903,10 @@ class Engine extends GraphicObject {
       'modules': [],
       'wires': []
     };
-    for (var name in this.modules) if (name != 'Audio1') s['modules'].push(this.modules[name].save());
+    for (var name in this.modules) {
+      this.modules[name].refresh_io_names();
+      s['modules'].push(this.modules[name].save());
+    }
     for (const w of this.wires) s.wires.push(w.save());
     console.log(JSON.stringify(s));
     return JSON.stringify(s);
@@ -907,9 +915,17 @@ class Engine extends GraphicObject {
   load_state(s) {
     s = JSON.parse(s);
     while (this.wires.length > 0) this.remove_wire(this.wires[0]); 
-    for (const m of s['modules']) { this.modules[m['name']].load(m); } 
+    for (const m of s['modules']) { 
+      this.modules[m['name']].refresh_io_names();
+      this.modules[m['name']].load(m); 
+    } 
     for (const w of s['wires']) { 
-      this.modules[w['ma']].o[w['pa']].connect(this.modules[w['mb']].i[w['pb']]); 
+      try {
+        this.modules[w['ma']].o[w['pa']].connect(this.modules[w['mb']].i[w['pb']]); 
+      } catch (error) {
+        console.log(w['ma'], w['pa'], w['mb'], w['pb']);
+        console.error(error);
+      }
     } 
   }
 }
