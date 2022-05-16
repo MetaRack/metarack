@@ -282,6 +282,9 @@ class Encoder extends GraphicObject {
     this.r = 0;
 
     this.precision = Math.min(precision, Math.min(2, 2 - Math.floor(Math.log10(Math.abs(vmax - vmin) / 20))));
+    this.prev_base_val = this.base_val;
+    this.sample_counter = 0;
+    this.filter = new ExponentialFilterPrim({freq:50});
     //this.precision = Math.min(2, 2 - Math.floor(Math.log10(Math.abs(vmax - vmin) / 20)));
   }
 
@@ -329,11 +332,31 @@ class Encoder extends GraphicObject {
     buf.text(this.name.substring(0,4), w / 2, h * 5 / 6 + 1);
   }
 
-  get() { return this.base_val; }
+  //get() { return this.base_val; }
+
+  get() { 
+    if (this.changed) {
+      this.c = this.sample_counter / (sample_rate / fps);
+      this.sample_counter++;
+      this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
+      this.filter.process();
+      //console.log((this.base_val * this.c + this.prev_base_val * (1 - this.c)) + this.mod_coef * this.port.get());
+      return this.filter.lp;
+      
+    }
+    else {
+      this.sample_counter = 0;
+      this.prev_base_val = this.base_val;
+      return this.base_val; 
+    }
+  }
+
   set(v) { this.base_val = v; }
 
   mouse_pressed(x, y, dx, dy) { this.changed = true; }
   mouse_dragged(x, y, dx, dy) { 
+    this.prev_base_val = this.base_val;
+    this.sample_counter = 0;
     this.base_val -= dy / 500 * (this.vmax - this.vmin); 
     if (this.base_val > this.vmax) this.base_val = this.vmax;
     if (this.base_val < this.vmin) this.base_val = this.vmin + 0.0001;
@@ -429,6 +452,9 @@ class InputEncoder extends Encoder {
     this.mod_coef = 0.1 * this.mod * (this.vmax - this.vmin);
     this.val = this.base_val;
     this.port.isinput = true;
+    this.prev_base_val = this.val;
+    this.sample_counter = 0;
+    this.filter = new ExponentialFilterPrim({freq:60});
   }
 
   draw_sbf(buf, w, h) {
@@ -456,7 +482,22 @@ class InputEncoder extends Encoder {
   }
 
   draw_dbf(buf, x, y, w, h) { this.mod_coef = (this.port.wires.length > 0) * 0.1 * this.mod * (this.vmax - this.vmin); }
-  get() { return this.base_val + this.mod_coef * this.port.get(); }
+  
+  get() { 
+    if (this.changed) {
+      this.c = this.sample_counter / (sample_rate / fps);
+      this.sample_counter++;
+      this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
+      this.filter.process();
+      return this.filter.lp + this.mod_coef * this.port.get();
+      
+    }
+    else {
+      this.sample_counter = 0;
+      this.prev_base_val = this.base_val;
+      return this.base_val + this.mod_coef * this.port.get(); 
+    }
+  }
   set(v) { this.base_val = v; }
   connect(c) {
     let w = new Wire();
@@ -465,6 +506,8 @@ class InputEncoder extends Encoder {
   }
 
   mouse_dragged(x, y, dx, dy) {
+    this.prev_base_val = this.base_val;
+    this.sample_counter = 0;
     if (!this.port.isinput || (!engine.cmdpressed || this.port.wires.length == 0)) {
       this.base_val -= dy / 500 * (this.vmax - this.vmin); 
       if (this.base_val > this.vmax) this.base_val = this.vmax;
