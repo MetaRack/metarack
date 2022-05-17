@@ -69,7 +69,7 @@ class BigSampleDelay {
 
 class SmoothSampleDelay {
   constructor(delay = 50) {
-    this.max_buf = 44100;
+    this.max_buf = 441000;
     this.in = 0;
     this.delay = delay;
     this.buf = new Array(this.max_buf);
@@ -106,35 +106,37 @@ class SmoothSampleDelay {
   }
 
   process() {
-    if (this.consume_flag) this.consume();
-
-    if (this.prev_delay != this.delay) {
-        this.consume_amount = this.prev_delay - this.delay;
-        //console.log(this.consume_amount);
-        // if (this.prev_delay > this.delay)
-        //   this.consume_dir = true;
-        // else
-        //   this.consume_dir = false;
-        this.prev_delay = this.delay;
-        this.consume_flag = true;
-        this.consume_begin = this.begin;
-        //console.log(this.consume_begin);
-        this.begin = (this.end - this.delay + 1) % this.max_buf;
-        if (this.begin < 0) this.begin += this.max_buf;
-        //console.log(this.begin);
-    }
+    if (this.consume_flag) 
+      this.consume();
     else {
-      this.begin += 1;
-      this.begin %= this.max_buf;
-    }
-    if (isNaN(this.out)) console.log('Yes')
-    this.out = this.buf[Math.floor(this.begin)];
-    this.buf[Math.floor(this.end)] = this.in;
-    this.end += 1;
+      if (this.prev_delay != this.delay) {
+          this.consume_amount = this.prev_delay - this.delay;
+          //console.log(this.consume_amount);
+          // if (this.prev_delay > this.delay)
+          //   this.consume_dir = true;
+          // else
+          //   this.consume_dir = false;
+          this.prev_delay = this.delay;
+          this.consume_flag = true;
+          this.consume_begin = this.begin;
+          //console.log(this.consume_begin);
+          this.begin = (this.end - this.delay + 1) % this.max_buf;
+          if (this.begin < 0) this.begin += this.max_buf;
+          //console.log(this.begin);
+      }
+      else {
+        this.begin += 1;
+        this.begin %= this.max_buf;
+      }
+      //if (isNaN(this.out)) console.log('Yes')
+      this.out = this.buf[Math.floor(this.begin)];
+      this.buf[Math.floor(this.end)] = this.in;
+      this.end += 1;
 
-    this.begin %= this.max_buf;
-    this.end %= this.max_buf;
-    //this.prev_delay = this.delay;
-    //this.prev_delay -= 1 * Math.sign(this.prev_delay - this.delay);
+      this.begin %= this.max_buf;
+      this.end %= this.max_buf;
+      //this.prev_delay = this.delay;
+      //this.prev_delay -= 1 * Math.sign(this.prev_delay - this.delay);
+    }
   }
 }

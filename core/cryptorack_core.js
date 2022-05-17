@@ -284,6 +284,8 @@ class Encoder extends GraphicObject {
     this.precision = Math.min(precision, Math.min(2, 2 - Math.floor(Math.log10(Math.abs(vmax - vmin) / 20))));
     this.prev_base_val = this.base_val;
     this.sample_counter = 0;
+    this.nochange_counter = 0;
+    this.nochange_flag = false;
     this.filter = new ExponentialFilterPrim({freq:50});
     //this.precision = Math.min(2, 2 - Math.floor(Math.log10(Math.abs(vmax - vmin) / 20)));
   }
@@ -336,24 +338,51 @@ class Encoder extends GraphicObject {
 
   get() { 
     if (this.changed) {
+      this.nochange_counter = 0;
+      this.nochange_flag = false;
       this.c = this.sample_counter / (sample_rate / fps);
       this.sample_counter++;
-      this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
+      if (this.c <= 1)
+        this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
+      else {
+        this.filter.in = this.base_val;
+      }
       this.filter.process();
       //console.log((this.base_val * this.c + this.prev_base_val * (1 - this.c)) + this.mod_coef * this.port.get());
       return this.filter.lp;
       
     }
     else {
+      // this.sample_counter = 0;
+      // this.prev_base_val = this.base_val;
+      // this.filter.in = this.base_val;
+      // this.filter.process();
+      // return this.filter.lp;
+      //return this.base_val; 
+
       this.sample_counter = 0;
+      if (!this.nochange_flag) this.nochange_counter++;
+      if (this.nochange_counter > sample_rate / 2) {
+        this.nochange_counter = 0;
+        this.nochange_flag = true;
+      }
       this.prev_base_val = this.base_val;
-      return this.base_val; 
+      if (!this.nochange_flag) {
+        this.filter.in = this.base_val;
+        this.filter.process();
+        return this.filter.lp;
+      }
+      else {
+        return this.base_val;
+      }
+      //return this.base_val + this.mod_coef * this.port.get(); 
     }
+    
   }
 
   set(v) { this.base_val = v; }
 
-  mouse_pressed(x, y, dx, dy) { this.changed = true; }
+  mouse_pressed(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.changed = true; }
   mouse_dragged(x, y, dx, dy) { 
     this.prev_base_val = this.base_val;
     this.sample_counter = 0;
@@ -362,7 +391,7 @@ class Encoder extends GraphicObject {
     if (this.base_val < this.vmin) this.base_val = this.vmin + 0.0001;
     this.changed=true;
   }
-  mouse_released(x, y, dx, dy) { this.changed = true; }
+  mouse_released(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.changed = true; }
   double_clicked(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = this.def_val; this.mod = this.def_mod; this.changed = true; }
 
   save() { return this.base_val.toFixed(6); }
@@ -482,18 +511,44 @@ class InputEncoder extends Encoder {
   
   get() { 
     if (this.changed) {
+      this.nochange_counter = 0;
+      this.nochange_flag = false;
       this.c = this.sample_counter / (sample_rate / fps);
       this.sample_counter++;
+      if (this.c <= 1) {
+        //this.filter.in = ((Math.sin((this.c - 0.5) * Math.PI) / 2) + 0.5) * (this.base_val - this.prev_base_val) + this.prev_base_val;
+        this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
+
+        //return ((Math.sin((this.c - 0.5) * Math.PI) / 2) + 0.5) * (this.base_val - this.prev_base_val) + this.prev_base_val + this.mod_coef * this.port.get();
+      }
+      else {
+        this.filter.in = this.base_val;
+        //this.filter2.in = this.filter.lp;
+        //return this.base_val + this.mod_coef * this.port.get(); 
+      }
       //this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
-      this.filter.in = ((Math.sin((this.c - 0.5) * Math.PI) / 2) + 0.5) * (this.base_val - this.prev_base_val) + this.prev_base_val;
       this.filter.process();
+      //this.filter2.process();
       return this.filter.lp + this.mod_coef * this.port.get();
       
     }
     else {
       this.sample_counter = 0;
+      if (!this.nochange_flag) this.nochange_counter++;
+      if (this.nochange_counter > sample_rate / 2) {
+        this.nochange_counter = 0;
+        this.nochange_flag = true;
+      }
       this.prev_base_val = this.base_val;
-      return this.base_val + this.mod_coef * this.port.get(); 
+      if (!this.nochange_flag) {
+        this.filter.in = this.base_val;
+        this.filter.process();
+        return this.filter.lp + this.mod_coef * this.port.get();
+      }
+      else {
+        return this.base_val + this.mod_coef * this.port.get();
+      }
+      //return this.base_val + this.mod_coef * this.port.get(); 
     }
   }
   set(v) { this.base_val = v; }

@@ -15,7 +15,8 @@ class SVCO extends Module {
     this.VCO.fm = this.i['FM'].get();
     this.VCO.set_wave(this.i['WAVE'].get());
     this.VCO.pw = this.i['PW'].get();
-    this.VCO.amp = this.i['AMP'].get();
+    //this.VCO.amp = this.i['AMP'].get();
+    this.amp = this.i['AMP'].get();
   }
 
   set_frequency(f) {
@@ -24,13 +25,14 @@ class SVCO extends Module {
   }
 
   process() {
+    this.amp = this.i['AMP'].get();
   	this.VCO.set_frequency(this.c['FREQ'].get());
   	this.VCO.fm = this.i['FM'].get();
     this.VCO.set_wave(this.i['WAVE'].get());
     this.VCO.pw = this.i['PW'].get();
-    this.VCO.amp = this.i['AMP'].get();
+    //this.VCO.amp = this.i['AMP'].get();
     this.VCO.process();
-    this.o['OUT'].set(this.VCO.out);
+    this.o['OUT'].set(this.VCO.out * this.amp);
   }
 }
 
