@@ -535,7 +535,7 @@ class InputEncoder extends Encoder {
     else {
       this.sample_counter = 0;
       if (!this.nochange_flag) this.nochange_counter++;
-      if (this.nochange_counter > sample_rate / 2) {
+      if (this.nochange_counter > sample_rate * 2) {
         this.nochange_counter = 0;
         this.nochange_flag = true;
       }

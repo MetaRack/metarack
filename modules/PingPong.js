@@ -33,10 +33,10 @@ class PingPong extends Module {
     	this.add_output(new Port({x:hp2px(4), y:110, r:4, name:'O/L'}));
     	this.add_output(new Port({x:hp2px(5.7), y:110, r:4, name:'O/R'}));
 
-    	//this.delay_l = new DelayPrim();
-    	//this.delay_r = new DelayPrim();
-    	this.delay_l = new SmoothSampleDelay();
-    	this.delay_r = new SmoothSampleDelay();
+    	this.delay_l = new DelayPrim();
+    	this.delay_r = new DelayPrim();
+    	//this.delay_l = new SmoothSampleDelay();
+    	//this.delay_r = new SmoothSampleDelay();
     	this.filter_r = new ExponentialFilterPrim({freq:4000});
     	this.filter_l = new ExponentialFilterPrim({freq:4000});
     	this.ADSR_l = new ADSRPrim();
@@ -66,22 +66,23 @@ class PingPong extends Module {
     	this.clock_l = Math.floor(sample_rate * (this.time_l / 10));
     	this.clock_r = Math.floor(sample_rate * (this.time_r / 10));
 
-    	//this.delay_l.time = this.clock_l / sample_rate;
-    	//this.delay_r.time = this.clock_r / sample_rate;
-    	this.delay_l.delay = this.clock_l;
-    	this.delay_r.delay = this.clock_r;
+    	this.delay_l.time = this.clock_l / sample_rate;
+    	this.delay_r.time = this.clock_r / sample_rate;
+    	//this.delay_l.delay = this.clock_l;
+    	//this.delay_r.delay = this.clock_r;
 
     	this.inf_flag = this.inf_button.get();
     	this.inf_led.set(!this.inf_flag * 255);
 
     	this.fb = this.i['FB'].get();
     	this.dw = this.i['D/W'].get();
-    	// this.delay_l.fb = this.fb;
-    	// this.delay_r.fb = this.fb;
-    	// this.delay_l.dw = this.dw;
-    	// this.delay_r.dw = this.dw;
+    	this.delay_l.fb = this.fb;
+    	this.delay_r.fb = this.fb;
+    	this.delay_l.dw = this.dw;
+    	this.delay_r.dw = this.dw;
 
-    	this.in = this.i['I/L'].get();
+    	if (!this.inf_flag)
+    		this.in = this.i['I/L'].get();
     	this.out_l = 0;
     	this.out_r = 0;
 
@@ -117,7 +118,7 @@ class PingPong extends Module {
 			//this.delay_r.fb = 1;
 			
 			//this.filter_l.in = this.delay_l.out;
-			this.delay_l.in = this.delay_l.out//this.out_l;
+			this.delay_l.in = this.delay_l.out;
 			
 			//this.filter_r.in = this.delay_r.out;
 			this.delay_r.in = this.delay_r.out;
@@ -129,16 +130,16 @@ class PingPong extends Module {
 			this.out_r = this.filter_r.lp//((this.delay_r.out * this.dw) + (this.in * (1 - this.dw)))// * this.ADSR_r.out / 10;
 		}
 		else {
-			//this.delay_l.in = this.in;
-			//this.delay_r.in = this.in;
+			this.delay_l.in = this.in;
+			this.delay_r.in = this.in;
 
-			this.delay_l.in = this.in * (1 - this.fb) + this.delay_l.out * this.fb;
-			this.delay_r.in = this.in * (1 - this.fb) + this.delay_r.out * this.fb;			
-			//this.filter_l.in = this.delay_l.out;
-			this.filter_l.in = this.in * (1 - this.dw) + this.delay_l.out * this.dw;
+			//this.delay_l.in = this.in * (1 - this.fb) + this.delay_l.out * this.fb;
+			//this.delay_r.in = this.in * (1 - this.fb) + this.delay_r.out * this.fb;			
+			this.filter_l.in = this.delay_l.out;
+			//this.filter_l.in = this.in * (1 - this.dw) + this.delay_l.out * this.dw;
 			this.out_l = this.filter_l.lp;// * this.ADSR_l.out / 10;
-			//this.filter_r.in = this.delay_r.out;
-			this.filter_r.in = this.in * (1 - this.dw) + this.delay_r.out * this.dw;
+			this.filter_r.in = this.delay_r.out;
+			//this.filter_r.in = this.in * (1 - this.dw) + this.delay_r.out * this.dw;
 			this.out_r = this.filter_r.lp;// * this.ADSR_r.out / 10;
 		}
 
