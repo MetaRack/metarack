@@ -785,14 +785,15 @@ class Module extends GraphicObject {
   }
 
   mouse_dragged(x, y, dx, dy) {
-    this._x += dx;
-    this._y += dy;
+    this._x = x;
+    this._y = y;
 
     this.__x = Math.floor((this._x - engine.x / engine.scale - engine.spacing) / 5.08) * 5.08 + engine.x / engine.scale + engine.spacing;
     this.__y = Math.floor((this._y - engine.y / engine.scale - (engine.top_panel_height + 1) / engine.scale) / 130.5) * 130.5 + engine.y / engine.scale + (engine.top_panel_height + 1) / engine.scale;
 
     let valid = true;
     for (var name in engine.modules) {
+      if (engine.modules[name] == this) continue;
       if (((engine.modules[name].x >= this.__x && engine.modules[name].x < this.__x + this.w) ||
            (this.__x >= engine.modules[name].x && this.__x < engine.modules[name].x + engine.modules[name].w)) && 
           (engine.modules[name].y == this.__y)) {
@@ -800,7 +801,10 @@ class Module extends GraphicObject {
         break;
       }
     }
-    if (valid) {
+    if (valid && 
+        this.__y > engine.top_panel_height / engine.scale &&
+        this.__y + this.h < engine.h - engine.top_panel_height / engine.scale &&
+        this.__x > 0 && this.__x + this.w < engine.w / engine.scale) {
       this.x = this.__x;
       this.y = this.__y;
     }
