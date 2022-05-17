@@ -51,10 +51,6 @@ class GraphicObject {
     this.gparent = null;
     this.gchildren = [];
     this.visible = visible;
-    this.cbf = null;
-    this.sbf = null;
-    this.dbf = null;
-    this.changed = true;
     this.focus = null;
     this.name = name;
     this.ax = 0;
@@ -63,7 +59,13 @@ class GraphicObject {
 
   contains(x, y) { if (x < this.x || y < this.y || x > this.x + this.w || y > this.y + this.h) return false; return true; }
   set_position(x, y) { this.x = x; this.y = y; }
-  set_size(w, h) { this.w = w; this.h = h; }
+  set_size(w, h) { 
+    this.w = w; this.h = h; 
+    this.cbf = null;
+    this.sbf = null;
+    this.dbf = null;
+    this.changed = true;
+  }
   attach(go) { this.gchildren.push(go); go.gparent = this; }
   detach(go) { let i = this.gchildren.indexOf(go); if (i !== -1) this.gchildren.splice(i, 1); }
 
@@ -731,16 +733,18 @@ class Module extends GraphicObject {
     buf.line(2*rounding - Math.cos(angle) * rounding * 0.75, h - 2*rounding + Math.sin(angle) * rounding * 0.75, 
              2*rounding + Math.cos(angle) * rounding * 0.75, h - 2*rounding - Math.sin(angle) * rounding * 0.75);
 
-    sw = 1;
-    buf.stroke(30); buf.strokeWeight(sw); buf.fill(255);
-    buf.rect(w / 6, 5, w - w / 3, 20);
+    if (this.name.length > 0) {
+      sw = 1;
+      buf.stroke(30); buf.strokeWeight(sw); buf.fill(255);
+      buf.rect(w / 6, 5, w - w / 3, 20);
 
-    sw = 0.1;
-    buf.textSize(15);
-    buf.fill(60);
-    buf.textAlign(CENTER, CENTER);
-    buf.strokeWeight(sw);
-    buf.text(this.name.substring(0, Math.floor((w - w / 3) / textWidth(this.name) * this.name.length * 0.7)), w / 2, 15);
+      sw = 0.1;
+      buf.textSize(15);
+      buf.fill(60);
+      buf.textAlign(CENTER, CENTER);
+      buf.strokeWeight(sw);
+      buf.text(this.name.substring(0, Math.floor((w - w / 3) / textWidth(this.name) * this.name.length * 0.7)), w / 2, 15);
+    }
 
     sw = 1.5;
     buf.stroke(this.style.frame); buf.strokeWeight(sw); buf.noFill();
@@ -796,13 +800,13 @@ class Module extends GraphicObject {
 
 // AUDIO
 
-class Audio extends Module {
+class Module0 extends Module {
 
   constructor() {
     super({w:hp2px(4)});
 
-    this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'LEFT'}));
-    this.add_input(new Port({x:hp2px(0.8), y:108, r:6, name:'RIGHT'}));
+    this.add_input(new Port({x:hp2px(0.8), y:88, r:5, name:'LEFT'}));
+    this.add_input(new Port({x:hp2px(0.8), y:108, r:5, name:'RIGHT'}));
 
     this.L = 0;
     this.R = 0;
@@ -810,28 +814,36 @@ class Audio extends Module {
 
   draw_cbf(buf, w, h) {
     super.draw_cbf(buf, w, h);
-    let sw = 1;
-    buf.stroke(60); buf.strokeWeight(sw); buf.fill(255);
-    buf.rect(sw + w * 0.2, sw + h * 0.63, w * 0.6 - 2 * sw, h * 0.038 - 2 * sw);
+    // let sw = 1;
+    // buf.stroke(60); buf.strokeWeight(sw); buf.fill(255);
+    // buf.rect(sw + w * 0.2, sw + h * 0.63, w * 0.6 - 2 * sw, h * 0.038 - 2 * sw);
 
-    sw = 0.1;
-    buf.textSize(w * 0.18);
-    buf.fill(60);
-    buf.textAlign(CENTER, CENTER);
-    buf.strokeWeight(sw);
-    buf.text('LVLS', w / 2, sw*2 + h * 0.63 + h * 0.04 / 2);
+    // sw = 0.1;
+    // buf.textSize(w * 0.18);
+    // buf.fill(60);
+    // buf.textAlign(CENTER, CENTER);
+    // buf.strokeWeight(sw);
+    // buf.text('LVLS', w / 2, sw*2 + h * 0.63 + h * 0.04 / 2);
   }
 
   draw_dbf(buf, x, y, w, h) {
-    buf.stroke(60);
-    buf.strokeWeight(0.4);
-    for (var i = 0; i < 10; i ++) {
-      if (Math.abs(this.L) > i) buf.fill(120);
-      else buf.fill(250);
-      buf.circle(x + w * 0.3, y + h * 0.6 - h * i * 0.057, w * (0.1 + 0.005 * i));
-      if (Math.abs(this.R) > i) buf.fill(120);
-      else buf.fill(250);
-      buf.circle(x + w * 0.7, y + h * 0.6 - h * i * 0.057, w * (0.1 + 0.005 * i));
+    // buf.stroke(60);
+    // buf.strokeWeight(0.4);
+    // for (var i = 0; i < 10; i ++) {
+    //   if (Math.abs(this.L) > i) buf.fill(120);
+    //   else buf.fill(250);
+    //   buf.circle(x + w * 0.3, y + h * 0.6 - h * i * 0.057, w * (0.1 + 0.005 * i));
+    //   if (Math.abs(this.R) > i) buf.fill(120);
+    //   else buf.fill(250);
+    //   buf.circle(x + w * 0.7, y + h * 0.6 - h * i * 0.057, w * (0.1 + 0.005 * i));
+    // }
+  }
+
+  set_size(w, h) {
+    super.set_size(w, h);
+    if (this.i) {
+      this.i['LEFT'].set_position(this.w - 30, this.h / 5);
+      this.i['RIGHT'].set_position(this.w - 15, this.h / 5);
     }
   }
 
@@ -871,6 +883,12 @@ class Engine extends GraphicObject {
     this.rows = 2;
 
     this.stop = false;
+
+    this.top_panel_height = 80;
+    this.module0 = new Module0();
+    // this.module0.set_size(this.w, this.top_panel_height);
+    this.module0.set_position(this.spacing, this.spacing);
+    this.attach(this.module0);
   }
 
   draw(x, y) {
@@ -881,10 +899,14 @@ class Engine extends GraphicObject {
       this.cbf = createGraphics(this.w, this.h);
       this.cbf.background(100);
       this.cbf.fill(60);
-      for (var i = 0; i <= this.rows; i ++) {
-        this.cbf.rect(0, (i * 130.5 + 2) * this.scale, this.w, 3*this.scale);
-        this.cbf.rect(0, ((i + 0.5) * 130.5 - 10) * this.scale, this.w, 20*this.scale);
-        this.cbf.rect(0, (i * 130.5 - 5) * this.scale, this.w, 3*this.scale);
+      this.cbf.rect(0, 2 * this.scale, this.w, 3*this.scale);
+      for (var h = this.top_panel_height; h <= this.h * this.scale; h += (this.y_grid_size + 2) * this.scale) {
+        this.cbf.rect(0, h + 1 * this.scale, this.w, 3*this.scale);
+        this.cbf.rect(0, h + (this.y_grid_size + 2) / 2 * this.scale - 10 * this.scale, this.w, 20*this.scale);
+        this.cbf.rect(0, h - 5 * this.scale, this.w, 3*this.scale);
+        // this.cbf.rect(0, (i * 130.5 + 2) * this.scale, this.w, 3*this.scale);
+        // this.cbf.rect(0, ((i + 0.5) * 130.5 - 10) * this.scale, this.w, 20*this.scale);
+        // this.cbf.rect(0, (i * 130.5 - 5) * this.scale, this.w, 3*this.scale);
       }
     }
     if (!this.sbf) this.sbf = createGraphics(this.w, this.h);
@@ -904,7 +926,10 @@ class Engine extends GraphicObject {
     this.cbf.push(); this.sbf.push(); this.dbf.push(); this.wbf.push();
     this.cbf.scale(this.scale); this.sbf.scale(this.scale); this.dbf.scale(this.scale); this.wbf.scale(this.scale);
 
-    // this.AUDIO.proxy_draw(this.cbf, this.sbf, this.dbf, this.x / this.scale, this.y / this.scale);
+    if (this.module0) {
+      if (this.changed) this.module0.changed = true;
+      this.module0.proxy_draw(this.cbf, this.sbf, this.dbf, this.x / this.scale, this.y / this.scale);
+    }
 
     for (var name in this.modules) {
       if (this.changed) this.modules[name].changed = true;
@@ -955,15 +980,19 @@ class Engine extends GraphicObject {
     this.dbf = null;
     this.wbf = null;
     this.wbf_changed = true;
-
-    if (!this.AUDIO) this.AUDIO = new Audio();
-    this.add_module(this.AUDIO);
+    this.changed = true;
   }
 
   remove_wire(w) {
     let i = this.wires.indexOf(w);
     if (i !== -1) this.wires.splice(i, 1);
     w.disconnect();
+  }
+
+  set_size(w, h) {
+    super.set_size(w, h);
+    this.scale = (this.h - this.top_panel_height) / (130.5 * this.rows);
+    if (this.module0) this.module0.set_size(this.w / this.scale - this.spacing * 2, this.top_panel_height / this.scale - this.spacing * 2);
   }
 
   set_module_style(ms) { this.module_style = ms; }
@@ -994,6 +1023,8 @@ class Engine extends GraphicObject {
   }
 
   find_focus(x, y) {
+    this.focus = this.module0.find_focus(x, y);
+    if (this.focus != null) return this.focus;
     for (var name in this.modules) {
       this.focus = this.modules[name].find_focus(x, y);
       if (this.focus != null) return this.focus;
@@ -1030,15 +1061,12 @@ class Engine extends GraphicObject {
   }
 
   sequential_place_modules() {
+    this.scale = (this.h - this.top_panel_height) / (130.5 * this.rows);
     let x = this.spacing;
-    let y = this.spacing;
-    this.scale = this.h / (130.5 * this.rows);
+    let y = this.spacing / this.scale + this.top_panel_height / this.scale;
 
-    // console.log(this.w)
-    this.AUDIO.set_position(this.w / this.scale  - this.spacing - this.AUDIO.w, this.spacing);
     let modlist = Object.entries(this.modules);
-    // console.log(modlist);
-    for(var i = 1; i < modlist.length; i ++) { 
+    for(var i = 0; i < modlist.length; i ++) { 
       if ((x + modlist[i][1].w + this.spacing > this.w / this.scale) || ((y == this.spacing) &&
           (x + modlist[i][1].w + this.spacing > this.w / this.scale - this.spacing - this.AUDIO.w))) 
         { x = this.spacing; y += this.y_grid_size + this.spacing; }
@@ -1048,10 +1076,10 @@ class Engine extends GraphicObject {
   }
 
   process() {
-    if (this.stop) return;
+    // if (this.stop) return;
+    this.module0.process();
     for (const w of this.wires) w.process();
     for (var name in this.modules) this.modules[name].process();
-    // return this.OUT.get();
   }
 
   save_state() {
@@ -1074,7 +1102,6 @@ class Engine extends GraphicObject {
     while (this.wires.length > 0) this.remove_wire(this.wires[0]); 
     for (const m of s['modules']) { 
       try {
-        if (m['name'] == 'Audio') continue;
         let mod = new this.module_registry[m['name']]();
         mod.refresh_io_names();
         mod.load(m); 
@@ -1107,7 +1134,6 @@ function metamodule(m) {
 
 let audioContext;
 engine = new Engine({w:10, h:10, visible:false});
-engine.add_module_class(Audio);
 
 function mousePressed(event) {
   if (mouseX > engine.ax && mouseX < engine.ax + engine.w && mouseY > engine.ay && mouseY < engine.ay + engine.h) {
@@ -1208,8 +1234,8 @@ function engine_run() {
     let outputR = outputBuffer.getChannelData(1);
     for (let sample = 0; sample < outputL.length; sample++) {
       engine.process();
-      outputL[sample] = engine.AUDIO.L;
-      outputR[sample] = engine.AUDIO.R;
+      outputL[sample] = engine.module0.L;
+      outputR[sample] = engine.module0.R;
     }
   }
 
