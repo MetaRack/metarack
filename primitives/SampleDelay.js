@@ -87,56 +87,92 @@ class SmoothSampleDelay {
     this.out = 0;
   }
 
-  consume() {
-    if (this.consume_amount > 0) {
-      this.out = this.buf[Math.floor(this.consume_begin)];
-      this.consume_begin += 2;
-      this.consume_begin %= this.max_buf;
-      this.consume_amount -= 2;
-      if (this.consume_amount < 0) this.consume_flag = false;
+  clamp (x, a, b) {
+    return Math.max(Math.min(x, b), a);
+  }
+
+  calculate_ratio(s) {
+    if (Math.abs(s) < 16) {
+      return 1;
     }
     else
     {
-      this.out = this.buf[Math.floor(this.consume_begin)];
-      this.consume_begin -= 2;
-      if (this.consume_begin < 0) this.consume_begin += this.max_buf;
-      this.consume_amount += 2;
-      if (this.consume_amount > 0) this.consume_flag = false;
+      return Math.pow(10, this.clamp(s / 10000, -1, 1));
     }
   }
 
-  process() {
-    if (this.consume_flag) 
-      this.consume();
-    else {
-      if (this.prev_delay != this.delay) {
-          this.consume_amount = this.prev_delay - this.delay;
-          //console.log(this.consume_amount);
-          // if (this.prev_delay > this.delay)
-          //   this.consume_dir = true;
-          // else
-          //   this.consume_dir = false;
-          this.prev_delay = this.delay;
-          this.consume_flag = true;
-          this.consume_begin = this.begin;
-          //console.log(this.consume_begin);
-          this.begin = (this.end - this.delay + 1) % this.max_buf;
-          if (this.begin < 0) this.begin += this.max_buf;
-          //console.log(this.begin);
-      }
-      else {
-        this.begin += 1;
-        this.begin %= this.max_buf;
-      }
-      //if (isNaN(this.out)) console.log('Yes')
-      this.out = this.buf[Math.floor(this.begin)];
-      this.buf[Math.floor(this.end)] = this.in;
-      this.end += 1;
+  // consume() {
+  //   if (this.consume_amount > 0) {
+  //     this.out = this.buf[Math.floor(this.consume_begin)];
+  //     this.ratio = this.calculate_ratio(this.consume_amount);
+  //     this.consume_begin += this.ratio;
+  //     this.consume_begin %= this.max_buf;
+  //     this.consume_amount -= this.ratio;
+  //     if (this.consume_amount < 0) this.consume_flag = false;
+  //   }
+  //   else
+  //   {
+  //     this.out = this.buf[Math.floor(this.consume_begin)];
+  //     this.ratio = this.calculate_ratio(this.consume_amount);
+  //     this.consume_begin -= this.ratio;
+  //     if (this.consume_begin < 0) this.consume_begin += this.max_buf;
+  //     this.consume_amount += this.ratio;
+  //     if (this.consume_amount > 0) this.consume_flag = false;
+  //   }
+  // }
 
+  process() {
+    if (this.prev_delay != this.delay) {
+      this.new_begin = (this.end - this.delay + 1) % this.max_buf;
+      if (this.new_begin < 0) this.new_begin += this.max_buf;
+     
+      this.ratio = this.calculate_ratio((this.prev_delay - this.delay));
+      this.begin -= this.ratio * Math.sign(this.prev_delay - this.delay);
+      if (this.begin < 0) this.begin += this.max_buf;
       this.begin %= this.max_buf;
-      this.end %= this.max_buf;
-      //this.prev_delay = this.delay;
-      //this.prev_delay -= 1 * Math.sign(this.prev_delay - this.delay);
     }
+    else {
+      this.begin += 1;
+      this.begin %= this.max_buf;
+    }
+    this.out = this.buf[Math.floor(this.begin)];
+    this.buf[Math.floor(this.end)] = this.in;
+    this.end += 1;
+
+    this.begin %= this.max_buf;
+    this.end %= this.max_buf;
+    this.prev_delay = this.delay;
+    // if (this.consume_flag) 
+    //   this.consume();
+    // else {
+    //   if (this.prev_delay != this.delay) {
+    //       this.consume_amount = this.prev_delay - this.delay;
+    //       //console.log(this.consume_amount);
+    //       // if (this.prev_delay > this.delay)
+    //       //   this.consume_dir = true;
+    //       // else
+    //       //   this.consume_dir = false;
+    //       this.prev_delay = this.delay;
+    //       this.consume_flag = true;
+    //       this.consume_begin = this.begin;
+    //       //console.log(this.consume_begin);
+    //       this.begin = (this.end - this.delay + 1) % this.max_buf;
+    //       if (this.begin < 0) this.begin += this.max_buf;
+    //       //console.log(this.begin);
+    //   }
+    //   else {
+    //     this.begin += 1;
+    //     this.begin %= this.max_buf;
+    //   }
+    //   //if (isNaN(this.out)) console.log('Yes')
+    //   this.out = this.buf[Math.floor(this.begin)];
+    //   this.buf[Math.floor(this.end)] = this.in;
+    //   this.end += 1;
+
+    //   this.begin %= this.max_buf;
+    //   this.end %= this.max_buf;
+    //   //this.prev_delay = this.delay;
+    //   //this.prev_delay -= 1 * Math.sign(this.prev_delay - this.delay);
+    // }
   }
 }
