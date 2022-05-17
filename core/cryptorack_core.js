@@ -779,6 +779,38 @@ class Module extends GraphicObject {
     engine.add_wire(oport, iport, scale, offset);
   }
 
+  mouse_pressed(x, y, dx, dy) { 
+    this._x = this.x;
+    this._y = this.y;
+  }
+
+  mouse_dragged(x, y, dx, dy) {
+    this._x += dx;
+    this._y += dy;
+
+    this.__x = Math.floor((this._x - engine.x / engine.scale - engine.spacing) / 5.08) * 5.08 + engine.x / engine.scale + engine.spacing;
+    this.__y = Math.floor((this._y - engine.y / engine.scale - (engine.top_panel_height + 1) / engine.scale) / 130.5) * 130.5 + engine.y / engine.scale + (engine.top_panel_height + 1) / engine.scale;
+
+    let valid = true;
+    for (var name in engine.modules) {
+      if (((engine.modules[name].x >= this.__x && engine.modules[name].x < this.__x + this.w) ||
+           (this.__x >= engine.modules[name].x && this.__x < engine.modules[name].x + engine.modules[name].w)) && 
+          (engine.modules[name].y == this.__y)) {
+        valid = false;
+        break;
+      }
+    }
+    if (valid) {
+      this.x = this.__x;
+      this.y = this.__y;
+    }
+    engine.changed=true;
+  }
+
+  // mouse_released(x, y, dx, dy) { 
+  //   console.warn(this.name + ' release method undefined'); 
+  // }
+
   save() {
     let s = {
       'name': this.constructor.name,
@@ -856,6 +888,8 @@ class Module0 extends Module {
       this.R = this.i['RIGHT'].get();
     }
   }
+
+  mouse_dragged(x, y, dx, dy) {}
 }
 
 // ENGINE
@@ -895,8 +929,12 @@ class Engine extends GraphicObject {
     if (!this.visible) return;
     this.ax = x; 
     this.ay = y;
-    if (!this.cbf) {
-      this.cbf = createGraphics(this.w, this.h);
+    if (!this.cbf) this.cbf = createGraphics(this.w, this.h);
+    if (!this.sbf) this.sbf = createGraphics(this.w, this.h);
+    if (!this.dbf) this.dbf = createGraphics(this.w, this.h);
+    if (!this.wbf) this.wbf = createGraphics(this.w, this.h);
+
+    if (this.changed) {
       this.cbf.background(100);
       this.cbf.fill(60);
       this.cbf.rect(0, 2 * this.scale, this.w, 3*this.scale);
@@ -909,9 +947,6 @@ class Engine extends GraphicObject {
         // this.cbf.rect(0, (i * 130.5 - 5) * this.scale, this.w, 3*this.scale);
       }
     }
-    if (!this.sbf) this.sbf = createGraphics(this.w, this.h);
-    if (!this.dbf) this.dbf = createGraphics(this.w, this.h);
-    if (!this.wbf) this.wbf = createGraphics(this.w, this.h);
     
     if (this.changed || this.wbf_changed) { 
       this.wbf.clear(); 
@@ -1035,12 +1070,12 @@ class Engine extends GraphicObject {
   mouse_pressed(x, y, dx, dy) {
     this.find_focus((x - this.x) / this.scale, (y - this.y) / this.scale);
     if (this.focus != null) {
-      this.focus.mouse_pressed((x - this.x) / this.scale, (y - this.y) / this.scale, dx, dy);
+      this.focus.mouse_pressed((x - this.x) / this.scale, (y - this.y) / this.scale, dx / this.scale, dy / this.scale);
     }
   }
 
   mouse_dragged(x, y, dx, dy) {
-    if (this.focus != null) this.focus.mouse_dragged((x - this.x) / this.scale, (y - this.y) / this.scale, dx, dy);
+    if (this.focus != null) this.focus.mouse_dragged((x - this.x) / this.scale, (y - this.y) / this.scale, dx / this.scale, dy / this.scale);
     else if (this.drag_enabled) {
       this.x += dx;
       this.y += dy;
@@ -1049,14 +1084,14 @@ class Engine extends GraphicObject {
   }
 
   mouse_released(x, y, dx, dy) {
-    if (this.focus != null) this.focus.mouse_released((x - this.x) / this.scale, (y - this.y) / this.scale, dx, dy);
+    if (this.focus != null) this.focus.mouse_released((x - this.x) / this.scale, (y - this.y) / this.scale, dx / this.scale, dy / this.scale);
     this.focus = null;
   }
 
   double_clicked(x, y, dx, dy) {
     this.find_focus((x - this.x) / this.scale, (y - this.y) / this.scale);
     if (this.focus != null) {
-      this.focus.double_clicked((x - this.x) / this.scale, (y - this.y) / this.scale, dx, dy);
+      this.focus.double_clicked((x - this.x) / this.scale, (y - this.y) / this.scale, dx / this.scale, dy / this.scale);
     }
   }
 
@@ -1067,11 +1102,10 @@ class Engine extends GraphicObject {
 
     let modlist = Object.entries(this.modules);
     for(var i = 0; i < modlist.length; i ++) { 
-      if ((x + modlist[i][1].w + this.spacing > this.w / this.scale) || ((y == this.spacing) &&
-          (x + modlist[i][1].w + this.spacing > this.w / this.scale - this.spacing - this.AUDIO.w))) 
+      if (x + modlist[i][1].w > this.w / this.scale) 
         { x = this.spacing; y += this.y_grid_size + this.spacing; }
       modlist[i][1].set_position(x, y);
-      x += modlist[i][1].w + this.spacing;
+      x += modlist[i][1].w;
     }
   }
 
