@@ -814,6 +814,8 @@ class Engine extends GraphicObject {
     this.scale_enabled = false;
 
     this.rows = 2;
+
+    this.stop = false;
   }
 
   draw(x, y) {
@@ -991,6 +993,7 @@ class Engine extends GraphicObject {
   }
 
   process() {
+    if (this.stop) return;
     for (const w of this.wires) w.process();
     for (var name in this.modules) this.modules[name].process();
     // return this.OUT.get();
@@ -1121,6 +1124,22 @@ function keyReleased() {
   if (keyCode === 91) {
     engine.cmdpressed = false;
   }
+}
+
+function windowResized() {
+  engine.stop = true;
+  rackwidth = document.documentElement.clientWidth;
+  rackheight = document.documentElement.clientHeight;
+  resizeCanvas(rackwidth, rackheight);
+  engine.set_size(rackwidth, rackheight);
+  engine.sequential_place_modules();
+  engine.redraw=true;
+  engine.changed=true;
+  engine.cbf = null;
+  engine.sbf = null;
+  engine.dbf = null;
+  engine.wbf = null;
+  engine.stop = false;
 }
 
 function engine_run() {
