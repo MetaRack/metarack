@@ -382,7 +382,7 @@ class Encoder extends GraphicObject {
     
   }
 
-  set(v) { this.base_val = v; }
+  set(v) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = v; this.changed = true; }
 
   mouse_pressed(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.changed = true; }
   mouse_dragged(x, y, dx, dy) { 
@@ -553,7 +553,7 @@ class InputEncoder extends Encoder {
       //return this.base_val + this.mod_coef * this.port.get(); 
     }
   }
-  set(v) { this.base_val = v; }
+  set(v) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = v; this.changed = true;}
   connect(c) {
     let w = new Wire();
     w.connect(this.port, c.port);
