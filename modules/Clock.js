@@ -1,11 +1,11 @@
 class Clock extends Module {
 
-  constructor(bpm) {
+  constructor(bpm = 120) {
     super({name:'Clock', w:hp2px(10)});
 
     this.add_input(new Port({x:hp2px(0.6), y:16, r:7, default_value:0, name:'Reset'}));
     this.add_input(new Port({x:hp2px(3.6), y:16, r:7, default_value:0, name:'Run'}));
-    this.add_input(new InputEncoder({x:hp2px(6.6), y:16, r:7, vmin:0, vmax:300, val:120, precision:0, name:'BPM'}));
+    this.add_input(new InputEncoder({x:hp2px(6.6), y:16, r:7, vmin:0, vmax:300, val:bpm, precision:0, name:'BPM'}));
 
     this.reset_led = new Led({x:hp2px(1.6), y:9, r:2});
     this.attach(this.reset_led);
@@ -49,7 +49,8 @@ class Clock extends Module {
     this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'Reset'}));
     this.add_output(new Port({x:hp2px(3.8), y:108, r:6, name:'Run'}));
 
-    this.set_bpm(bpm);
+    this.bpm = this.i['BPM'].get().toFixed(0);
+    this.set_bpm(this.bpm);
   }
 
   set_bpm(bpm) {
@@ -62,22 +63,27 @@ class Clock extends Module {
         this.sample_threshold_row[i] = sample_rate * 60 / this.bpm / 2 / this.c['DIV' + (i+1).toString()].get();
       else
         this.sample_threshold_row[i] = sample_rate * 60 / this.bpm / 2 * (-this.c['DIV' + (i+1).toString()].get());
+      if (this.c['DIV' + (i+1).toString()].changed)
+        this.sample_counter_row[i] = this.fmod(this.sample_counter, this.sample_threshold_row[i]);
     }
   }
 
-  draw_dbf (buf, x, y, w, h) {
-    if (this.i['BPM'].changed || this.c['DIV1'].changed || this.c['DIV2'].changed || this.c['DIV3'].changed) {
-      this.set_bpm(this.i['BPM'].get().toFixed(0))
-      for (var i = 0; i < 3; i++) {
-        if (this.c['DIV' + (i+1).toString()].changed)
-          this.sample_counter_row[i] = this.fmod(this.sample_counter, this.sample_threshold_row[i]);
-      }
-    }
-  }
+  // draw_dbf (buf, x, y, w, h) {
+  //   if (this.c['DIV1'].changed || this.c['DIV2'].changed || this.c['DIV3'].changed) {
+  //     this.set_bpm(this.i['BPM'].get().toFixed(0))
+  //     for (var i = 0; i < 3; i++) {
+  //       if (this.c['DIV' + (i+1).toString()].changed)
+  //         this.sample_counter_row[i] = this.fmod(this.sample_counter, this.sample_threshold_row[i]);
+  //     }
+  //   }
+  // }
 
   fmod (a,b) { return Number((a - (Math.floor(a / b) * b)).toPrecision(8)); };
 
   process() {
+    this.bpm = this.i['BPM'].get().toFixed(0);
+    this.set_bpm(this.bpm);
+
     if (this.sample_counter > this.sample_threshold) {
       this.o['CLK'].set(10);
       this.clock_led.set(0);
