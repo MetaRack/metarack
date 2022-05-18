@@ -785,24 +785,25 @@ class Module extends GraphicObject {
   }
 
   mouse_dragged(x, y, dx, dy) {
-    this._x += dx;
-    this._y += dy;
-
-    this.__x = Math.floor((this._x - engine.x / engine.scale - engine.spacing) / 5.08) * 5.08 + engine.x / engine.scale + engine.spacing;
-    this.__y = Math.floor((this._y - engine.y / engine.scale - (engine.top_panel_height + 1) / engine.scale) / 130.5) * 130.5 + engine.y / engine.scale + (engine.top_panel_height + 1) / engine.scale;
+    this._x = Math.floor((x - engine.x / engine.scale - engine.spacing) / 5.08) * 5.08 + engine.x / engine.scale + engine.spacing;
+    this._y = Math.floor((y - engine.y / engine.scale - (engine.top_panel_height + 1) / engine.scale) / 130.5) * 130.5 + engine.y / engine.scale + (engine.top_panel_height + 1) / engine.scale;
 
     let valid = true;
     for (var name in engine.modules) {
-      if (((engine.modules[name].x >= this.__x && engine.modules[name].x < this.__x + this.w) ||
-           (this.__x >= engine.modules[name].x && this.__x < engine.modules[name].x + engine.modules[name].w)) && 
-          (engine.modules[name].y == this.__y)) {
+      if (engine.modules[name] == this) continue;
+      if (((engine.modules[name].x >= this._x && engine.modules[name].x < this._x + this.w) ||
+           (this._x >= engine.modules[name].x && this._x < engine.modules[name].x + engine.modules[name].w)) && 
+          (engine.modules[name].y == this._y)) {
         valid = false;
         break;
       }
     }
-    if (valid) {
-      this.x = this.__x;
-      this.y = this.__y;
+    if (valid && 
+        this._y > engine.top_panel_height / engine.scale &&
+        this._y + this.h < engine.h - engine.top_panel_height / engine.scale &&
+        this._x > 0 && this._x + this.w < engine.w / engine.scale) {
+      this.x = this._x;
+      this.y = this._y;
     }
     engine.changed=true;
   }
@@ -823,7 +824,7 @@ class Module extends GraphicObject {
   }
 
   load(s) {
-    this.name = s['name'];
+    // this.name = s['name'];
     for (var name in s['i']) if (this.i[name]) this.i[name].load(s['i'][name]);
     for (var name in s['c']) if (this.c[name]) this.c[name].load(s['c'][name]);
     this.changed = true;
@@ -1116,6 +1117,12 @@ class Engine extends GraphicObject {
     for (var name in this.modules) this.modules[name].process();
   }
 
+  clear_state() {
+    this.clean();
+    while (this.wires.length > 0) this.remove_wire(this.wires[0]);
+    this.sequential_place_modules();
+  }
+
   save_state() {
     let s = {
       'modules': [],
@@ -1131,14 +1138,18 @@ class Engine extends GraphicObject {
   }
 
   load_state(s) {
-    this.clean();
-    s = JSON.parse(s);
-    while (this.wires.length > 0) this.remove_wire(this.wires[0]); 
+    let modules_count = {};
+    let modules = {};
+
+    s = JSON.parse(s); 
     for (const m of s['modules']) { 
       try {
-        let mod = new this.module_registry[m['name']]();
-        mod.refresh_io_names();
-        mod.load(m); 
+        if (!modules_count[m['name']]) modules_count[m['name']] = 0;
+        modules_count[m['name']] ++;
+        let mname = m['name'] + modules_count[m['name']].toString();
+        modules[mname] = new this.module_registry[m['name']]();
+        modules[mname].refresh_io_names();
+        modules[mname].load(m); 
       } catch (error) {
         console.log(m);
         console.error(error);
@@ -1146,7 +1157,7 @@ class Engine extends GraphicObject {
     } 
     for (const w of s['wires']) { 
       try {
-        this.modules[w['ma']].o[w['pa']].connect(this.modules[w['mb']].i[w['pb']]); 
+        modules[w['ma']].o[w['pa']].connect(modules[w['mb']].i[w['pb']]); 
       } catch (error) {
         console.log(w);
         console.error(error);
@@ -1232,6 +1243,10 @@ function keyPressed() {
        }
     }
     input.click();
+  }
+
+  if (keyCode === 67) {
+    engine.clear_state();
   }
 }
 
