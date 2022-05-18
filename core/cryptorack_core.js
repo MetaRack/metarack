@@ -824,7 +824,7 @@ class Module extends GraphicObject {
   }
 
   load(s) {
-    this.name = s['name'];
+    // this.name = s['name'];
     for (var name in s['i']) if (this.i[name]) this.i[name].load(s['i'][name]);
     for (var name in s['c']) if (this.c[name]) this.c[name].load(s['c'][name]);
     this.changed = true;
