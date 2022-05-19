@@ -17,13 +17,15 @@ class BernoulliGate extends Module {
     this.r_led = new Led({x:hp2x(1.2), y:30.2, r:4});
     this.attach(this.r_led);
     this.r_led.set(255);
+    this.p = this.i['P'].get();
   }
 
   process() {
+    this.p = this.i['P'].get();
     this.gate = this.i['IN'].get();
     this.rand = rackrand();
     if (this.last_gate < this.gate) {
-      if (this.rand < (this.i['P'].get()))
+      if (this.rand < (this.p))
         this.state = 'l';
       else
         this.state = 'r';  

@@ -8,42 +8,46 @@ class Kick extends Module {
 		this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
 		this.add_input(new Port({x:hp2x(0.8), y:88, r:6, name:'GATE'}));
 
-		this.M = this.i['M'].get();
-		this.N = this.i['N'].get();
-		this.T = this.i['T'].get();
-		this.C = this.i['C'].get();
-
-		// this.ADSR = new ADSRPrim (this.A / 10, 1 + this.D / 5, 0, 0);
-		// this.ADSR2 = new ADSRPrim (this.A / 10, 1 + this.D / 5, 0, 0);
-		this.ADSR = new ADSRPrim (0.12, this.M, 0.05, 2.30);
-		this.ADSR2 = new ADSRPrim (0.14, this.N, 0.1, 30);
+		this.ADSR = new ADSRPrim (0.12, 5.06, 0.05, 2.30);
+		this.ADSR2 = new ADSRPrim (0.14, 9.96, 0.1, 30);
 		this.VCO = new VCOPrim (50);
 		this.VCA = new VCAPrim (10);
 		this.LP = new LadderFilter();
 		this.LP.setResonance(0);
 		this.LP.setCutoffFreq(this.C);
-
+		this.set_param();
 	}
 
-	draw_dbf (buf, x, y, w, h) {
-		 if (this.i['M'].changed) {
-		 	this.M = this.i['M'].get();
-		 	this.ADSR.set_param(0.12, this.M, 0.05, 2.30);
-		 }
-		 if (this.i['N'].changed) {
-		 	this.N = this.i['N'].get();
-		 	this.ADSR2.set_param(0.14, this.N, 0.1, 30);
-		 }
-		 if (this.i['T'].changed) {
-		 	this.T = this.i['T'].get();
-		 }
-		 if (this.i['C'].changed) {
-		 	this.C = this.i['C'].get();
-		 	this.LP.setCutoffFreq(this.C);
-		 }
+	set_param() {
+		this.M = this.i['M'].get();
+		this.N = this.i['N'].get();
+		this.T = this.i['T'].get();
+		this.C = this.i['C'].get();
+		this.ADSR.set_param(0.12, this.M, 0.05, 2.30);
+		this.ADSR2.set_param(0.14, this.N, 0.1, 30);
+		this.LP.setCutoffFreq(this.C);
 	}
+
+	// draw_dbf (buf, x, y, w, h) {
+	// 	 if (this.i['M'].changed) {
+	// 	 	this.M = this.i['M'].get();
+	// 	 	this.ADSR.set_param(0.12, this.M, 0.05, 2.30);
+	// 	 }
+	// 	 if (this.i['N'].changed) {
+	// 	 	this.N = this.i['N'].get();
+	// 	 	this.ADSR2.set_param(0.14, this.N, 0.1, 30);
+	// 	 }
+	// 	 if (this.i['T'].changed) {
+	// 	 	this.T = this.i['T'].get();
+	// 	 }
+	// 	 if (this.i['C'].changed) {
+	// 	 	this.C = this.i['C'].get();
+	// 	 	this.LP.setCutoffFreq(this.C);
+	// 	 }
+	// }
 
 	process () {
+		this.set_param();
 		this.VCO.cv = this.ADSR.out/10;
 		this.VCA.in = this.VCO.out;
 		this.VCA.cv = this.ADSR2.out;
@@ -109,24 +113,33 @@ class Snare extends Module {
 		this.VCO3.amp = 0.62;
 		this.VCO4.amp = 0.25;
 
+		this.set_param();
 	}
 
-	draw_dbf (buf, x, y, w, h) {
-		 if (this.i['M'].changed) {
-		 	this.M = this.i['M'].get();
-		 }
-		 if (this.i['N'].changed) {
-		 	this.N = this.i['N'].get();
-		 }
-		 if (this.i['T'].changed) {
-		 	this.T = this.i['T'].get();
-		 }
-		 if (this.i['C'].changed) {
-		 	this.C = this.i['C'].get();
-		 }
+	set_param() {
+		this.M = this.i['M'].get();
+		this.N = this.i['N'].get();
+		this.T = this.i['T'].get();
+		this.C = this.i['C'].get();
 	}
+
+	// draw_dbf (buf, x, y, w, h) {
+	// 	 if (this.i['M'].changed) {
+	// 	 	this.M = this.i['M'].get();
+	// 	 }
+	// 	 if (this.i['N'].changed) {
+	// 	 	this.N = this.i['N'].get();
+	// 	 }
+	// 	 if (this.i['T'].changed) {
+	// 	 	this.T = this.i['T'].get();
+	// 	 }
+	// 	 if (this.i['C'].changed) {
+	// 	 	this.C = this.i['C'].get();
+	// 	 }
+	// }
 
 	process () {
+		this.set_param();
 		this.VCA1.in = (this.VCO1.out + this.VCO2.out + this.VCO3.out + this.VCO4.out)/4;
 		this.VCA1.cv = this.ADSR1.out;
 		this.VCA2.in = this.NOIS.out / 5 * this.N;

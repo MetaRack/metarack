@@ -34,23 +34,34 @@ class Scale extends Module {
     this.add_output(new Port({x:hp2x(0.8), y:88, r:6, name:'GATE'}));
     this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
 
-    this.root = this.c['ROOT'].get().toFixed(0) - 1;
-    this.scale = this.c['SCL'].get().toFixed(0) - 1;
+    // this.root = this.c['ROOT'].get().toFixed(0) - 1;
+    // this.scale = this.c['SCL'].get().toFixed(0) - 1;
 
-    this.semitones = [];
-    for (var j = 0; j < this.scales[this.scale].length; j++) { 
-      this.semitones.push((this.root + this.scales[this.scale][j]) % 12);
-    }
+    // this.semitones = [];
+    // for (var j = 0; j < this.scales[this.scale].length; j++) { 
+    //   this.semitones.push((this.root + this.scales[this.scale][j]) % 12);
+    // }
 
     this.gate_length = 100;
     this.gate_counter = 0;
 
     this.value = 0;
-    for(var i = 0; i < this.semitones.length; i ++) this.semitones[i] /= 12;
+    
     this.mod = 0;
     this.cl_i = 0;
     this.v_frac = 0;
     this.last_value = 0;
+
+    this.scale = 0;
+    this.root = 0;
+    this.semitones = [];
+    for (var j = 0; j < this.scales[this.scale].length; j++) { 
+      this.semitones.push((this.root + this.scales[this.scale][j]) % 12);
+    }
+    for(var i = 0; i < this.semitones.length; i ++) this.semitones[i] /= 12;
+    this.prev_scale = 0;
+    this.prev_root = 0;
+    this.set_param();
   }
 
   get_scale() {
@@ -67,24 +78,43 @@ class Scale extends Module {
     return (Math.floor(v) + this.semitones[this.cl_i] / 12);
   }
 
-  draw_dbf (buf, x, y, w, h) {
-    if (this.c['ROOT'].changed) {
-      this.root = this.c['ROOT'].get().toFixed(0) - 1;
+  set_param() {
+    this.root = this.c['ROOT'].get().toFixed(0) - 1;
+    if (this.root != this.prev_root) {
       this.semitones = [];
       for (var j = 0; j < this.scales[this.scale].length; j++) { 
         this.semitones.push((this.root + this.scales[this.scale][j]) % 12);
       }
     }
-    if (this.c['SCL'].changed) {
-      this.scale = this.c['SCL'].get().toFixed(0) - 1;
+    this.scale = this.c['SCL'].get().toFixed(0) - 1;
+    if (this.scale != this.prev_scale) {
       this.semitones = [];
+      if (this.scale == -1) this.scale = 0;
       for (var j = 0; j < this.scales[this.scale].length; j++) { 
         this.semitones.push((this.root + this.scales[this.scale][j]) % 12);
       }
     }
   }
 
+  // draw_dbf (buf, x, y, w, h) {
+  //   if (this.c['ROOT'].changed) {
+  //     this.root = this.c['ROOT'].get().toFixed(0) - 1;
+  //     this.semitones = [];
+  //     for (var j = 0; j < this.scales[this.scale].length; j++) { 
+  //       this.semitones.push((this.root + this.scales[this.scale][j]) % 12);
+  //     }
+  //   }
+  //   if (this.c['SCL'].changed) {
+  //     this.scale = this.c['SCL'].get().toFixed(0) - 1;
+  //     this.semitones = [];
+  //     for (var j = 0; j < this.scales[this.scale].length; j++) { 
+  //       this.semitones.push((this.root + this.scales[this.scale][j]) % 12);
+  //     }
+  //   }
+  // }
+
   process() {
+    this.set_param();
     this.value = this.get_closest_note(Math.round(this.i['IN'].get() * 12) / 12);
     if (this.last_value != this.value) {
       this.gate_counter = this.gate_length;
@@ -98,6 +128,8 @@ class Scale extends Module {
     } else {
       this.o['GATE'].set(-10);
     }
+    this.prev_root = this.root;
+    this.prev_scale = this.scale;
     //this.textdisplay.process(this.semitones[this.cl_i] * 12);
   }
 }
