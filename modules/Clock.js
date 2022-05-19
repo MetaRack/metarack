@@ -1,29 +1,29 @@
 class Clock extends Module {
 
-  constructor(bpm = 120) {
-    super({name:'Clock', w:hp2px(10)});
+  constructor() {
+    super({w:hp2x(10)});
 
-    this.add_input(new Port({x:hp2px(0.6), y:16, r:7, default_value:0, name:'Reset'}));
-    this.add_input(new Port({x:hp2px(3.6), y:16, r:7, default_value:0, name:'Run'}));
-    this.add_input(new InputEncoder({x:hp2px(6.6), y:16, r:7, vmin:0, vmax:300, val:bpm, precision:0, name:'BPM'}));
+    this.add_input(new Port({x:hp2x(0.6), y:16, r:7, default_value:0, name:'Reset'}));
+    this.add_input(new Port({x:hp2x(3.6), y:16, r:7, default_value:0, name:'Run'}));
+    this.add_input(new InputEncoder({x:hp2x(6.6), y:16, r:7, vmin:0, vmax:300, val:120, precision:0, name:'BPM'}));
 
-    this.reset_led = new Led({x:hp2px(1.6), y:9, r:2});
+    this.reset_led = new Led({x:hp2x(1.6), y:9, r:2});
     this.attach(this.reset_led);
     this.reset_led.set(255);
-    this.reset_button = new Button({x:hp2px(1.4), y:8, r:3});
+    this.reset_button = new Button({x:hp2x(1.4), y:8, r:3});
     this.attach(this.reset_button);
 
-    this.run_led = new Led({x:hp2px(4.6), y:9, r:2});
+    this.run_led = new Led({x:hp2x(4.6), y:9, r:2});
     this.attach(this.run_led);
     this.run_led.set(0);
-    this.run_button = new Button({x:hp2px(4.4), y:8, r:3, state:true});
+    this.run_button = new Button({x:hp2x(4.4), y:8, r:3, state:true});
     this.attach(this.run_button);
 
-    this.clock_led = new Led({x:hp2px(7.4), y:8, r:3});
+    this.clock_led = new Led({x:hp2x(7.4), y:8, r:3});
     this.attach(this.clock_led);
     this.clock_led.set(255);
 
-    this.add_output(new Port({x:hp2px(0.6), y:36, r:7, name:'CLK'}));
+    this.add_output(new Port({x:hp2x(0.6), y:36, r:7, name:'CLK'}));
     this.sample_counter = 0;
     this.value = 0;
 
@@ -40,14 +40,14 @@ class Clock extends Module {
     this.curr_rst_gate = 0;
 
     for (var i = 1; i < 4; i++) {
-      this.add_output(new Port({x:hp2px(0.8 + (i-1)*3), y:88, r:6, name:'CLK ' + i.toString()}));
-      this.add_control(new StepEncoder({x:hp2px(0.8 + (i-1)*3), y:68, r:6, vmin:-4, vmax:4, val:1, step:1, precision:0, nonzero:true, name:'DIV' + i.toString()}));
+      this.add_output(new Port({x:hp2x(0.8 + (i-1)*3), y:88, r:6, name:'CLK ' + i.toString()}));
+      this.add_control(new StepEncoder({x:hp2x(0.8 + (i-1)*3), y:68, r:6, vmin:-4, vmax:4, val:1, step:1, precision:0, nonzero:true, name:'DIV' + i.toString()}));
       this.sample_counter_row[i-1] = 0;
       this.value_row[i-1] = 0;
     }
 
-    this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'Reset'}));
-    this.add_output(new Port({x:hp2px(3.8), y:108, r:6, name:'Run'}));
+    this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'Reset'}));
+    this.add_output(new Port({x:hp2x(3.8), y:108, r:6, name:'Run'}));
 
     this.bpm = this.i['BPM'].get().toFixed(0);
     this.set_bpm(this.bpm);

@@ -1,12 +1,12 @@
 class Hat extends Module {
 	constructor () {
-		super({w:hp2px(4)});
-		this.add_input(new InputEncoder({x:hp2px(0.6), y:6, r:7, vmin:0, vmax:10, val:5, name:'A'}));
-	    this.add_input(new InputEncoder({x:hp2px(0.6), y:26, r:7, vmin:0, vmax:10, val:5, name:'D'}));
-	    this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, vmin:0, vmax:9, val:4.5, name:'T'}));
-	    this.add_input(new InputEncoder({x:hp2px(0.6), y:66, r:7, vmin:0, vmax:9, val:4.5, name:'C'}));
-		this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
-		this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'GATE'}));
+		super({w:hp2x(4)});
+		this.add_input(new InputEncoder({x:hp2x(0.6), y:6, r:7, vmin:0, vmax:10, val:5, name:'A'}));
+	    this.add_input(new InputEncoder({x:hp2x(0.6), y:26, r:7, vmin:0, vmax:10, val:5, name:'D'}));
+	    this.add_input(new InputEncoder({x:hp2x(0.6), y:46, r:7, vmin:0, vmax:9, val:4.5, name:'T'}));
+	    this.add_input(new InputEncoder({x:hp2x(0.6), y:66, r:7, vmin:0, vmax:9, val:4.5, name:'C'}));
+		this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
+		this.add_input(new Port({x:hp2x(0.8), y:88, r:6, name:'GATE'}));
 
 		this.A = this.i['A'].get();
 		this.D = this.i['D'].get();

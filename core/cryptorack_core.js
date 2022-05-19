@@ -1,6 +1,11 @@
+document.addEventListener('contextmenu', event => event.preventDefault());
+
 let engine;
 
-function hp2px(hp) {return hp * 5.08;}
+function hp2x(hp, round=false) {if (round) return Math.round(hp) * 5.08; return hp * 5.08;}
+function hp2y(hp, round=false) {if (round) return Math.round(hp) * 128.5; return hp * 128.5;}
+function x2hp(x, round=false)  {if (round) return Math.round(x / 5.08); return x / 5.08;}
+function y2hp(y, round=false)  {if (round) return Math.round(y / 128.5); return y / 128.5;}
 
 function pow2(x, xr=0, y=1, c=1) {
   if (x < 0) { x += 20; c = 1048576; }
@@ -66,29 +71,30 @@ class GraphicObject {
     this.dbf = null;
     this.changed = true;
   }
-  attach(go) { this.gchildren.push(go); go.gparent = this; }
+  attach(go) { this.gchildren.push(go); go.gparent = this; go.changed = true; }
   detach(go) { let i = this.gchildren.indexOf(go); if (i !== -1) this.gchildren.splice(i, 1); }
 
   proxy_draw(cbf, sbf, dbf, x, y) {
     if (!this.visible) return;
+    if (this.w == 0 || this.h == 0) return;
 
     this.ax = x; this.ay = y;
 
-    if (!this.cbf && this.draw_cbf) { this.cbf = createGraphics(this.w * engine.MAX_SCALE, this.h * engine.MAX_SCALE); this.draw_cbf(this.cbf, this.cbf.width, this.cbf.height); }
-    if (!this.sbf && this.draw_sbf) { this.sbf = createGraphics(this.w * engine.MAX_SCALE, this.h * engine.MAX_SCALE); }
+    if (!this.cbf && this.draw_cbf) { this.cbf = createGraphics(this.w * engine.scale * engine.res_multiplier, this.h * engine.scale * engine.res_multiplier); this.draw_cbf(this.cbf, this.cbf.width, this.cbf.height); }
+    if (!this.sbf && this.draw_sbf) { this.sbf = createGraphics(this.w * engine.scale * engine.res_multiplier, this.h * engine.scale * engine.res_multiplier); }
     
     if (this.changed && this.draw_sbf) {
       sbf.erase(); sbf.noStroke(); sbf.rect(x + this.x, y + this.y, this.w, this.h); sbf.noErase();
       this.sbf.clear(); this.draw_sbf(this.sbf, this.sbf.width, this.sbf.height);
     }
 
-    if ((this.changed || this.gparent.changed) && this.cbf) {
+    if (this.gparent.changed) this.changed = true;
+
+    if (this.changed && this.cbf) {
       cbf.image(this.cbf, x + this.x, y + this.y, this.w, this.h);
     }
-    if ((this.changed || this.gparent.changed) && this.sbf) sbf.image(this.sbf, x + this.x, y + this.y, this.w, this.h);
+    if (this.changed && this.sbf) sbf.image(this.sbf, x + this.x, y + this.y, this.w, this.h);
     if (this.draw_dbf) { this.draw_dbf(dbf, x + this.x, y + this.y, this.w, this.h); }
-    
-    if (this.gparent.changed) this.changed = true;
 
     for (const go of this.gchildren) go.proxy_draw(cbf, sbf, dbf, x + this.x, y + this.y);
     
@@ -127,7 +133,6 @@ class ProtoPort extends GraphicObject {
     this.value = this.default_value;
     this.style = style;
     this.port = this;
-    this.modname = '';
   }
 
   draw_cbf(buf, w, h) {
@@ -185,6 +190,11 @@ class ProtoPort extends GraphicObject {
       return w;
     }
     return new Wire({a: this});
+  }
+
+  remove_all_wires() {
+    while (this.wires.length > 0) engine.remove_wire(this.wires[0]);
+    if (this.in_wire) engine.remove_wire(this.in_wire);
   }
 }
 
@@ -393,7 +403,7 @@ class Encoder extends GraphicObject {
     if (this.base_val < this.vmin) this.base_val = this.vmin + 0.0001;
     this.changed=true;
   }
-  mouse_released(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.changed = true; }
+  mouse_released(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.changed = true; engine.undo_checkpoint();}
   double_clicked(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = this.def_val; this.mod = this.def_mod; this.changed = true; }
 
   save() { return this.base_val.toFixed(6); }
@@ -412,6 +422,8 @@ class StepEncoder extends Encoder {
     this.dval = val;
   }
 
+  mouse_pressed(x, y, dx, dy) { super.mouse_pressed(x, y, dx, dy); this.y0 = y; }
+
   mouse_dragged(x, y, dx, dy) { 
     this.dval -= dy / 500 * (this.vmax - this.vmin);
     if (Math.abs(this.dval) > this.step) {
@@ -422,8 +434,6 @@ class StepEncoder extends Encoder {
     if (this.base_val < this.vmin) this.base_val = this.vmin + 0.0001;
     this.changed=true;
   }
-
-  mouse_pressed(x, y, dx, dy) { super.mouse_pressed(x, y, dx, dy); this.y0 = y; }
 
   draw_sbf(buf, w, h) {
     this.r = w / 2 * this.rc;
@@ -660,16 +670,24 @@ class Wire extends GraphicObject {
   save() {
     if (!this.a.isinput) 
       return {
-        'ma': this.a.modname,
-        'pa': this.a.name,
-        'mb': this.b.modname,
-        'pb': this.b.name
+        'a': {
+          'mid': this.a.module.id,
+          'pid': this.a.name,
+        },
+        'b': {
+          'mid': this.b.module.id,
+          'pid': this.b.name
+        }
       }
     return {
-      'ma': this.b.modname,
-      'pa': this.b.name,
-      'mb': this.a.modname,
-      'pb': this.a.name
+      'b': {
+        'mid': this.a.module.id,
+        'pid': this.a.name,
+      },
+      'a': {
+        'mid': this.b.module.id,
+        'pid': this.b.name
+      }
     }
   }
 }
@@ -678,11 +696,13 @@ class Wire extends GraphicObject {
 
 class Module extends GraphicObject {
   constructor({name='', x=0, y=0, w=0, h=128.5, style = new ModuleStyle()}) {
-    super({x:x, y:y, w:w, h:h, name:name})
+    super({x:x, y:y, w:w, h:h});
+    this.name = this.constructor.name
     this.i = {};
     this.o = {};
     this.c = {};
     this.style = style;
+    this.id = 0;
     if (engine) engine.add_module(this);
   }
 
@@ -755,24 +775,19 @@ class Module extends GraphicObject {
     this.i[i.name] = i;
     this.attach(i);
     i.port.isinput = true;
-    i.port.modname = this.name;
+    i.port.module = this;
   }
 
   add_output(o) {
     this.o[o.name] = o;
     this.attach(o);
     o.port.isinput = false;
-    o.port.modname = this.name;
+    o.port.module = this;
   }
 
   add_control(c) {
     this.c[c.name] = c;
     this.attach(c);
-  }
-
-  refresh_io_names() {
-    for (var name in this.i) this.i[name].port.modname = this.name;
-    for (var name in this.o) this.o[name].port.modname = this.name;
   }
 
   connect(oport, iport, scale=1, offset=0) {
@@ -785,38 +800,30 @@ class Module extends GraphicObject {
   }
 
   mouse_dragged(x, y, dx, dy) {
-    this._x = Math.floor((x - engine.x / engine.scale - engine.spacing) / 5.08) * 5.08 + engine.x / engine.scale + engine.spacing;
-    this._y = Math.floor((y - engine.y / engine.scale - (engine.top_panel_height + 1) / engine.scale) / 130.5) * 130.5 + engine.y / engine.scale + (engine.top_panel_height + 1) / engine.scale;
+    this._x = Math.floor((x - engine.x / engine.scale - engine.spacing) / 5.08);
+    this._x = this._x * 5.08 + engine.x / engine.scale + engine.spacing;
+    this._y = Math.floor((y - engine.y / engine.scale - engine.module0.h - 2*engine.spacing) / engine.row_height);
+    this._y = this._y * engine.row_height + engine.y / engine.scale + engine.module0.h + 2*engine.spacing;
 
-    let valid = true;
-    for (var name in engine.modules) {
-      if (engine.modules[name] == this) continue;
-      if (((engine.modules[name].x >= this._x && engine.modules[name].x < this._x + this.w) ||
-           (this._x >= engine.modules[name].x && this._x < engine.modules[name].x + engine.modules[name].w)) && 
-          (engine.modules[name].y == this._y)) {
-        valid = false;
-        break;
-      }
+    this._xy = engine.closest_place(this, this._x, this._y);
+    if (this._xy != null) {
+      this.x = this._xy[0];
+      this.y = this._xy[1];
+      engine.update_width();
+      engine.changed=true;
     }
-    if (valid && 
-        this._y > engine.top_panel_height / engine.scale &&
-        this._y + this.h < engine.h - engine.top_panel_height / engine.scale &&
-        this._x > 0 && this._x + this.w < engine.w / engine.scale) {
-      this.x = this._x;
-      this.y = this._y;
-    }
-    engine.changed=true;
   }
 
-  // mouse_released(x, y, dx, dy) { 
-  //   console.warn(this.name + ' release method undefined'); 
-  // }
+  mouse_released(x, y, dx, dy) { 
+    engine.undo_checkpoint();
+  }
 
   save() {
     let s = {
       'name': this.constructor.name,
       'i': {},
-      'c': {}
+      'c': {},
+      'pos': [Math.round(engine.x2hp(this.x)), Math.round(engine.y2hp(this.y))]
     };
     for (var name in this.i) { if (this.i[name].save) { s['i'][name] = this.i[name].save(); } }
     for (var name in this.c) { if (this.c[name].save) { s['c'][name] = this.c[name].save(); } }
@@ -824,10 +831,10 @@ class Module extends GraphicObject {
   }
 
   load(s) {
-    // this.name = s['name'];
     for (var name in s['i']) if (this.i[name]) this.i[name].load(s['i'][name]);
     for (var name in s['c']) if (this.c[name]) this.c[name].load(s['c'][name]);
-    this.changed = true;
+    engine.place_module(this, s['pos']);
+    engine.changed = true;
   }
 }
 
@@ -836,10 +843,10 @@ class Module extends GraphicObject {
 class Module0 extends Module {
 
   constructor() {
-    super({w:hp2px(4)});
-
-    this.add_input(new Port({x:hp2px(0.8), y:88, r:5, name:'LEFT'}));
-    this.add_input(new Port({x:hp2px(0.8), y:108, r:5, name:'RIGHT'}));
+    super({w:hp2x(4)});
+    this.name = '';
+    this.add_input(new Port({x:hp2x(0.8), y:88, r:5, name:'LEFT'}));
+    this.add_input(new Port({x:hp2x(0.8), y:108, r:5, name:'RIGHT'}));
 
     this.L = 0;
     this.R = 0;
@@ -898,137 +905,244 @@ class Module0 extends Module {
 class Engine extends GraphicObject {
   constructor({w=rackwidth, h=rackheight, visible=true}={}) {
     super({w:w, h:h, visible:visible});
-    this.clean();
-    this.controls = {};
+
     this.module_registry = {};
-  
+
     this.module_style = new ModuleStyle();
     this.port_style = new PortStyle();
     this.wire_style = new WireStyle();
     this.background_color = 255;
 
-    this.cmdpressed = false;
+    this.undo_size = 20;
+    this.actions_buffer = new Array(this.undo_size);
+    this.current_time = 0;
+    for (let i = 0; i < this.undo_size; i++) this.actions_buffer[i] = [0, {}];
 
     this.spacing = 1;
-    this.x_grid_size = hp2px(1);
-    this.y_grid_size = 128.5;
+    this.row_height = 130.5;
     this.drag_enabled = false;
     this.scale_enabled = false;
 
-    this.rows = 2;
-
     this.stop = false;
 
-    this.top_panel_height = 80;
+    this.module0_height = 0.2;
     this.module0 = new Module0();
-    // this.module0.set_size(this.w, this.top_panel_height);
     this.module0.set_position(this.spacing, this.spacing);
     this.attach(this.module0);
+
+    this.reinit();
   }
 
-  draw(x, y) {
-    if (!this.visible) return;
-    this.ax = x; 
-    this.ay = y;
-    if (!this.cbf) this.cbf = createGraphics(this.w, this.h);
-    if (!this.sbf) this.sbf = createGraphics(this.w, this.h);
-    if (!this.dbf) this.dbf = createGraphics(this.w, this.h);
-    if (!this.wbf) this.wbf = createGraphics(this.w, this.h);
-
-    if (this.changed) {
-      this.cbf.background(100);
-      this.cbf.fill(60);
-      this.cbf.rect(0, 2 * this.scale, this.w, 3*this.scale);
-      for (var h = this.top_panel_height; h <= this.h * this.scale; h += (this.y_grid_size + 2) * this.scale) {
-        this.cbf.rect(0, h + 1 * this.scale, this.w, 3*this.scale);
-        this.cbf.rect(0, h + (this.y_grid_size + 2) / 2 * this.scale - 10 * this.scale, this.w, 20*this.scale);
-        this.cbf.rect(0, h - 5 * this.scale, this.w, 3*this.scale);
-        // this.cbf.rect(0, (i * 130.5 + 2) * this.scale, this.w, 3*this.scale);
-        // this.cbf.rect(0, ((i + 0.5) * 130.5 - 10) * this.scale, this.w, 20*this.scale);
-        // this.cbf.rect(0, (i * 130.5 - 5) * this.scale, this.w, 3*this.scale);
-      }
-    }
-    
-    if (this.changed || this.wbf_changed) { 
-      this.wbf.clear(); 
-    }
-    
-    if (this.changed) {  
-      this.sbf.clear(); 
-    }
-    
-    this.dbf.clear();
-
-    this.cbf.push(); this.sbf.push(); this.dbf.push(); this.wbf.push();
-    this.cbf.scale(this.scale); this.sbf.scale(this.scale); this.dbf.scale(this.scale); this.wbf.scale(this.scale);
-
-    if (this.module0) {
-      if (this.changed) this.module0.changed = true;
-      this.module0.proxy_draw(this.cbf, this.sbf, this.dbf, this.x / this.scale, this.y / this.scale);
-    }
-
-    for (var name in this.modules) {
-      if (this.changed) this.modules[name].changed = true;
-      this.modules[name].proxy_draw(this.cbf, this.sbf, this.dbf, this.x / this.scale, this.y / this.scale);
-    }
-
-    if (this.changed || this.wbf_changed) for (const w of engine.wires) w.draw(this.wbf, this.x / this.scale, this.y / this.scale);
-    this.cbf.pop(); this.sbf.pop(); this.dbf.pop(); this.wbf.pop();
-    image(this.cbf, x, y, this.w, this.h);
-    image(this.sbf, x, y, this.w, this.h);
-    image(this.dbf, x, y, this.w, this.h);
-    image(this.wbf, x, y, this.w, this.h);
-    let sw = 3; stroke(60); strokeWeight(sw); noFill(); rect(x + sw / 2, y + sw / 2, this.w - sw, this.h - sw);
-    this.changed = false;
-    this.wbf_changed = false;
+  reinit() {
+    this.reinit_patch();
+    this.reinit_view();
+    this.reinit_iterators();
   }
 
-  add_module_class(mc) { this.module_registry[mc.name] = mc; }
-
-  add_module(m) { 
-    if (!this.modules_count[m.constructor.name]) this.modules_count[m.constructor.name] = 0;
-    this.modules_count[m.constructor.name] ++;
-    let mname = m.constructor.name + this.modules_count[m.constructor.name].toString();
-    this.modules[mname] = m;
-    m.name = mname;
-    this.attach(m);
-    m.changed = true;
-  }
-
-  add_wire(w) { this.wires.push(w); this.wbf_changed = true; }
-
-  clean() {
-    this.modules = {};
-    this.modules_count = {};
+  reinit_patch() {
+    this.modules = [];
+    this.module_index = {0: this.module0};
     this.wires = [];
+    this.rows = 2;
+    this.rack_max_width = 0;
+    this.active_module = null;
+    this.state = null;
+  }
 
-    this.MIN_SCALE = 2;
-    this.MAX_SCALE = 5;
-    this.scale = this.MAX_SCALE;
-
+  reinit_view() {
+    this.res_multiplier = 1.5;
+    this.scale = this.h / (this.row_height * (this.rows + this.module0_height));
     this.control_focus = null;
-    this.redraw = true;
-
     this.active_wire = null;
 
     this.cbf = null;
     this.sbf = null;
     this.dbf = null;
     this.wbf = null;
+
     this.wbf_changed = true;
     this.changed = true;
+  }
+
+  reinit_iterators() {
+    this.i_process = 0;
+    this.i_draw = 0;
+    this.i_mouse = 0;
+    this.i_width = 0;
+    this.i_save = 0;
+    this.id_module = null;
+  }
+
+  draw(x, y) {
+    if (!this.visible) return;
+    this.ax = x; this.ay = y;
+    if (!this.cbf) this.cbf = createGraphics(this.w, this.h);
+    if (!this.sbf) this.sbf = createGraphics(this.w, this.h);
+    if (!this.dbf) this.dbf = createGraphics(this.w, this.h);
+    if (!this.wbf) this.wbf = createGraphics(this.w, this.h);
+    
+    if (this.changed || this.wbf_changed) { this.wbf.clear(); }
+    
+    if (this.changed) { this.sbf.clear(); }
+    
+    this.dbf.clear();
+
+    this.cbf.push(); this.sbf.push(); this.dbf.push(); this.wbf.push();
+    this.cbf.scale(this.scale); this.sbf.scale(this.scale); this.dbf.scale(this.scale); this.wbf.scale(this.scale);
+
+    if (this.changed) {
+      this.cbf.background(100);
+      this.cbf.fill(60);
+      this.cbf.strokeWeight(0.3);
+      this.cbf.rect(0, this.spacing, this.w, 3);
+      for (let h = hp2y(this.module0_height); h <= this.h; h += this.row_height) {
+        this.cbf.rect(0, h + this.spacing, this.w, 3);
+        this.cbf.rect(0, h + this.row_height / 2 - 10, this.w, 20);
+        this.cbf.rect(0, h - 3 - this.spacing, this.w, 3);
+      }
+    }
+
+    if (this.module0) {
+      if (this.changed) this.module0.changed = true;
+      this.module0.proxy_draw(this.cbf, this.sbf, this.dbf, 0, 0);
+    }
+
+    for (this.i_draw = 0; this.i_draw < this.modules.length; this.i_draw ++) {
+      if (this.changed) this.modules[this.i_draw].changed = true;
+      this.modules[this.i_draw].proxy_draw(this.cbf, this.sbf, this.dbf, this.x / this.scale, this.y / this.scale);
+    }
+
+    if (this.changed || this.wbf_changed) 
+      for (this.i_draw = 0; this.i_draw < this.wires.length; this.i_draw ++) 
+        this.wires[this.i_draw].draw(this.wbf, this.x / this.scale, this.y / this.scale);
+    this.cbf.pop(); this.sbf.pop(); this.dbf.pop(); this.wbf.pop();
+    image(this.cbf, x, y, this.w, this.h);
+    image(this.sbf, x, y, this.w, this.h);
+    image(this.dbf, x, y, this.w, this.h);
+    image(this.wbf, x, y, this.w, this.h);
+    const sw = 3; stroke(60); strokeWeight(sw); noFill(); rect(x + sw / 2, y + sw / 2, this.w - sw, this.h - sw);
+    this.changed = false;
+    this.wbf_changed = false;
+  }
+
+  update_width() {
+    this.rack_max_width = 0;
+    for (this.i_width = 0; this.i_width < this.modules.length; this.i_width ++)
+      if (this.rack_max_width < this.x2hp(this.modules[this.i_width].x + this.modules[this.i_width].w)) 
+        this.rack_max_width = this.x2hp(this.modules[this.i_width].x + this.modules[this.i_width].w);
+  }
+
+  add_module_class(mc) { this.module_registry[mc.name] = mc; }
+
+  add_module(m) { 
+    this.modules.push(m);
+    if (this.id_module) m.id = this.id_module;
+    else m.id = parseInt(Object.keys(this.module_index).reduce((a, b) => parseInt(a) > parseInt(b) ? a : b)) + 1;
+    this.module_index[m.id] = m;
+    this.attach(m);
+    this.place_module(m);
+    this.update_width();
+    this.undo_checkpoint();
+  }
+
+  add_wire(w) { 
+    this.wires.push(w); 
+    this.wbf_changed = true;
+  }
+
+  undo_checkpoint() {
+    if (this.disable_log) return;
+    this.current_time = performance.now() / 1000;
+    this.state = this.save_state();
+    if (this.current_time - this.actions_buffer[this.undo_size-1][0] > 1) {
+      if (JSON.stringify(this.state) === JSON.stringify(this.actions_buffer[this.undo_size-1][1])) return;
+      this.actions_buffer.shift();
+      this.actions_buffer.push([this.current_time, this.state]);
+    } else {
+      this.actions_buffer[this.undo_size-1][1] = this.state;
+    }
+  }
+
+  undo_last_action() {
+    this.disable_log = true;
+    let s0 = this.actions_buffer.pop()[1];
+    this.actions_buffer.unshift([0,'']);
+    let s1 = this.actions_buffer[this.undo_size - 1][1];
+    if (Object.keys(s1).length === 0) {
+      this.undo_checkpoint();
+      this.disable_log = false;
+      return;
+    }
+    for (const m in this.module_index) if (!s1['modules'][m] && m != 0) {
+      this.remove_module(this.module_index[m]);
+    }
+    for (const m in s1['modules']) {
+      if (!this.module_index[m]) {
+        this.id_module = m;
+        new this.module_registry[s1['modules'][m]['name']]();
+        this.id_module = null;
+      }
+      this.module_index[m].load(s1['modules'][m]);
+    }
+    for (const w of this.wires) {
+      if (!this.find_wire(w.save(), s1['wires'])) {
+        this.remove_wire(w);
+      }
+    }
+    this.state = this.save_state();
+    for (const w of s1['wires']) { 
+      if (!this.find_wire(w, this.state['wires'])) {
+        this.module_index[w.a.mid].o[w.a.pid].connect(this.module_index[w.b.mid].i[w.b.pid]); 
+      }
+    } 
+    this.disable_log = false;
+    // this.undo_checkpoint();
+  }
+
+  remove_module(m) {
+    for (const inp in m.i) m.i[inp].port.remove_all_wires();
+    for (const out in m.o) m.o[out].port.remove_all_wires();
+    let i = this.modules.indexOf(m); 
+    if (i !== -1) this.modules.splice(i, 1);
+    this.detach(m);
+    delete this.module_index[m.id];
+    this.changed = true;
+    this.undo_checkpoint();
+  }
+
+  delete_last_module() {
+    if (this.active_module != 0) 
+      this.remove_module(this.active_module);
+    this.active_module = 0;
+  }
+
+  find_wire(w, wires=this.wires) {
+    let i = 0;
+    while (i < wires.length) {
+      if (wires[i].a.mid === w.a.mid && wires[i].b.mid === w.b.mid && 
+          wires[i].a.pid === w.a.pid && wires[i].b.pid === w.b.pid){
+        return wires[i];
+      }
+      i++;
+    }
+    return null;
   }
 
   remove_wire(w) {
     let i = this.wires.indexOf(w);
     if (i !== -1) this.wires.splice(i, 1);
     w.disconnect();
+    this.undo_checkpoint();
   }
 
   set_size(w, h) {
     super.set_size(w, h);
-    this.scale = (this.h - this.top_panel_height) / (130.5 * this.rows);
-    if (this.module0) this.module0.set_size(this.w / this.scale - this.spacing * 2, this.top_panel_height / this.scale - this.spacing * 2);
+    this.reinit_view();
+    if (this.module0) 
+      this.module0.set_size(
+        this.w / this.scale - this.spacing * 2, 
+        hp2y(this.module0_height) - this.spacing * 2
+      );
   }
 
   set_module_style(ms) { this.module_style = ms; }
@@ -1037,9 +1151,14 @@ class Engine extends GraphicObject {
 
   set_wire_style(ws) { this.wire_style = ws; }
 
-  set_offset(x, y) { this.x = x; this.y = y; }
-
-  set_scale(s) { this.scale = s; }
+  set_offset(x, y) { 
+    if (x > 0) x = 0;
+    if (x < this.x && this.hp2x(this.rack_max_width) + this.spacing < (this.w - x) / this.scale) return;
+    if (this.x != x || this.y != y) {
+      this.x = x; this.y = y; 
+      this.changed = true;
+    }
+  }
 
   start_wire(x, y, w) {
     this.active_wire = w;
@@ -1053,7 +1172,9 @@ class Engine extends GraphicObject {
 
   end_wire(x, y) {
     let b = this.find_focus(x, y);
-    if (!this.active_wire.connect(this.active_wire.a, b)) this.remove_wire(this.active_wire);
+    let res = this.active_wire.connect(this.active_wire.a, b);
+    if (res) this.undo_checkpoint();
+    else this.remove_wire(this.active_wire);
     this.active_wire = null;
     this.wbf_changed = true;
   }
@@ -1061,9 +1182,12 @@ class Engine extends GraphicObject {
   find_focus(x, y) {
     this.focus = this.module0.find_focus(x, y);
     if (this.focus != null) return this.focus;
-    for (var name in this.modules) {
-      this.focus = this.modules[name].find_focus(x, y);
-      if (this.focus != null) return this.focus;
+    for (this.i_mouse = 0; this.i_mouse < this.modules.length; this.i_mouse++) {
+      this.focus = this.modules[this.i_mouse].find_focus(x, y);
+      if (this.focus != null) { 
+        this.active_module = this.modules[this.i_mouse];
+        return this.focus;
+      }
     }
     return null;
   }
@@ -1096,60 +1220,80 @@ class Engine extends GraphicObject {
     }
   }
 
-  sequential_place_modules() {
-    this.scale = (this.h - this.top_panel_height) / (130.5 * this.rows);
-    let x = this.spacing;
-    let y = this.spacing / this.scale + this.top_panel_height / this.scale;
+  x2hp(x) { return x2hp(x - this.spacing, true); }
+  y2hp(y) { return y2hp(y - this.spacing - this.module0.h, true); }
+  hp2x(xhp){ return hp2x(xhp) + this.spacing; }
+  hp2y(yhp){ return hp2y(yhp) + this.module0.h + (yhp + 1) * 2 * this.spacing + this.spacing; }
 
-    let modlist = Object.entries(this.modules);
-    for(var i = 0; i < modlist.length; i ++) { 
-      if (x + modlist[i][1].w > this.w / this.scale) 
-        { x = this.spacing; y += this.y_grid_size + this.spacing; }
-      modlist[i][1].set_position(x, y);
-      x += modlist[i][1].w;
+  closest_place(m, x, y) {
+    let mxhp = this.x2hp(x);
+    let myhp = this.y2hp(y);
+
+    if (mxhp < 0) mxhp = 0;
+    if (myhp < 0) myhp = 0;
+    if (myhp > this.rows - 1) myhp = this.rows - 1;
+
+    for (let i = 0; i < this.modules.length; i++) {
+      if (this.modules[i] == m) continue;
+      let ixhp = this.x2hp(this.modules[i].x);
+      let iyhp = this.y2hp(this.modules[i].y);
+      if (((ixhp >= mxhp && ixhp < mxhp + x2hp(m.w, true)) ||
+           (mxhp >= ixhp && mxhp < ixhp + x2hp(this.modules[i].w, true))) && 
+           (iyhp == myhp)) {
+        return null;
+      }
+    }
+
+    return [this.hp2x(mxhp), this.hp2y(myhp)];
+  }
+
+  place_module(m, pos=null) {
+    if (pos) {
+      let xy = this.closest_place(m, this.hp2x(pos[0]), this.hp2y(pos[1]));
+      if (xy != null) { m.set_position(xy[0], xy[1]); return; }
+    }
+    for (let x = 0; ; x++) {
+      for (let y = 0; y < this.rows; y ++) {
+        let x_px = this.hp2x(x);
+        let y_px = this.hp2y(y);
+        let xy = this.closest_place(m, x_px, y_px);
+        if (xy != null) { m.set_position(xy[0], xy[1]); return; }
+      }
     }
   }
 
   process() {
     // if (this.stop) return;
     this.module0.process();
-    for (const w of this.wires) w.process();
-    for (var name in this.modules) this.modules[name].process();
+    for (this.i_process = 0; this.i_process < this.wires.length; this.i_process ++) this.wires[this.i_process].process();
+    for (this.i_process = 0; this.i_process < this.modules.length; this.i_process ++) this.modules[this.i_process].process();
   }
 
   clear_state() {
     this.clean();
     while (this.wires.length > 0) this.remove_wire(this.wires[0]);
-    this.sequential_place_modules();
   }
 
   save_state() {
     let s = {
-      'modules': [],
+      'modules': {},
       'wires': []
     };
-    for (var name in this.modules) {
-      this.modules[name].refresh_io_names();
-      s['modules'].push(this.modules[name].save());
+    for (this.i_save = 0; this.i_save < this.modules.length; this.i_save ++) {
+      s['modules'][this.modules[this.i_save].id] = this.modules[this.i_save].save();
     }
-    for (const w of this.wires) s.wires.push(w.save());
-    console.log(JSON.stringify(s));
-    return JSON.stringify(s);
+    for (this.i_save = 0; this.i_save < this.wires.length; this.i_save ++) s.wires.push(this.wires[this.i_save].save());
+    console.log(s);
+    return s;
   }
 
   load_state(s) {
-    let modules_count = {};
-    let modules = {};
+    let module_index = {};
 
-    s = JSON.parse(s); 
-    for (const m of s['modules']) { 
+    for (const m in s['modules']) { 
       try {
-        if (!modules_count[m['name']]) modules_count[m['name']] = 0;
-        modules_count[m['name']] ++;
-        let mname = m['name'] + modules_count[m['name']].toString();
-        modules[mname] = new this.module_registry[m['name']]();
-        modules[mname].refresh_io_names();
-        modules[mname].load(m); 
+        module_index[m] = new this.module_registry[s['modules'][m]['name']]();
+        module_index[m].load(s['modules'][m]); 
       } catch (error) {
         console.log(m);
         console.error(error);
@@ -1157,13 +1301,13 @@ class Engine extends GraphicObject {
     } 
     for (const w of s['wires']) { 
       try {
-        modules[w['ma']].o[w['pa']].connect(modules[w['mb']].i[w['pb']]); 
+        module_index[w.a.mid].o[w.a.pid].connect(module_index[w.b.mid].i[w.b.pid]); 
       } catch (error) {
         console.log(w);
         console.error(error);
       }
-    } 
-    this.sequential_place_modules();
+    }
+    engine.undo_checkpoint();
   }
 }
 
@@ -1182,7 +1326,8 @@ engine = new Engine({w:10, h:10, visible:false});
 
 function mousePressed(event) {
   if (mouseX > engine.ax && mouseX < engine.ax + engine.w && mouseY > engine.ay && mouseY < engine.ay + engine.h) {
-    if (event.button == 0) engine.mouse_pressed(mouseX - engine.ax, mouseY - engine.ay, movedX, movedY);
+    if (mouseButton == LEFT) engine.mouse_pressed(mouseX - engine.ax, mouseY - engine.ay, movedX, movedY);
+    if (mouseButton == RIGHT) console.log('prop');
   }
 }
 
@@ -1199,14 +1344,7 @@ function doubleClicked() {
 }
 
 function mouseWheel(event) {
-  if (engine.scale_enabled) {
-    let prev_scale = engine.scale;
-    engine.scale += event.delta / 100;
-    if (engine.scale < engine.MIN_SCALE) engine.scale = engine.MIN_SCALE;
-    if (engine.scale > engine.MAX_SCALE) engine.scale = engine.MAX_SCALE;
-    engine.set_offset(mouseX - (mouseX - engine.x) / prev_scale * engine.scale, mouseY - (mouseY - engine.y) / prev_scale * engine.scale);
-    if (engine.scale != prev_scale) engine.changed = true;
-  }
+  engine.set_offset(engine.x - event.deltaX / 5, 0);
 }
 
 function keyPressed() {
@@ -1215,7 +1353,7 @@ function keyPressed() {
   }
   if (keyCode === 83) {
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([engine.save_state()], {
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(engine.save_state())], {
       type: "text/plain"
     }));
     a.setAttribute("download", "state.mrs");
@@ -1239,7 +1377,7 @@ function keyPressed() {
        // here we tell the reader what to do when it's done reading...
        reader.onload = readerEvent => {
           var content = readerEvent.target.result; // this is the content!
-          engine.load_state( content );
+          engine.load_state( JSON.parse(content) );
        }
     }
     input.click();
@@ -1247,6 +1385,14 @@ function keyPressed() {
 
   if (keyCode === 67) {
     engine.clear_state();
+  }
+
+  if (keyCode === 85) {
+    engine.undo_last_action();
+  }
+
+  if (keyCode === 8) {
+    engine.delete_last_module();
   }
 }
 
@@ -1262,8 +1408,7 @@ function windowResized() {
   rackheight = document.documentElement.clientHeight;
   resizeCanvas(rackwidth, rackheight);
   engine.set_size(rackwidth, rackheight);
-  engine.sequential_place_modules();
-  engine.redraw=true;
+
   engine.changed=true;
   engine.cbf = null;
   engine.sbf = null;

@@ -43,14 +43,14 @@
 
 class Bus extends Module {
   constructor() {
-    super({name:'Mixer', w:hp2px(4)});
+    super({name:'Mixer', w:hp2x(4)});
     this.amp = new Array(2);
     for (var i = 0; i < 2; i++) {
-      this.add_input(new Port({x:hp2px(0.6), y:(46 + i*40), r:7, default_value:0, name:'IN' + (i+1).toString()}));
-      this.add_input(new InputEncoder({x:hp2px(0.6), y:(26 + i*40), r:7, vmin:0, vmax:1, val:1, name:'AMP' + (i+1).toString()}));
+      this.add_input(new Port({x:hp2x(0.6), y:(46 + i*40), r:7, default_value:0, name:'IN' + (i+1).toString()}));
+      this.add_input(new InputEncoder({x:hp2x(0.6), y:(26 + i*40), r:7, vmin:0, vmax:1, val:1, name:'AMP' + (i+1).toString()}));
       this.amp[i] = this.i['AMP' + (i+1).toString()].get();
     }
-    this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
+    this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
     this.value = 0;
   }
 
@@ -74,14 +74,14 @@ class Bus extends Module {
 
 class Mixer extends Module {
   constructor() {
-    super({name:'Mixer', w:hp2px(13)});
+    super({name:'Mixer', w:hp2x(13)});
     this.amp = new Array(4);
     for (var i = 0; i < 4; i++) {
-      this.add_input(new Port({x:hp2px(0.6 + i*3), y:36, r:7, default_value:0, name:'IN' + (i+1).toString()}));
-      this.add_input(new InputEncoder({x:hp2px(0.6 + i*3), y:11, r:7, vmin:0, vmax:1, val:1, name:'AMP' + (i+1).toString()}));
+      this.add_input(new Port({x:hp2x(0.6 + i*3), y:36, r:7, default_value:0, name:'IN' + (i+1).toString()}));
+      this.add_input(new InputEncoder({x:hp2x(0.6 + i*3), y:11, r:7, vmin:0, vmax:1, val:1, name:'AMP' + (i+1).toString()}));
       this.amp[i] = this.i['AMP' + (i+1).toString()].get();
     }
-    this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
+    this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
     this.value = 0;
   }
 
@@ -107,11 +107,11 @@ class Mixer extends Module {
 
 class Mixer100 extends Module {
   constructor() {
-    super({name:'Mixer100', w:hp2px(140) + 13, h:20});
+    super({name:'Mixer100', w:hp2x(140) + 13, h:20});
     for (var i = 0; i < 98; i ++) {
-      this.add_input(new Port({x:hp2px((i % 49) / 49 * 140) + 7, y: 9 * Math.floor(i / 49) + 1, r:4, name:'IN' + i.toString()}));
+      this.add_input(new Port({x:hp2x((i % 49) / 49 * 140) + 7, y: 9 * Math.floor(i / 49) + 1, r:4, name:'IN' + i.toString()}));
     }
-    this.add_output(new Port({x:hp2px(0), y:0, r:4, name:'OUT', visible: false}));
+    this.add_output(new Port({x:hp2x(0), y:0, r:4, name:'OUT', visible: false}));
     this.value = 0;
   }
 

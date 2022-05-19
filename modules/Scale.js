@@ -1,6 +1,6 @@
 class Scale extends Module {
   constructor(root='C', scale=1) {
-    super({w:hp2px(4)});
+    super({w:hp2x(4)});
 
     //this.note_names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
@@ -27,12 +27,12 @@ class Scale extends Module {
       [0, 3, 4, 6, 7, 9, 10],
       [0, 2, 3, 6, 7, 8, 11]
     ]
-    this.add_control(new Encoder({x:hp2px(0.6), y:6, r:7, vmin:1, vmax:12, val:1, precision:0, name:'ROOT'}));
-    this.add_control(new Encoder({x:hp2px(0.6), y:26, r:7, vmin:1, vmax:9, val:1, precision:0, name:'SCL'}));
-    this.add_input(new Port({x:hp2px(0.8), y:48, r:6, name:'IN'}));
-    this.add_input(new Port({x:hp2px(0.8), y:68, r:6, name:'CV'}));
-    this.add_output(new Port({x:hp2px(0.8), y:88, r:6, name:'GATE'}));
-    this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
+    this.add_control(new Encoder({x:hp2x(0.6), y:6, r:7, vmin:1, vmax:12, val:1, precision:0, name:'ROOT'}));
+    this.add_control(new Encoder({x:hp2x(0.6), y:26, r:7, vmin:1, vmax:9, val:1, precision:0, name:'SCL'}));
+    this.add_input(new Port({x:hp2x(0.8), y:48, r:6, name:'IN'}));
+    this.add_input(new Port({x:hp2x(0.8), y:68, r:6, name:'CV'}));
+    this.add_output(new Port({x:hp2x(0.8), y:88, r:6, name:'GATE'}));
+    this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
 
     // this.root = this.c['ROOT'].get().toFixed(0) - 1;
     // this.scale = this.c['SCL'].get().toFixed(0) - 1;

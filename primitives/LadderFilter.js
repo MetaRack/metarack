@@ -4,12 +4,12 @@ class ExponentialFilterPrim{
     this.base_freq = freq;
     this.freq = this.base_freq;
 
-    // this.add_control(new Encoder({x:hp2px(0.6), y:6, r:7, vmin:30, vmax:10000, val:freq, name:'FREQ'}));
-    // this.add_input(new InputEncoder({x:hp2px(0.6), y:26, r:7, val:0, name:'CV'}));
-    // this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, val:0, vmin:0, vmax:1, name:'RES'}));
-    // this.add_input(new Port({x:hp2px(0.8), y:68, r:6, name:'IN'}));
-    // this.add_output(new Port({x:hp2px(0.8), y:88, r:6, name:'LP'}));
-    // this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'HP'}));
+    // this.add_control(new Encoder({x:hp2x(0.6), y:6, r:7, vmin:30, vmax:10000, val:freq, name:'FREQ'}));
+    // this.add_input(new InputEncoder({x:hp2x(0.6), y:26, r:7, val:0, name:'CV'}));
+    // this.add_input(new InputEncoder({x:hp2x(0.6), y:46, r:7, val:0, vmin:0, vmax:1, name:'RES'}));
+    // this.add_input(new Port({x:hp2x(0.8), y:68, r:6, name:'IN'}));
+    // this.add_output(new Port({x:hp2x(0.8), y:88, r:6, name:'LP'}));
+    // this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'HP'}));
 
     this.com = 3;
     this.delay_array = new Array(this.com);

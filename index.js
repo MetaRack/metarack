@@ -174,8 +174,6 @@ function expr2(t, c, p1, p2, p3, p4) {
 //       break;
 //   }
 // }
-console.log(engine);
-engine.sequential_place_modules();
 
 // for (var i = 0; i < n; i ++) {
 // 	VCOs[i].o['OUT'].connect(MIX.i['IN' + i.toString()]);

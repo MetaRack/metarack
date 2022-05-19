@@ -1,7 +1,7 @@
 class ADSR extends Module {
 
   constructor() {
-    super({w:hp2px(4)});
+    super({w:hp2x(4)});
     this.phase = 0.001;
     this.stage = 'R';
     this.switch_level = 0;
@@ -9,12 +9,12 @@ class ADSR extends Module {
     //this.scope = new RawScope(0, 0, 30, 30);
     // this.attach(this.scope);
 
-    this.add_control(new Encoder({x:hp2px(0.6), y:6, r:7, vmin:0, vmax:10, val:1, name:'A'}));
-    this.add_control(new Encoder({x:hp2px(0.6), y:26, r:7, vmin:0, vmax:10, val:1, name:'D'}));
-    this.add_control(new Encoder({x:hp2px(0.6), y:46, r:7, vmin:0, vmax:1, val:0.1, name:'S'}));
-    this.add_control(new Encoder({x:hp2px(0.6), y:66, r:7, vmin:0, vmax:50, val:30, name:'R'}));
-    this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'GATE'}));
-    this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
+    this.add_control(new Encoder({x:hp2x(0.6), y:6, r:7, vmin:0, vmax:10, val:1, name:'A'}));
+    this.add_control(new Encoder({x:hp2x(0.6), y:26, r:7, vmin:0, vmax:10, val:1, name:'D'}));
+    this.add_control(new Encoder({x:hp2x(0.6), y:46, r:7, vmin:0, vmax:1, val:0.1, name:'S'}));
+    this.add_control(new Encoder({x:hp2x(0.6), y:66, r:7, vmin:0, vmax:50, val:30, name:'R'}));
+    this.add_input(new Port({x:hp2x(0.8), y:88, r:6, name:'GATE'}));
+    this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
   }
 
   process() {

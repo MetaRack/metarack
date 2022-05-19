@@ -1,13 +1,13 @@
 class BPFilter extends Module {
     constructor({freq=440}={}) {
-    super({w:hp2px(7)});
+    super({w:hp2x(7)});
 
-    this.add_control(new Encoder({x:hp2px(0.6), y:6, r:7, vmin:30, vmax:10000, val:freq, name:'FREQ'}));
-    this.add_input(new InputEncoder({x:hp2px(0.6), y:26, r:7, val:0, name:'CV'}));
-    this.add_input(new InputEncoder({x:hp2px(2.1), y:46, r:7, val:0, vmin:0, vmax:1, name:'RES'}));
-    this.add_input(new Port({x:hp2px(0.8), y:108, r:6, name:'IN'}));
-    this.add_output(new Port({x:hp2px(3.8), y:108, r:6, name:'OUT'}));
-    this.add_input(new InputEncoder({x:hp2px(3.6), y:26, r:7, val:0, vmin:0, vmax:1000, name:'WDTH'}));
+    this.add_control(new Encoder({x:hp2x(0.6), y:6, r:7, vmin:30, vmax:10000, val:freq, name:'FREQ'}));
+    this.add_input(new InputEncoder({x:hp2x(0.6), y:26, r:7, val:0, name:'CV'}));
+    this.add_input(new InputEncoder({x:hp2x(2.1), y:46, r:7, val:0, vmin:0, vmax:1, name:'RES'}));
+    this.add_input(new Port({x:hp2x(0.8), y:108, r:6, name:'IN'}));
+    this.add_output(new Port({x:hp2x(3.8), y:108, r:6, name:'OUT'}));
+    this.add_input(new InputEncoder({x:hp2x(3.6), y:26, r:7, val:0, vmin:0, vmax:1000, name:'WDTH'}));
 
     this.width = this.i['WDTH'].get();
     this.LP = new ExponentialFilterPrim();
@@ -62,16 +62,16 @@ class BPFilter extends Module {
 
 class SVF extends Module {
     constructor({freq=440}={}) {
-    super({w:hp2px(7)});
+    super({w:hp2x(7)});
 
-    this.add_control(new Encoder({x:hp2px(0.6), y:6, r:7, vmin:30, vmax:10000, val:freq, name:'FREQ'}));
-    this.add_input(new InputEncoder({x:hp2px(0.6), y:26, r:7, val:0, name:'CV'}));
-    this.add_input(new InputEncoder({x:hp2px(2.1), y:46, r:7, val:0, vmin:0, vmax:1, name:'RES'}));
-    this.add_input(new Port({x:hp2px(0.8), y:108, r:6, name:'IN'}));
-    this.add_output(new Port({x:hp2px(3.8), y:108, r:6, name:'OUT'}));
+    this.add_control(new Encoder({x:hp2x(0.6), y:6, r:7, vmin:30, vmax:10000, val:freq, name:'FREQ'}));
+    this.add_input(new InputEncoder({x:hp2x(0.6), y:26, r:7, val:0, name:'CV'}));
+    this.add_input(new InputEncoder({x:hp2x(2.1), y:46, r:7, val:0, vmin:0, vmax:1, name:'RES'}));
+    this.add_input(new Port({x:hp2x(0.8), y:108, r:6, name:'IN'}));
+    this.add_output(new Port({x:hp2x(3.8), y:108, r:6, name:'OUT'}));
 
-    this.add_input(new InputEncoder({x:hp2px(3.6), y:6, r:7, val:0.5, vmin:0, vmax:1, name:'CF'}));
-    this.add_input(new InputEncoder({x:hp2px(3.6), y:26, r:7, val:0, vmin:0, vmax:1000, name:'WDTH'}));
+    this.add_input(new InputEncoder({x:hp2x(3.6), y:6, r:7, val:0.5, vmin:0, vmax:1, name:'CF'}));
+    this.add_input(new InputEncoder({x:hp2x(3.6), y:26, r:7, val:0, vmin:0, vmax:1000, name:'WDTH'}));
 
     this.cf = this.i['CF'].get();
     this.width = this.i['WDTH'].get();
@@ -128,18 +128,18 @@ class SVF extends Module {
 
 class ExponentialFilter extends Module {
   constructor({type='LP', freq=4400}={}) {
-    super({w:hp2px(4)});
+    super({w:hp2x(4)});
 
     this.type = type;
     this.base_freq = freq;
     this.freq = this.base_freq;
 
-    this.add_control(new Encoder({x:hp2px(0.6), y:6, r:7, vmin:30, vmax:10000, val:freq, name:'FREQ'}));
-    this.add_input(new InputEncoder({x:hp2px(0.6), y:26, r:7, val:0, name:'CV'}));
-    this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, val:0, vmin:0, vmax:1, name:'RES'}));
-    this.add_input(new Port({x:hp2px(0.8), y:68, r:6, name:'IN'}));
-    this.add_output(new Port({x:hp2px(0.8), y:88, r:6, name:'LP'}));
-    this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'HP'}));
+    this.add_control(new Encoder({x:hp2x(0.6), y:6, r:7, vmin:30, vmax:10000, val:freq, name:'FREQ'}));
+    this.add_input(new InputEncoder({x:hp2x(0.6), y:26, r:7, val:0, name:'CV'}));
+    this.add_input(new InputEncoder({x:hp2x(0.6), y:46, r:7, val:0, vmin:0, vmax:1, name:'RES'}));
+    this.add_input(new Port({x:hp2x(0.8), y:68, r:6, name:'IN'}));
+    this.add_output(new Port({x:hp2x(0.8), y:88, r:6, name:'LP'}));
+    this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'HP'}));
 
     this.com = 3;
     this.delay_array = new Array(this.com);
@@ -206,7 +206,7 @@ class ExponentialFilter extends Module {
 
 class SimpleOnePoleFilter extends Module {
   constructor({type='LP', freq=440}={}) {
-    super({w:hp2px(4)});
+    super({w:hp2x(4)});
     this.scope = new TextDisplay(0, 0, 20, 30);
 
     this.type = type;
@@ -216,9 +216,9 @@ class SimpleOnePoleFilter extends Module {
     this.lp = new OnePoleLPFilter();
     this.hp = new OnePoleHPFilter();
 
-    this.add_input(new Encoder({x:hp2px(0.6), y:66, r:7, name:'FREQ'}));
-    this.add_input(new Port({x:hp2px(0.8), y:88, r:7, name:'IN'}));
-    this.add_output(new Port({x:hp2px(0.8), y:108, r:7, name:'OUT'}));
+    this.add_input(new Encoder({x:hp2x(0.6), y:66, r:7, name:'FREQ'}));
+    this.add_input(new Port({x:hp2x(0.8), y:88, r:7, name:'IN'}));
+    this.add_output(new Port({x:hp2x(0.8), y:108, r:7, name:'OUT'}));
   }
 
   draw(x, y, scale) {
@@ -253,7 +253,7 @@ class SimpleOnePoleFilter extends Module {
 
 class ResonantFilter extends Module {
   constructor({type='LP', freq=440}={}) {
-    super({w:hp2px(4)});
+    super({w:hp2x(4)});
     // this.scope = new TextDisplay(0, 0, 20, 18);
 
     this.type = type;
@@ -263,11 +263,11 @@ class ResonantFilter extends Module {
 
     this.freq = this.base_freq;
 
-    this.add_control(new Encoder({x:hp2px(0.6), y:26, r:7, vmin:30, vmax:8000, val:freq, name:'FREQ'}));
-    this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, val:0, name:'CV'}));
-    this.add_input(new InputEncoder({x:hp2px(0.6), y:66, r:7, val:0, vmin:0, vmax:20, name:'RES'}));
-    this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'IN'}));
-    this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
+    this.add_control(new Encoder({x:hp2x(0.6), y:26, r:7, vmin:30, vmax:8000, val:freq, name:'FREQ'}));
+    this.add_input(new InputEncoder({x:hp2x(0.6), y:46, r:7, val:0, name:'CV'}));
+    this.add_input(new InputEncoder({x:hp2x(0.6), y:66, r:7, val:0, vmin:0, vmax:20, name:'RES'}));
+    this.add_input(new Port({x:hp2x(0.8), y:88, r:6, name:'IN'}));
+    this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
   }
 
   // draw_cbf(buf, w, h) {

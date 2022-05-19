@@ -1,17 +1,17 @@
 class Burst extends Module {
 	constructor() {
-		super({w:hp2px(7)});
+		super({w:hp2x(7)});
 
-		this.add_input(new InputEncoder({x:hp2px(0.6), y:6, r:7, vmin:1, vmax:10, val:1, precision:0, name:'REP'}));
-    	this.add_input(new InputEncoder({x:hp2px(3.6), y:6, r:7, vmin:1, vmax:7, val:1, precision:0, name:'TYPE'}));
-    	this.add_input(new InputEncoder({x:hp2px(0.6), y:26, r:7, vmin:-10, vmax:10, val:0, name:'OFST'}));
-    	this.add_input(new InputEncoder({x:hp2px(3.6), y:26, r:7, vmin:0.1, vmax:5, val:0.1, name:'SCL'}));
-    	this.add_input(new Port({x:hp2px(3.8), y:46, r:6, name:'BRST'}));
-    	this.add_input(new Port({x:hp2px(0.8), y:46, r:6, name:'CLK'}));
-    	this.add_output(new Port({x:hp2px(3.8), y:108, r:6, name:'GATE'}));
-    	this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'CV'}));
-    	this.add_output(new Port({x:hp2px(3.8), y:88, r:6, name:'EOC'}));
-    	this.clk_led = new Led({x:hp2px(1.2), y:90.2, r:4});
+		this.add_input(new InputEncoder({x:hp2x(0.6), y:6, r:7, vmin:1, vmax:10, val:1, precision:0, name:'REP'}));
+    	this.add_input(new InputEncoder({x:hp2x(3.6), y:6, r:7, vmin:1, vmax:7, val:1, precision:0, name:'TYPE'}));
+    	this.add_input(new InputEncoder({x:hp2x(0.6), y:26, r:7, vmin:-10, vmax:10, val:0, name:'OFST'}));
+    	this.add_input(new InputEncoder({x:hp2x(3.6), y:26, r:7, vmin:0.1, vmax:5, val:0.1, name:'SCL'}));
+    	this.add_input(new Port({x:hp2x(3.8), y:46, r:6, name:'BRST'}));
+    	this.add_input(new Port({x:hp2x(0.8), y:46, r:6, name:'CLK'}));
+    	this.add_output(new Port({x:hp2x(3.8), y:108, r:6, name:'GATE'}));
+    	this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'CV'}));
+    	this.add_output(new Port({x:hp2x(3.8), y:88, r:6, name:'EOC'}));
+    	this.clk_led = new Led({x:hp2x(1.2), y:90.2, r:4});
     	this.attach(this.clk_led);
     	this.clk_led.set(255);
 
