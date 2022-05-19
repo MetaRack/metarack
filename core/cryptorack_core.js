@@ -950,7 +950,7 @@ class Engine extends GraphicObject {
   }
 
   reinit_view() {
-    this.res_multiplier = 1.5;
+    this.res_multiplier = 1;
     this.scale = this.h / (this.row_height * (this.rows + this.module0_height));
     this.control_focus = null;
     this.active_wire = null;
@@ -1180,7 +1180,7 @@ class Engine extends GraphicObject {
   }
 
   find_focus(x, y) {
-    this.focus = this.module0.find_focus(x, y);
+    this.focus = this.module0.find_focus(x + this.x / this.scale, y + this.y / this.scale);
     if (this.focus != null) return this.focus;
     for (this.i_mouse = 0; this.i_mouse < this.modules.length; this.i_mouse++) {
       this.focus = this.modules[this.i_mouse].find_focus(x, y);
