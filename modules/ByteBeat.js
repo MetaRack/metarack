@@ -3,7 +3,7 @@ class ByteBeat extends Module {
   //   return ((t / 2 % (this.p1 * 13)) + 3) * 2 + ((t / 4 % (this.p2 * 19)) >> (this.p3 * 3) + 1)  | ((t ^ (this.p4) * 11))
   // }
 
-  constructor(expr) {
+  constructor() {
     super({w:hp2x(7)});
 
     this.add_input(new InputEncoder({x:hp2x(0.6), y:6, r:7, vmin:0, vmax:10, val:0, name:'P1'}));
@@ -22,8 +22,12 @@ class ByteBeat extends Module {
     this.cldv = this.i['CLDV'].get().toFixed(0);
     this.vldv = this.i['VLDV'].get().toFixed(0);
     this.value = 0;
-    this.expr = expr;
+    this.expr = this.expression;
     this.counter = 0;
+  }
+
+  expression(t, c, p1, p2, p3, p4) {
+    return (((t / c) / 2 % (p1 * 13)) + 3) * 2 + (((t / c) / 4 % (p2 * 19)) >> (p3 * 3) + 1)  | (((t / c) ^ (p4) * 11))
   }
 
   process() {
