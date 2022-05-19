@@ -3,7 +3,9 @@ class ByteBeat extends Module {
   //   return ((t / 2 % (this.p1 * 13)) + 3) * 2 + ((t / 4 % (this.p2 * 19)) >> (this.p3 * 3) + 1)  | ((t ^ (this.p4) * 11))
   // }
 
-  constructor(expr) {
+  constructor(expr = function expr(t, c, p1, p2, p3, p4) {
+  return (((t / c) / 2 % (p1 * 13)) + 3) * 2 + (((t / c) / 4 % (p2 * 19)) >> (p3 * 3) + 1)  | (((t / c) ^ (p4) * 11))
+}) {
     super({w:hp2px(7)});
 
     this.add_input(new InputEncoder({x:hp2px(0.6), y:6, r:7, vmin:0, vmax:10, val:0, name:'P1'}));

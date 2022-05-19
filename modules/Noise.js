@@ -38,12 +38,6 @@ class Noise extends Module {
     this.amp = this.c['AMP'].get();
   }
 
-  draw_dbf (buf, x, y, w, h) {
-    if (this.c['AMP'].changed) {
-      this.amp = this.c['AMP'].get();
-    }
-  }
-
   // draw(x, y, scale) {
   //   x += this.o['OUT'].get() * 0.05;
   //   y += this.o['OUT'].get() * 0.05;
@@ -53,6 +47,7 @@ class Noise extends Module {
   // }
 
   process() {
+    this.amp = this.c['AMP'].get();
     this.o['OUT'].set( (rackrand() * 20 - 10) * this.amp/10 );
     // this.scope.process( this.o['OUT'].get() )
   }

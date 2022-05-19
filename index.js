@@ -40,21 +40,61 @@ function expr2(t, c, p1, p2, p3, p4) {
   return (t / c) / (2 + p3) * (((t / c) >> (7 + p2)) % 5)
 }
 
-S = new SVCO(261);
-D = new Delay();
-P = new PingPong();
-MIX1 = new RandomGenerator();
-CLKD = new Clock(120);
-K = new Kick();
-BG = new BernoulliGate();
-B1 = new ByteBeat(expr);
-FL = new ExponentialFilter(1000);
-FL2 = new ExponentialFilter(1000);
-MIX2 = new Bus();
-MIX3 = new Bus();
-SAT = new Saturn();
-SAT2 = new Saturn();
-SCL = new Scale();
+// CL1 = new Clock(120);
+// CH = new ClockedRandomChords();
+// FL2 = new ExponentialFilter(1000);
+// BG = new BernoulliGate();
+// BG2 = new BernoulliGate();
+// BG3 = new BernoulliGate();
+// SH1 = new SampleAndHold();
+// SH2 = new SampleAndHold();
+// SH3 = new SampleAndHold();
+// VC1 = new SVCO(261);
+// VC2 = new SVCO(261);
+// VC3 = new SVCO(261);
+// N = new Noise();
+// A1 = new ADSR();
+// A2 = new ADSR();
+// A3 = new ADSR();
+// V = new VCA();
+// V2 = new VCA();
+// V3 = new VCA();
+// SCL = new Scale();
+// SCL2 = new Scale();
+// SCL3 = new Scale();
+// RVR1 = new DattorroReverb();
+// MIX2 = new Bus();
+
+// SCL = new Scale();
+// SCL2 = new Scale();
+// N = new Noise();
+// SH = new SampleAndHold();
+// SH2 = new SampleAndHold();
+// BG = new BernoulliGate();
+// BG2 = new BernoulliGate();
+// MIX2 = new Bus();
+
+// P = new PingPong();
+// MIX1 = new RandomGenerator();
+// CLKD = new Clock(120);
+// BG = new BernoulliGate();
+// B1 = new ByteBeat(expr);
+// FL = new ExponentialFilter(1000);
+// FL2 = new ExponentialFilter(1000);
+// MIX2 = new Bus();
+// MIX3 = new Bus();
+// SAT = new Saturn();
+// SAT2 = new Saturn();
+// SCL = new Scale();
+// C = new Chorus();
+// B = new Burst();
+// JN = new NonlinearLab();
+// FL2 = new ExponentialFilter(1000);
+// FL3 = new ExponentialFilter(1000);
+// MIX3 = new Bus();
+// MIX4 = new Bus();
+// RVR1 = new DattorroReverb();
+
 // B2 = new ByteBeat(expr2);
 // FL = new ExponentialFilter(1000);
 // D = new Delay();
