@@ -59,15 +59,19 @@ class Bus extends Module {
   // }
 
   process() {
-    for (var i = 0; i < 2; i++) 
-        this.amp[i] = this.i['AMP' + (i+1).toString()].get();
+    // for (var i = 0; i < 2; i++) 
+    //     this.amp[i] = this.i['AMP' + (i+1).toString()].get();
+    this.amp[0] = this.i['AMP1'].get();
+    this.amp[1] = this.i['AMP2'].get();
 
     this.value = 0;
     this.j = 0;
-    for (var i = 0; i < 2; i++) {
-      this.value += this.i['IN' + (i+1).toString()].get() * this.amp[this.j];
-      this.j++;
-    }
+    this.value += this.i['IN1'].get() * this.amp[0];
+    this.value += this.i['IN2'].get() * this.amp[1];
+    // for (var i = 0; i < 2; i++) {
+    //   this.value += this.i['IN' + (i+1).toString()].get() * this.amp[this.j];
+    //   this.j++;
+    // }
     this.o['OUT'].set(this.value / 2);
   }
 }
@@ -76,7 +80,8 @@ class Mixer extends Module {
   constructor() {
     super({name:'Mixer', w:hp2x(13)});
     this.amp = new Array(4);
-    for (var i = 0; i < 4; i++) {
+    this.i = 0;
+    for (this.i = 0; i < 4; i++) {
       this.add_input(new Port({x:hp2x(0.6 + i*3), y:36, r:7, default_value:0, name:'IN' + (i+1).toString()}));
       this.add_input(new InputEncoder({x:hp2x(0.6 + i*3), y:11, r:7, vmin:0, vmax:1, val:1, name:'AMP' + (i+1).toString()}));
       this.amp[i] = this.i['AMP' + (i+1).toString()].get();
@@ -90,16 +95,21 @@ class Mixer extends Module {
   // }
 
   process() {
-    for (var i = 0; i < 4; i++) {
-        this.amp[i] = this.i['AMP' + (i+1).toString()].get();
-    }
+    this.amp[0] = this.i['AMP1'].get();
+    this.amp[1] = this.i['AMP2'].get();
+    this.amp[2] = this.i['AMP3'].get();
+    this.amp[3] = this.i['AMP4'].get();
 
     this.value = 0;
     this.j = 0;
-    for (var i = 0; i < 4; i++) {
-      this.value += this.i['IN' + (i+1).toString()].get() * this.amp[this.j];
-      this.j++;
-    }
+    this.value += this.i['IN1'].get() * this.amp[0];
+    this.value += this.i['IN2'].get() * this.amp[1];
+    this.value += this.i['IN3'].get() * this.amp[2];
+    this.value += this.i['IN4'].get() * this.amp[3];
+    // for (this.i = 0; i < 4; i++) {
+    //   this.value += this.i['IN' + (i+1).toString()].get() * this.amp[this.j];
+    //   this.j++;
+    // }
     this.o['OUT'].set(this.value / 4);
   }
 }
