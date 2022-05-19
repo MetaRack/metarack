@@ -208,7 +208,6 @@ function expr2(t, c, p1, p2, p3, p4) {
 // BGATE1 = new BernoulliGate('BGT1');
 // FLTR5 = new ResonantFilter('FLTR5', 'LP', 400);
 
-
 function setup() {
   createCanvas(rackwidth, rackheight);
   frameRate(fps);
