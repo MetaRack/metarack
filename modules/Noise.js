@@ -31,10 +31,10 @@
 
 class Noise extends Module {
   constructor() {
-    super({name:'Noise', w:hp2px(4)});
+    super({name:'Noise', w:hp2x(4)});
     // this.scope = new RawScope(0, 0, 20, 30, 'scope', 32);
-    this.add_control(new Encoder({x:hp2px(0.6), y:66, r:7, vmin:0, vmax:1, val:1, name:'AMP'}));
-    this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
+    this.add_control(new Encoder({x:hp2x(0.6), y:66, r:7, vmin:0, vmax:1, val:1, name:'AMP'}));
+    this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
     this.amp = this.c['AMP'].get();
   }
 

@@ -1,10 +1,10 @@
 class Saturn extends Module {
 	constructor () {
-		super({w:hp2px(4)});
-		this.add_input(new InputEncoder({x:hp2px(0.6), y:66, r:7, vmin:0, vmax:1, val:0, name:'SAT'}));
-		this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, vmin:0, vmax:4, val:0, name:'FOLD'}));
-		this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
-		this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'IN'}));
+		super({w:hp2x(4)});
+		this.add_input(new InputEncoder({x:hp2x(0.6), y:66, r:7, vmin:0, vmax:1, val:0, name:'SAT'}));
+		this.add_input(new InputEncoder({x:hp2x(0.6), y:46, r:7, vmin:0, vmax:4, val:0, name:'FOLD'}));
+		this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
+		this.add_input(new Port({x:hp2x(0.8), y:88, r:6, name:'IN'}));
 
 		this.fold_coeff = 1;
 		this.sat = (this.i['SAT'].get() * 4) + 1; 

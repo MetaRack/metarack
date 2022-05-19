@@ -1,39 +1,39 @@
 class PingPong extends Module {
 	constructor() {
-		super({w:hp2px(8)});
+		super({w:hp2x(8)});
 
-		//this.add_input(new InputEncoder({x:hp2px(4.6), y:83, r:6, val:0, vmin:0, vmax:1, visible:false, name:'CF'}));
+		//this.add_input(new InputEncoder({x:hp2x(4.6), y:83, r:6, val:0, vmin:0, vmax:1, visible:false, name:'CF'}));
 
-		this.add_input(new InputEncoder({x:hp2px(0.6), y:6, r:7, val:0.66, vmin:0, vmax:1, name:'FB'}));
-		this.add_input(new InputEncoder({x:hp2px(4.6), y:6, r:7, val:1, vmin:0, vmax:1, name:'D/W'}));
+		this.add_input(new InputEncoder({x:hp2x(0.6), y:6, r:7, val:0.66, vmin:0, vmax:1, name:'FB'}));
+		this.add_input(new InputEncoder({x:hp2x(4.6), y:6, r:7, val:1, vmin:0, vmax:1, name:'D/W'}));
 
-		this.add_input(new InputEncoder({x:hp2px(0.6), y:33, r:8, val:1, vmin:0.001, vmax:9.9, name:'TIME'}));
+		this.add_input(new InputEncoder({x:hp2x(0.6), y:33, r:8, val:1, vmin:0.001, vmax:9.9, name:'TIME'}));
 
-		this.add_input(new Port({x:hp2px(4.6), y:41, r:7, default_value:0, name:'INF'}));
-		this.inf_led = new Led({x:hp2px(5.6), y:34, r:2});
+		this.add_input(new Port({x:hp2x(4.6), y:41, r:7, default_value:0, name:'INF'}));
+		this.inf_led = new Led({x:hp2x(5.6), y:34, r:2});
     	this.attach(this.inf_led);
    		this.inf_led.set(255);
-    	this.inf_button = new Button({x:hp2px(5.4), y:33, r:3, state:false});
+    	this.inf_button = new Button({x:hp2x(5.4), y:33, r:3, state:false});
     	this.attach(this.inf_button);
 
-    	this.add_input(new InputEncoder({x:hp2px(1.4), y:63, r:6, val:0, vmin:-1, vmax:1, name:'TM L'}));
-    	this.add_input(new InputEncoder({x:hp2px(4.4), y:63, r:6, val:0, vmin:-1, vmax:1, name:'TM R'}));
+    	this.add_input(new InputEncoder({x:hp2x(1.4), y:63, r:6, val:0, vmin:-1, vmax:1, name:'TM L'}));
+    	this.add_input(new InputEncoder({x:hp2x(4.4), y:63, r:6, val:0, vmin:-1, vmax:1, name:'TM R'}));
 
-    	this.time_l_led = new Led({x:hp2px(0.4), y:67, r:2});
+    	this.time_l_led = new Led({x:hp2x(0.4), y:67, r:2});
     	this.attach(this.time_l_led);
    		this.time_l_led.set(255);
 
-   		this.time_r_led = new Led({x:hp2px(6.9), y:67, r:2});
+   		this.time_r_led = new Led({x:hp2x(6.9), y:67, r:2});
     	this.attach(this.time_r_led);
    		this.time_r_led.set(255);
 
-   		this.add_input(new Port({x:hp2px(3.2), y:95, r:4, name:'SYNC'}));
+   		this.add_input(new Port({x:hp2x(3.2), y:95, r:4, name:'SYNC'}));
 
-    	this.add_input(new Port({x:hp2px(0.6), y:110, r:4, name:'I/L'}));
-    	this.add_input(new Port({x:hp2px(2.3), y:110, r:4, name:'I/R'}));
+    	this.add_input(new Port({x:hp2x(0.6), y:110, r:4, name:'I/L'}));
+    	this.add_input(new Port({x:hp2x(2.3), y:110, r:4, name:'I/R'}));
 
-    	this.add_output(new Port({x:hp2px(4), y:110, r:4, name:'O/L'}));
-    	this.add_output(new Port({x:hp2px(5.7), y:110, r:4, name:'O/R'}));
+    	this.add_output(new Port({x:hp2x(4), y:110, r:4, name:'O/L'}));
+    	this.add_output(new Port({x:hp2x(5.7), y:110, r:4, name:'O/R'}));
 
     	this.delay_l = new DelayPrim();
     	this.delay_r = new DelayPrim();

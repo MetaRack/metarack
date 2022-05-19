@@ -1,10 +1,10 @@
 class Octave extends Module {
 	constructor() {
-    super({name:'Octave', w:hp2px(4)});
+    super({name:'Octave', w:hp2x(4)});
 
-    this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'IN'}));
-    this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
-    this.add_control(new Encoder({x:hp2px(0.6), y:6, r:7, vmin:-5, vmax:5, val:0, precision:0, name:'OCT'}));
+    this.add_input(new Port({x:hp2x(0.8), y:88, r:6, name:'IN'}));
+    this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
+    this.add_control(new Encoder({x:hp2x(0.6), y:6, r:7, vmin:-5, vmax:5, val:0, precision:0, name:'OCT'}));
 
     this.oct = this.c['OCT'].get().toFixed(0);
     this.value = 0;

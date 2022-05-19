@@ -1,8 +1,8 @@
 class CombFilterPrim {
   constructor () {
-    // this.add_input(new InputEncoder({x:hp2px(0.6), y:66, r:7, vmin:-3, vmax:3, val:0, name:'CV'}));
-    // this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
-    // this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'IN'}));
+    // this.add_input(new InputEncoder({x:hp2x(0.6), y:66, r:7, vmin:-3, vmax:3, val:0, name:'CV'}));
+    // this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
+    // this.add_input(new Port({x:hp2x(0.8), y:88, r:6, name:'IN'}));
 
     this.time = 183;
     this.tone = 1;

@@ -1,26 +1,26 @@
 class Juno extends Module {
 	constructor() {
-		super({w:hp2px(10)});
+		super({w:hp2x(10)});
 
-		this.add_input(new InputEncoder({x:hp2px(3.6), y:6, r:7, vmin:0, vmax:10, val:1, name:'A'}));
-    	this.add_input(new InputEncoder({x:hp2px(3.6), y:26, r:7, vmin:0, vmax:10, val:1, name:'D'}));
-   		this.add_input(new InputEncoder({x:hp2px(3.6), y:46, r:7, vmin:0, vmax:1, val:0.1, name:'S'}));
-    	this.add_input(new InputEncoder({x:hp2px(3.6), y:66, r:7, vmin:0, vmax:50, val:30, name:'R'}));
-		this.add_input(new InputEncoder({x:hp2px(3.6), y:86, r:7, vmin:50, vmax:8000, val:1500, name:'COFF'}));
-		//this.add_output(new InputEncoder({x:hp2px(3.6), y:106, r:7, vmin:0, vmax:2, val:0.5, name:'MOD'}));
-		this.add_output(new Port({x:hp2px(3.8), y:108, r:6, name:'ENV'}));
+		this.add_input(new InputEncoder({x:hp2x(3.6), y:6, r:7, vmin:0, vmax:10, val:1, name:'A'}));
+    	this.add_input(new InputEncoder({x:hp2x(3.6), y:26, r:7, vmin:0, vmax:10, val:1, name:'D'}));
+   		this.add_input(new InputEncoder({x:hp2x(3.6), y:46, r:7, vmin:0, vmax:1, val:0.1, name:'S'}));
+    	this.add_input(new InputEncoder({x:hp2x(3.6), y:66, r:7, vmin:0, vmax:50, val:30, name:'R'}));
+		this.add_input(new InputEncoder({x:hp2x(3.6), y:86, r:7, vmin:50, vmax:8000, val:1500, name:'COFF'}));
+		//this.add_output(new InputEncoder({x:hp2x(3.6), y:106, r:7, vmin:0, vmax:2, val:0.5, name:'MOD'}));
+		this.add_output(new Port({x:hp2x(3.8), y:108, r:6, name:'ENV'}));
 
-    	this.add_input(new InputEncoder({x:hp2px(6.6), y:6, r:7, vmin:-10, vmax:10, val:0, name:'VWV'}));
-    	this.add_input(new InputEncoder({x:hp2px(6.6), y:26, r:7, vmin:-10, vmax:10, val:0, name:'SVWV'}));
-    	this.add_input(new InputEncoder({x:hp2px(6.6), y:46, r:7, vmin:0, vmax:1, val:0, name:'PWLV'}));
-    	this.add_input(new InputEncoder({x:hp2px(6.6), y:66, r:7, vmin:0, vmax:1, val:1, name:'VAM'}));
-    	this.add_input(new InputEncoder({x:hp2px(6.6), y:86, r:7, vmin:0, vmax:1, val:0, name:'SVAM'}));
-    	this.add_input(new InputEncoder({x:hp2px(6.6), y:106, r:7, vmin:0, vmax:1, val:1, name:'KYBD'}));
+    	this.add_input(new InputEncoder({x:hp2x(6.6), y:6, r:7, vmin:-10, vmax:10, val:0, name:'VWV'}));
+    	this.add_input(new InputEncoder({x:hp2x(6.6), y:26, r:7, vmin:-10, vmax:10, val:0, name:'SVWV'}));
+    	this.add_input(new InputEncoder({x:hp2x(6.6), y:46, r:7, vmin:0, vmax:1, val:0, name:'PWLV'}));
+    	this.add_input(new InputEncoder({x:hp2x(6.6), y:66, r:7, vmin:0, vmax:1, val:1, name:'VAM'}));
+    	this.add_input(new InputEncoder({x:hp2x(6.6), y:86, r:7, vmin:0, vmax:1, val:0, name:'SVAM'}));
+    	this.add_input(new InputEncoder({x:hp2x(6.6), y:106, r:7, vmin:0, vmax:1, val:1, name:'KYBD'}));
 
-		this.add_input(new Port({x:hp2px(0.8), y:28, r:6, name:'GATE'}));
-		//this.add_input(new Port({x:hp2px(0.8), y:8, r:6, name:'PTCH'}));
-		this.add_input(new InputEncoder({x:hp2px(0.6), y:6, r:7, mod:10, val:0, name:'PTCH'}));
-    	this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
+		this.add_input(new Port({x:hp2x(0.8), y:28, r:6, name:'GATE'}));
+		//this.add_input(new Port({x:hp2x(0.8), y:8, r:6, name:'PTCH'}));
+		this.add_input(new InputEncoder({x:hp2x(0.6), y:6, r:7, mod:10, val:0, name:'PTCH'}));
+    	this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
 
 		this.ADSR = new ADSRPrim();
 		this.VCO = new VCOPrim(261.63);
@@ -103,83 +103,83 @@ class Juno extends Module {
 
 class NonlinearLab extends Module {
 	constructor() {
-		super({w:hp2px(25)});
+		super({w:hp2x(25)});
 
-		this.add_input(new Port({x:hp2px(0.8), y:8, r:6, default_value:0, name:'PTCH'}));
-		this.add_input(new Port({x:hp2px(0.8), y:28, r:6, name:'GATE'}));
-		this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
+		this.add_input(new Port({x:hp2x(0.8), y:8, r:6, default_value:0, name:'PTCH'}));
+		this.add_input(new Port({x:hp2x(0.8), y:28, r:6, name:'GATE'}));
+		this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
 
 		this.x1 = 4.1;
 
-		this.add_input(new InputEncoder({x:hp2px(this.x1), y:6, r:7, vmin:-10, vmax:10, val:0, name:'OSC1'}));
-		this.add_input(new InputEncoder({x:hp2px(this.x1), y:26, r:7, vmin:0, vmax:1, val:0, name:'FLC1'}));
-		this.add_input(new InputEncoder({x:hp2px(this.x1), y:46, r:7, vmin:0, vmax:4, val:0, name:'FLD1'}));
-		this.add_input(new InputEncoder({x:hp2px(this.x1), y:66, r:7, vmin:0, vmax:1, val:0, name:'PM1'}));
-		this.add_input(new InputEncoder({x:hp2px(this.x1), y:86, r:7, vmin:0, vmax:1, val:1, name:'AMP1'}));
-		this.add_output(new Port({x:hp2px(this.x1 + 0.2), y:108, r:6, name:'OSC1'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x1), y:6, r:7, vmin:-10, vmax:10, val:0, name:'OSC1'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x1), y:26, r:7, vmin:0, vmax:1, val:0, name:'FLC1'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x1), y:46, r:7, vmin:0, vmax:4, val:0, name:'FLD1'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x1), y:66, r:7, vmin:0, vmax:1, val:0, name:'PM1'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x1), y:86, r:7, vmin:0, vmax:1, val:1, name:'AMP1'}));
+		this.add_output(new Port({x:hp2x(this.x1 + 0.2), y:108, r:6, name:'OSC1'}));
 
 		this.x2 = this.x1 + 3.5;
 
-		this.add_input(new InputEncoder({x:hp2px(this.x2), y:6, r:7, vmin:-10, vmax:10, val:0, name:'OSC2'}));
-		this.add_input(new InputEncoder({x:hp2px(this.x2), y:26, r:7, vmin:0, vmax:1, val:0, name:'FLC2'}));
-		this.add_input(new InputEncoder({x:hp2px(this.x2), y:46, r:7, vmin:0, vmax:4, val:0, name:'FLD2'}));
-		this.add_input(new InputEncoder({x:hp2px(this.x2), y:66, r:7, vmin:0, vmax:1, val:0, name:'PM2'}));
-		this.add_input(new InputEncoder({x:hp2px(this.x2), y:86, r:7, vmin:0, vmax:1, val:1, name:'AMP2'}));
-		this.add_output(new Port({x:hp2px(this.x2 + 0.2), y:108, r:6, name:'OSC2'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x2), y:6, r:7, vmin:-10, vmax:10, val:0, name:'OSC2'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x2), y:26, r:7, vmin:0, vmax:1, val:0, name:'FLC2'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x2), y:46, r:7, vmin:0, vmax:4, val:0, name:'FLD2'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x2), y:66, r:7, vmin:0, vmax:1, val:0, name:'PM2'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x2), y:86, r:7, vmin:0, vmax:1, val:1, name:'AMP2'}));
+		this.add_output(new Port({x:hp2x(this.x2 + 0.2), y:108, r:6, name:'OSC2'}));
 
 		this.x3 = this.x2 + 3.5;
 
-		this.add_input(new InputEncoder({x:hp2px(this.x3), y:6, r:7, vmin:-1, vmax:1, val:0, name:'POL'}));
-		this.add_input(new InputEncoder({x:hp2px(this.x3), y:26, r:7, vmin:0, vmax:1, val:1, name:'IN1'}));
-		this.add_input(new InputEncoder({x:hp2px(this.x3), y:46, r:7, vmin:0, vmax:1, val:1, name:'IN2'}));
-		this.add_input(new InputEncoder({x:hp2px(this.x3), y:66, r:7, vmin:0, vmax:1, val:1, name:'D/W'}));
-		this.add_input(new InputEncoder({x:hp2px(this.x3), y:86, r:7, vmin:0, vmax:1, val:1, name:'RAMP'}));
-		this.add_output(new Port({x:hp2px(this.x3 + 0.2), y:108, r:6, name:'ROUT'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x3), y:6, r:7, vmin:-1, vmax:1, val:0, name:'POL'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x3), y:26, r:7, vmin:0, vmax:1, val:1, name:'IN1'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x3), y:46, r:7, vmin:0, vmax:1, val:1, name:'IN2'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x3), y:66, r:7, vmin:0, vmax:1, val:1, name:'D/W'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x3), y:86, r:7, vmin:0, vmax:1, val:1, name:'RAMP'}));
+		this.add_output(new Port({x:hp2x(this.x3 + 0.2), y:108, r:6, name:'ROUT'}));
 
 		this.x4 = this.x3 + 3.5;
 
-		this.add_input(new InputEncoder({x:hp2px(this.x4), y:26, r:7, vmin:-10, vmax:10, val:0, name:'CFCV'}));
-		this.add_input(new InputEncoder({x:hp2px(this.x4), y:46, r:7, vmin:-1, vmax:1, val:1, name:'TONE'}));
-		this.add_input(new InputEncoder({x:hp2px(this.x4), y:66, r:7, vmin:0, vmax:1, val:1, name:'FB'}));
-		this.add_input(new InputEncoder({x:hp2px(this.x4), y:86, r:7, vmin:0, vmax:1, val:0, name:'CAMP'}));
-		this.add_output(new Port({x:hp2px(this.x4 + 0.2), y:108, r:6, name:'COUT'}));		
+		this.add_input(new InputEncoder({x:hp2x(this.x4), y:26, r:7, vmin:-10, vmax:10, val:0, name:'CFCV'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x4), y:46, r:7, vmin:-1, vmax:1, val:1, name:'TONE'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x4), y:66, r:7, vmin:0, vmax:1, val:1, name:'FB'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x4), y:86, r:7, vmin:0, vmax:1, val:0, name:'CAMP'}));
+		this.add_output(new Port({x:hp2x(this.x4 + 0.2), y:108, r:6, name:'COUT'}));		
 
 
 		this.x5 = this.x4 + 3.5;
-		this.add_input(new Port({x:hp2px(0.8), y:8, r:6, name:'PTCH'}));
+		this.add_input(new Port({x:hp2x(0.8), y:8, r:6, name:'PTCH'}));
 		
-		this.add_input(new InputEncoder({x:hp2px(this.x5), y:6, r:7, vmin:0, vmax:10, val:1, name:'A1'}));
-    	this.add_input(new InputEncoder({x:hp2px(this.x5), y:26, r:7, vmin:0, vmax:10, val:1, name:'D1'}));
-   		this.add_input(new InputEncoder({x:hp2px(this.x5), y:46, r:7, vmin:0, vmax:1, val:0.1, name:'S1'}));
-    	this.add_input(new InputEncoder({x:hp2px(this.x5), y:66, r:7, vmin:0, vmax:50, val:30, name:'R1'}));
-    	this.add_input(new Port({x:hp2px(this.x5 + 0.2), y:88, r:6, default_value:1, name:'MOD1'}));
-    	this.add_output(new Port({x:hp2px(this.x5 + 0.2), y:108, r:6, name:'OUT1'}));
+		this.add_input(new InputEncoder({x:hp2x(this.x5), y:6, r:7, vmin:0, vmax:10, val:1, name:'A1'}));
+    	this.add_input(new InputEncoder({x:hp2x(this.x5), y:26, r:7, vmin:0, vmax:10, val:1, name:'D1'}));
+   		this.add_input(new InputEncoder({x:hp2x(this.x5), y:46, r:7, vmin:0, vmax:1, val:0.1, name:'S1'}));
+    	this.add_input(new InputEncoder({x:hp2x(this.x5), y:66, r:7, vmin:0, vmax:50, val:30, name:'R1'}));
+    	this.add_input(new Port({x:hp2x(this.x5 + 0.2), y:88, r:6, default_value:1, name:'MOD1'}));
+    	this.add_output(new Port({x:hp2x(this.x5 + 0.2), y:108, r:6, name:'OUT1'}));
 
     	this.x6 = this.x5 + 3.5;
 
-    	this.add_input(new InputEncoder({x:hp2px(this.x6), y:6, r:7, vmin:0, vmax:10, val:1, name:'A2'}));
-    	this.add_input(new InputEncoder({x:hp2px(this.x6), y:26, r:7, vmin:0, vmax:10, val:1, name:'D2'}));
-   		this.add_input(new InputEncoder({x:hp2px(this.x6), y:46, r:7, vmin:0, vmax:1, val:0.1, name:'S2'}));
-    	this.add_input(new InputEncoder({x:hp2px(this.x6), y:66, r:7, vmin:0, vmax:50, val:30, name:'R2'}));
-    	this.add_input(new Port({x:hp2px(this.x6 + 0.2), y:88, r:6, default_value:1, name:'MOD2'}));
-    	this.add_output(new Port({x:hp2px(this.x6 + 0.2), y:108, r:6, name:'OUT2'}));
+    	this.add_input(new InputEncoder({x:hp2x(this.x6), y:6, r:7, vmin:0, vmax:10, val:1, name:'A2'}));
+    	this.add_input(new InputEncoder({x:hp2x(this.x6), y:26, r:7, vmin:0, vmax:10, val:1, name:'D2'}));
+   		this.add_input(new InputEncoder({x:hp2x(this.x6), y:46, r:7, vmin:0, vmax:1, val:0.1, name:'S2'}));
+    	this.add_input(new InputEncoder({x:hp2x(this.x6), y:66, r:7, vmin:0, vmax:50, val:30, name:'R2'}));
+    	this.add_input(new Port({x:hp2x(this.x6 + 0.2), y:88, r:6, default_value:1, name:'MOD2'}));
+    	this.add_output(new Port({x:hp2x(this.x6 + 0.2), y:108, r:6, name:'OUT2'}));
 
   //   	this.x7 = this.x6 + 3.5;
 
-  //   	this.add_input(new InputEncoder({x:hp2px(this.x7), y:6, r:7, vmin:0, vmax:10, val:1, name:'A3'}));
-  //   	this.add_input(new InputEncoder({x:hp2px(this.x7), y:26, r:7, vmin:0, vmax:10, val:1, name:'D3'}));
-  //  		this.add_input(new InputEncoder({x:hp2px(this.x7), y:46, r:7, vmin:0, vmax:1, val:0.1, name:'S3'}));
-  //   	this.add_input(new InputEncoder({x:hp2px(this.x7), y:66, r:7, vmin:0, vmax:50, val:30, name:'R3'}));
-  //   	this.add_output(new Port({x:hp2px(this.x7 + 0.2), y:108, r:6, name:'ENV3'}));
+  //   	this.add_input(new InputEncoder({x:hp2x(this.x7), y:6, r:7, vmin:0, vmax:10, val:1, name:'A3'}));
+  //   	this.add_input(new InputEncoder({x:hp2x(this.x7), y:26, r:7, vmin:0, vmax:10, val:1, name:'D3'}));
+  //  		this.add_input(new InputEncoder({x:hp2x(this.x7), y:46, r:7, vmin:0, vmax:1, val:0.1, name:'S3'}));
+  //   	this.add_input(new InputEncoder({x:hp2x(this.x7), y:66, r:7, vmin:0, vmax:50, val:30, name:'R3'}));
+  //   	this.add_output(new Port({x:hp2x(this.x7 + 0.2), y:108, r:6, name:'ENV3'}));
     	
     	
-    	//this.add_output(new Port({x:hp2px(3.8), y:48, r:6, name:'LFO'}));
+    	//this.add_output(new Port({x:hp2x(3.8), y:48, r:6, name:'LFO'}));
 
-		//this.add_output(new InputEncoder({x:hp2px(3.6), y:106, r:7, vmin:0, vmax:2, val:0.5, name:'MOD'}));
+		//this.add_output(new InputEncoder({x:hp2x(3.6), y:106, r:7, vmin:0, vmax:2, val:0.5, name:'MOD'}));
 		
 
-		// this.add_input(new InputEncoder({x:hp2px(9.6), y:6, r:7, vmin:-10, vmax:10, val:0, name:'VWV'}));
-  //   	this.add_input(new InputEncoder({x:hp2px(9.6), y:26, r:7, vmin:-10, vmax:10, val:0, name:'SVWV'}));
+		// this.add_input(new InputEncoder({x:hp2x(9.6), y:6, r:7, vmin:-10, vmax:10, val:0, name:'VWV'}));
+  //   	this.add_input(new InputEncoder({x:hp2x(9.6), y:26, r:7, vmin:-10, vmax:10, val:0, name:'SVWV'}));
     	
     	this.ADSR1 = new ADSRPrim();
 		this.ADSR2 = new ADSRPrim();

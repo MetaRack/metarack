@@ -1,12 +1,12 @@
 class Chorus extends Module {
 	constructor() {
-		super({w:hp2px(4)});
-		this.add_input(new InputEncoder({x:hp2px(0.6), y:6, r:7, vmin:1, vmax:4, val:2, name:'TIME'}));
-		this.add_input(new InputEncoder({x:hp2px(0.6), y:26, r:7, vmin:0, vmax:4, val:1, name:'LVL'}));
-   		this.add_input(new InputEncoder({x:hp2px(0.6), y:46, r:7, vmin:0, vmax:5, val:0.2, name:'RATE'}));
-		this.add_input(new Port({x:hp2px(0.8), y:68, r:6, name:'IN'}));
-		this.add_output(new Port({x:hp2px(0.8), y:88, r:6, name:'OUTL'}));
-    	this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUTR'}));
+		super({w:hp2x(4)});
+		this.add_input(new InputEncoder({x:hp2x(0.6), y:6, r:7, vmin:1, vmax:4, val:2, name:'TIME'}));
+		this.add_input(new InputEncoder({x:hp2x(0.6), y:26, r:7, vmin:0, vmax:4, val:1, name:'LVL'}));
+   		this.add_input(new InputEncoder({x:hp2x(0.6), y:46, r:7, vmin:0, vmax:5, val:0.2, name:'RATE'}));
+		this.add_input(new Port({x:hp2x(0.8), y:68, r:6, name:'IN'}));
+		this.add_output(new Port({x:hp2x(0.8), y:88, r:6, name:'OUTL'}));
+    	this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUTR'}));
 
     	this.base_time = this.i['TIME'].get() / 100;
     	this.level = this.i['LVL'].get();

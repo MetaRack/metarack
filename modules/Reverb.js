@@ -1,6 +1,6 @@
 class Reverb extends Module {
   constructor() {
-    super({w:hp2px(10)});
+    super({w:hp2x(10)});
 
     this.delay_lines = [
       new DelayLine(2),
@@ -58,13 +58,13 @@ class Reverb extends Module {
 
 class DattorroReverb extends Module {
   constructor() {
-    super({w:hp2px(4)});
+    super({w:hp2x(4)});
 
-    this.add_control(new Encoder({x:hp2px(0.6), y:26, r:7, name:'SIZE'}));
-    this.add_control(new Encoder({x:hp2px(0.6), y:46, r:7, name:'DEC'}));
-    this.add_control(new Encoder({x:hp2px(0.6), y:66, r:7, name:'D/W'}));
-    this.add_input(new Port({x:hp2px(0.8), y:88, r:6, name:'IN'}));
-    this.add_output(new Port({x:hp2px(0.8), y:108, r:6, name:'OUT'}));
+    this.add_control(new Encoder({x:hp2x(0.6), y:26, r:7, name:'SIZE'}));
+    this.add_control(new Encoder({x:hp2x(0.6), y:46, r:7, name:'DEC'}));
+    this.add_control(new Encoder({x:hp2x(0.6), y:66, r:7, name:'D/W'}));
+    this.add_input(new Port({x:hp2x(0.8), y:88, r:6, name:'IN'}));
+    this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
 
     this.dattorro = new DattorroReverbProcessor();
     // this.dattorro.setTimeScale(0.1);
