@@ -950,7 +950,7 @@ class Engine extends GraphicObject {
   }
 
   reinit_view() {
-    this.res_multiplier = 1;
+    this.res_multiplier = 1.5;
     this.scale = this.h / (this.row_height * (this.rows + this.module0_height));
     this.control_focus = null;
     this.active_wire = null;
