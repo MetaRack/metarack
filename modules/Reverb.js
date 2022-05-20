@@ -1,70 +1,18 @@
-class Reverb extends Module {
-  constructor() {
-    super({w:hp2x(10)});
-
-    this.delay_lines = [
-      new DelayLine(2),
-      new DelayLine(2),
-      new DelayLine(2),
-      new DelayLine(2),
-    ]
-
-    this.delay_lines[0].set_delay_time(0.5);
-    this.delay_lines[1].set_delay_time(0.7);
-    this.delay_lines[2].set_delay_time(0.9);
-    this.delay_lines[3].set_delay_time(1.1);
-
-    this.delay_lines[0].set_feedback(0.4);
-    this.delay_lines[1].set_feedback(0.5);
-    this.delay_lines[2].set_feedback(0.3);
-    this.delay_lines[3].set_feedback(0.2);
-
-    this.delay_lines[0].set_dry_wet(0.8);
-    this.delay_lines[1].set_dry_wet(0.8);
-    this.delay_lines[2].set_dry_wet(0.8);
-    this.delay_lines[3].set_dry_wet(0.8);
-
-    this.in_value = 0;
-    this.out_value = 0;
-
-    this.scope = new RawScope(0, 0, 30, 30, 'scope', 30, 128);
-
-    this.add_input(new Encoder({x:8, y:38, r:7, name:'SIZE'}));
-    this.add_input(new Encoder({x:22, y:38, r:7, name:'DEC'}));
-    this.add_input(new Encoder({x:8, y:50, r:7, name:'D/W'}));
-    this.add_input(new Port({x:8, y:62, r:7, name:'IN'}));
-    this.add_output(new Port({x:22, y:62, r:7, name:'OUT'}));
-  }
-
-  draw(x, y, scale) {
-    x += this.o['OUT'].get() * 0.05;
-    y += this.o['OUT'].get() * 0.05;
-
-    super.draw(x, y, scale);
-    this.scope.draw(x + this.x, y + this.y, scale);
-  }
-
-  process() {
-    this.out_value = 0;
-    this.in_value = this.i['IN'].get();
-    for (const dly of this.delay_lines) this.out_value += dly.process( this.in_value );
-    this.out_value *= 10;
-    this.scope.process( this.out_value );
-    this.o['OUT'].set(this.out_value);
-  }
-}
-
-
-
 class DattorroReverb extends Module {
   constructor() {
-    super({w:hp2x(4)});
+    super({w:hp2x(3)});
 
-    this.add_control(new Encoder({x:hp2x(0.6), y:26, r:7, name:'SIZE'}));
-    this.add_control(new Encoder({x:hp2x(0.6), y:46, r:7, name:'DEC'}));
-    this.add_control(new Encoder({x:hp2x(0.6), y:66, r:7, name:'D/W'}));
-    this.add_input(new Port({x:hp2x(0.8), y:88, r:6, name:'IN'}));
-    this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
+    this.add_control(new Encoder({x:hp2x(0.5), y:hp2y(0.20), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'SIZE'}));
+    this.add_control(new Encoder({x:hp2x(0.5), y:hp2y(0.33), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'DEC'}));
+    this.add_control(new Encoder({x:hp2x(0.5), y:hp2y(0.46), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'D/W'}));
+    this.add_input(new Port({x:hp2x(0.7), y:hp2y(0.59), r:hp2x(0.8), name:'I/L'}));
+    this.add_input(new Port({x:hp2x(0.7), y:hp2y(0.69), r:hp2x(0.8), name:'I/R'}));
+    this.add_output(new Port({x:hp2x(0.7), y:hp2y(0.79), r:hp2x(0.8), name:'O/L'}));
+    this.add_output(new Port({x:hp2x(0.7), y:hp2y(0.89), r:hp2x(0.8), name:'O/R'}));
+
+    this.dw = 0;
+    this.size = 0;
+    this.decay = 0;
 
     this.dattorro = new DattorroReverbProcessor();
     // this.dattorro.setTimeScale(0.1);
@@ -88,7 +36,7 @@ class DattorroReverb extends Module {
     let sw = 2;
     let rounding = 5;
     buf.stroke(60); buf.strokeWeight(sw); buf.fill(255);
-    buf.rect(sw + w * 0.05, sw + 30, w * 0.9 - 2 * sw, h * 0.15 - 2 * sw, rounding, rounding, rounding, rounding);
+    buf.rect(sw + w * 0.05, sw + 30, w * 0.9 - 2 * sw, h * 0.14 - 2 * sw, rounding, rounding, rounding, rounding);
   }
 
   // draw_sbf(buf, x, y, w, h) {
@@ -121,12 +69,19 @@ class DattorroReverb extends Module {
   // }
 
   process() {
-    this.in_value = this.i['IN'].get() / 10;
-    this.out_value = this.in_value * 0.5 + 0.5 * this.dattorro.process(this.in_value);
-    this.out_value *= 4;
-    this.o['OUT'].set(this.out_value);
+    this.dw = this.c['D/W'].get()**2;
+    this.decay = this.c['DEC'].get();
+    this.size = this.c['SIZE'].get()**2;
+    this.dattorro.inputL = this.i['I/L'].get() / 10;
+    this.dattorro.inputR = this.i['I/R'].get() / 10;
+    this.dattorro.setTimeScale(this.size);
+    this.dattorro.decay = this.decay;
+    this.dattorro.process();
+    this.dattorro.outputL *= 4;
+    this.dattorro.outputR *= 4;
+    this.o['O/L'].set(this.dattorro.inputL + (this.dattorro.outputL - this.dattorro.inputL) * this.dw);
+    this.o['O/R'].set(this.dattorro.inputR + (this.dattorro.outputR - this.dattorro.inputR) * this.dw);
   }
 }
 
 engine.add_module_class(DattorroReverb);
-engine.add_module_class(Reverb);

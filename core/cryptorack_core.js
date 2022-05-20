@@ -90,9 +90,7 @@ class GraphicObject {
 
     if (this.gparent.changed) this.changed = true;
 
-    if (this.changed && this.cbf) {
-      cbf.image(this.cbf, x + this.x, y + this.y, this.w, this.h);
-    }
+    if (this.changed && this.cbf) cbf.image(this.cbf, x + this.x, y + this.y, this.w, this.h);
     if (this.changed && this.sbf) sbf.image(this.sbf, x + this.x, y + this.y, this.w, this.h);
     if (this.draw_dbf) { this.draw_dbf(dbf, x + this.x, y + this.y, this.w, this.h); }
 
@@ -398,7 +396,7 @@ class Encoder extends GraphicObject {
   mouse_dragged(x, y, dx, dy) { 
     this.prev_base_val = this.base_val;
     this.sample_counter = 0;
-    this.base_val -= dy / 500 * (this.vmax - this.vmin); 
+    this.base_val -= dy / 250 * (this.vmax - this.vmin); 
     if (this.base_val > this.vmax) this.base_val = this.vmax;
     if (this.base_val < this.vmin) this.base_val = this.vmin + 0.0001;
     this.changed=true;
@@ -407,7 +405,12 @@ class Encoder extends GraphicObject {
   double_clicked(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = this.def_val; this.mod = this.def_mod; this.changed = true; }
 
   save() { return this.base_val.toFixed(6); }
-  load(s) { this.base_val = parseFloat(s); this.changed = true; }
+  load(s) { 
+    this.base_val = parseFloat(s); 
+    if (this.base_val > this.vmax) this.base_val = this.vmax;
+    if (this.base_val < this.vmin) this.base_val = this.vmin;
+    this.changed = true; 
+  }
 }
 
 class StepEncoder extends Encoder {
@@ -425,7 +428,7 @@ class StepEncoder extends Encoder {
   mouse_pressed(x, y, dx, dy) { super.mouse_pressed(x, y, dx, dy); this.y0 = y; }
 
   mouse_dragged(x, y, dx, dy) { 
-    this.dval -= dy / 500 * (this.vmax - this.vmin);
+    this.dval -= dy / 250 * (this.vmax - this.vmin);
     if (Math.abs(this.dval) > this.step) {
       this.base_val += Math.sign(this.dval) * this.step;
       this.dval -= Math.sign(this.dval) * this.step;
@@ -574,7 +577,7 @@ class InputEncoder extends Encoder {
     this.prev_base_val = this.base_val;
     this.sample_counter = 0;
     if (!this.port.isinput || (!engine.cmdpressed || this.port.wires.length == 0)) {
-      this.base_val -= dy / 500 * (this.vmax - this.vmin); 
+      this.base_val -= dy / 250 * (this.vmax - this.vmin); 
       if (this.base_val > this.vmax) this.base_val = this.vmax;
       if (this.base_val < this.vmin) this.base_val = this.vmin + 0.0001;
     } else {
@@ -586,7 +589,13 @@ class InputEncoder extends Encoder {
   }
 
   save() { return { 'val': this.base_val.toFixed(6), 'mod': this.mod.toFixed(6) } }
-  load(s) { this.base_val = parseFloat(s['val']); this.mod = parseFloat(s['mod']); this.changed = true; }
+  load(s) { 
+    this.base_val = parseFloat(s['val']); 
+    if (this.base_val > this.vmax) this.base_val = this.vmax;
+    if (this.base_val < this.vmin) this.base_val = this.vmin;
+    this.mod = parseFloat(s['mod']); 
+    this.changed = true; 
+  }
 }
 
 // WIRE
@@ -882,8 +891,8 @@ class Module0 extends Module {
   set_size(w, h) {
     super.set_size(w, h);
     if (this.i) {
-      this.i['LEFT'].set_position(this.w - 30, this.h / 5);
-      this.i['RIGHT'].set_position(this.w - 15, this.h / 5);
+      this.i['LEFT'].set_position(this.w - 30, this.h / 12);
+      this.i['RIGHT'].set_position(this.w - 15, this.h / 12);
     }
   }
 
@@ -925,7 +934,7 @@ class Engine extends GraphicObject {
 
     this.stop = false;
 
-    this.module0_height = 0.2;
+    this.module0_height = 0.15;
     this.module0 = new Module0();
     this.module0.set_position(this.spacing, this.spacing);
     this.attach(this.module0);
@@ -1393,6 +1402,10 @@ function keyPressed() {
 
   if (keyCode === 8) {
     engine.delete_last_module();
+  }
+
+  if (keyCode === 70) {
+    document.body.requestFullscreen();
   }
 }
 
