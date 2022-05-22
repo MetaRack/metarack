@@ -49,7 +49,8 @@ class Clock extends Module {
     this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'Reset'}));
     this.add_output(new Port({x:hp2x(3.8), y:108, r:6, name:'Run'}));
 
-    this.bpm = this.i['BPM'].get().toFixed(0);
+    this.bpm = Math.round(this.i['BPM'].get());
+    this.sample_threshold_row = [0, 0, 0];
     this.set_bpm(this.bpm);
   }
 
@@ -57,15 +58,35 @@ class Clock extends Module {
     this.bpm = bpm;
     this.sample_threshold = sample_rate * 60 / this.bpm / 2;
 
-    this.sample_threshold_row = new Array(3)
-    for (var i = 0; i < 3; i++) {
-      if (this.c['DIV' + (i+1).toString()].get() > 0)
-        this.sample_threshold_row[i] = sample_rate * 60 / this.bpm / 2 / this.c['DIV' + (i+1).toString()].get();
+    if (this.c['DIV1'].get() > 0)
+        this.sample_threshold_row[0] = sample_rate * 60 / this.bpm / 2 / this.c['DIV1'].get();
       else
-        this.sample_threshold_row[i] = sample_rate * 60 / this.bpm / 2 * (-this.c['DIV' + (i+1).toString()].get());
-      if (this.c['DIV' + (i+1).toString()].changed)
-        this.sample_counter_row[i] = this.fmod(this.sample_counter, this.sample_threshold_row[i]);
-    }
+        this.sample_threshold_row[0] = sample_rate * 60 / this.bpm / 2 * (-this.c['DIV1'].get());
+    if (this.c['DIV1'].changed)
+      this.sample_counter_row[0] = this.fmod(this.sample_counter, this.sample_threshold_row[0]);
+
+    if (this.c['DIV2'].get() > 0)
+        this.sample_threshold_row[1] = sample_rate * 60 / this.bpm / 2 / this.c['DIV2'].get();
+      else
+        this.sample_threshold_row[1] = sample_rate * 60 / this.bpm / 2 * (-this.c['DIV2'].get());
+    if (this.c['DIV2'].changed)
+      this.sample_counter_row[1] = this.fmod(this.sample_counter, this.sample_threshold_row[1]);
+
+    if (this.c['DIV3'].get() > 0)
+        this.sample_threshold_row[2] = sample_rate * 60 / this.bpm / 2 / this.c['DIV3'].get();
+      else
+        this.sample_threshold_row[2] = sample_rate * 60 / this.bpm / 2 * (-this.c['DIV3'].get());
+    if (this.c['DIV3'].changed)
+      this.sample_counter_row[2] = this.fmod(this.sample_counter, this.sample_threshold_row[2]);
+
+    // for (var i = 0; i < 3; i++) {
+    //   if (this.c['DIV' + (i+1).toString()].get() > 0)
+    //     this.sample_threshold_row[i] = sample_rate * 60 / this.bpm / 2 / this.c['DIV' + (i+1).toString()].get();
+    //   else
+    //     this.sample_threshold_row[i] = sample_rate * 60 / this.bpm / 2 * (-this.c['DIV' + (i+1).toString()].get());
+    //   if (this.c['DIV' + (i+1).toString()].changed)
+    //     this.sample_counter_row[i] = this.fmod(this.sample_counter, this.sample_threshold_row[i]);
+    // }
   }
 
   // draw_dbf (buf, x, y, w, h) {
@@ -81,7 +102,7 @@ class Clock extends Module {
   fmod (a,b) { return Number((a - (Math.floor(a / b) * b)).toPrecision(8)); };
 
   process() {
-    this.bpm = this.i['BPM'].get().toFixed(0);
+    this.bpm = Math.round(this.i['BPM'].get());
     this.set_bpm(this.bpm);
 
     if (this.sample_counter > this.sample_threshold) {
