@@ -103,9 +103,9 @@ class ClockedRandomChords extends Module {
     buf.noFill();
     buf.strokeWeight(0.5);
     buf.stroke(40);
-    buf.circle(x + w/4, y + h/2 * 0.1 * (1 + this.OSC[0].cv + 1) + h * 0.05, this.ENV[0].out / 10 * w/4);
-    buf.circle(x + w/2, y + h/2 * 0.1 * (1 + this.OSC[1].cv + 1) + h * 0.05, this.ENV[1].out / 10 * w/4);
-    buf.circle(x + w/4*3, y + h/2 * 0.1 * (1 + this.OSC[2].cv + 1) + h * 0.05, this.ENV[2].out / 10 * w/4);
+    buf.circle(x + w/4, y - h/2 * 0.1 * (1 + this.OSC[0].cv + 1) + h * 0.25, this.ENV[0].out / 10 * w/4);
+    buf.circle(x + w/2, y - h/2 * 0.1 * (1 + this.OSC[1].cv + 1) + h * 0.25, this.ENV[1].out / 10 * w/4);
+    buf.circle(x + w/4*3, y - h/2 * 0.1 * (1 + this.OSC[2].cv + 1) + h * 0.25, this.ENV[2].out / 10 * w/4);
   }
 
   process() {
