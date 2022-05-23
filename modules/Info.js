@@ -10,7 +10,7 @@ class Info extends Module {
     buf.stroke(60); buf.strokeWeight(sw); buf.fill(230);
     buf.rect(sw + w * 0.05, sw + h * 0.05, w - 2 * sw - w * 0.1, h - 2 * sw - h * 0.1);
 
-    let text = "Interface:\ns - save\nl - load\nf - fullscreen\nc - clear patch\n\nto change modulation strength \nhold cmd while rotating a knob"
+    let text = "Interface:\ns - save\nl - load\nf - fullscreen\nc - clear patch\n\nto change modulation strength \nhold cmd while rotating a knob\n\nclick on screen to start"
 
     buf.textSize(h / 20);
     buf.fill(60);
