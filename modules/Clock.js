@@ -27,8 +27,8 @@ class Clock extends Module {
     this.sample_counter = 0;
     this.value = 0;
 
-    this.sample_counter_row = new Array(3);
-    this.value_row = new Array(3);
+    this.sample_threshold_row = [0, 0, 0];
+    this.sample_counter_row = [0, 0, 0];
 
     this.is_run = true;
     this.prev_run_gate = 0;
@@ -42,20 +42,18 @@ class Clock extends Module {
     for (var i = 1; i < 4; i++) {
       this.add_output(new Port({x:hp2x(0.8 + (i-1)*3), y:88, r:6, name:'CLK ' + i.toString()}));
       this.add_control(new StepEncoder({x:hp2x(0.8 + (i-1)*3), y:68, r:6, vmin:-4, vmax:4, val:1, step:1, precision:0, nonzero:true, name:'DIV' + i.toString()}));
-      this.sample_counter_row[i-1] = 0;
-      this.value_row[i-1] = 0;
+      //this.sample_counter_row[i-1] = 0;
+      //this.value_row[i-1] = 0;
     }
 
     this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'Reset'}));
     this.add_output(new Port({x:hp2x(3.8), y:108, r:6, name:'Run'}));
 
-    this.bpm = Math.round(this.i['BPM'].get());
-    this.sample_threshold_row = [0, 0, 0];
-    this.set_bpm(this.bpm);
+    this.bpm = Math.max(1, Math.round(this.i['BPM'].get()));
+    this.set_bpm();
   }
 
-  set_bpm(bpm) {
-    this.bpm = bpm;
+  set_bpm() {
     this.sample_threshold = sample_rate * 60 / this.bpm / 2;
 
     if (this.c['DIV1'].get() > 0)
@@ -90,20 +88,15 @@ class Clock extends Module {
   }
 
   // draw_dbf (buf, x, y, w, h) {
-  //   if (this.c['DIV1'].changed || this.c['DIV2'].changed || this.c['DIV3'].changed) {
-  //     this.set_bpm(this.i['BPM'].get().toFixed(0))
-  //     for (var i = 0; i < 3; i++) {
-  //       if (this.c['DIV' + (i+1).toString()].changed)
-  //         this.sample_counter_row[i] = this.fmod(this.sample_counter, this.sample_threshold_row[i]);
-  //     }
-  //   }
+  //   this.bpm = Math.max(1, Math.round(this.i['BPM'].get()));
+  //   this.set_bpm();
   // }
 
-  fmod (a,b) { return Number((a - (Math.floor(a / b) * b)).toPrecision(8)); };
+  fmod (a,b) { return (a - (Math.floor(a / b) * b)); };
 
   process() {
-    this.bpm = Math.round(this.i['BPM'].get());
-    this.set_bpm(this.bpm);
+    this.bpm = Math.max(1, Math.round(this.i['BPM'].get()));
+    this.set_bpm();
 
     if (this.sample_counter > this.sample_threshold) {
       this.o['CLK'].set(10);
