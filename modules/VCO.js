@@ -1,6 +1,6 @@
 class VCO extends Module {
 
-  constructor(freq) {
+  constructor(freq=120) {
     super({w:hp2x(10)});
     this.freq = freq;
     this.delta = Math.PI * 2 / (sample_rate / freq);
