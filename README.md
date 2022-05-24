@@ -5,7 +5,7 @@
 # cryptorack
 Javascript modular synthesizer with NFT in mind 🤦
 
-### Try online (reload page for randomization): [https://ferluht.github.io/cryptorack/](https://ferluht.github.io/cryptorack/)
+### [Try online](http://165.232.84.250:1337/17aa5afb9bce4072cb3f65ed67bf3e3e93f244d768de08b23a46fd6c3b8bf6033f230d746535125d8de77d5342/index.html)
 
 # run server
 
