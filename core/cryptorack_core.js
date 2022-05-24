@@ -1,5 +1,11 @@
 document.addEventListener('contextmenu', event => event.preventDefault());
 
+let rackwidth = document.documentElement.clientWidth;
+let rackheight = document.documentElement.clientHeight;
+let fps = 20;
+let sample_rate = 44100;
+let background_color = 255;
+
 let engine;
 
 function hp2x(hp, round=false) {if (round) return Math.round(hp) * 5.08; return hp * 5.08;}
