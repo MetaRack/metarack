@@ -1144,6 +1144,9 @@ class Engine extends GraphicObject {
 
   set_size(w, h) {
     super.set_size(w, h);
+    this.rows = Math.floor(h / window.devicePixelRatio / 200);
+    if (this.rows < 1) this.rows = 1;
+    if (this.modules) this.replace_modules();
     this.reinit_view();
     if (this.module0) 
       this.module0.set_size(
@@ -1232,7 +1235,7 @@ class Engine extends GraphicObject {
   hp2x(xhp){ return hp2x(xhp) + this.spacing; }
   hp2y(yhp){ return hp2y(yhp) + this.module0.h + (yhp + 1) * 2 * this.spacing + this.spacing; }
 
-  closest_place(m, x, y) {
+  closest_place(m, x, y, modules) {
     let mxhp = this.x2hp(x);
     let myhp = this.y2hp(y);
 
@@ -1240,12 +1243,12 @@ class Engine extends GraphicObject {
     if (myhp < 0) myhp = 0;
     if (myhp > this.rows - 1) myhp = this.rows - 1;
 
-    for (let i = 0; i < this.modules.length; i++) {
-      if (this.modules[i] == m) continue;
-      let ixhp = this.x2hp(this.modules[i].x);
-      let iyhp = this.y2hp(this.modules[i].y);
+    for (let i = 0; i < modules.length; i++) {
+      if (modules[i] == m) continue;
+      let ixhp = this.x2hp(modules[i].x);
+      let iyhp = this.y2hp(modules[i].y);
       if (((ixhp >= mxhp && ixhp < mxhp + x2hp(m.w, true)) ||
-           (mxhp >= ixhp && mxhp < ixhp + x2hp(this.modules[i].w, true))) && 
+           (mxhp >= ixhp && mxhp < ixhp + x2hp(modules[i].w, true))) && 
            (iyhp == myhp)) {
         return null;
       }
@@ -1254,18 +1257,27 @@ class Engine extends GraphicObject {
     return [this.hp2x(mxhp), this.hp2y(myhp)];
   }
 
-  place_module(m, pos=null) {
+  place_module(m, pos=null, modules=null) {
+    if (!modules) modules = this.modules;
     if (pos) {
-      let xy = this.closest_place(m, this.hp2x(pos[0]), this.hp2y(pos[1]));
+      let xy = this.closest_place(m, this.hp2x(pos[0]), this.hp2y(pos[1]), modules);
       if (xy != null) { m.set_position(xy[0], xy[1]); return; }
     }
     for (let x = 0; ; x++) {
       for (let y = 0; y < this.rows; y ++) {
         let x_px = this.hp2x(x);
         let y_px = this.hp2y(y);
-        let xy = this.closest_place(m, x_px, y_px);
+        let xy = this.closest_place(m, x_px, y_px, modules);
         if (xy != null) { m.set_position(xy[0], xy[1]); return; }
       }
+    }
+  }
+
+  replace_modules() {
+    let modules = [];
+    for (let i = 0; i < this.modules.length; i ++) {
+      this.place_module(this.modules[i], null, modules);
+      modules.push(this.modules[i]);
     }
   }
 
