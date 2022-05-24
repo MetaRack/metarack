@@ -7,6 +7,7 @@ class RawScope extends GraphicObject {
       this.offset = offset;
 
       this.sample_counter = 0;
+      this.divider_sample_counter = 0;
       this.buffer = [];
       this.i = 0;
       for (var j = 0; j < this.size; j ++) this.buffer.push(0);
@@ -14,9 +15,6 @@ class RawScope extends GraphicObject {
       this.delta = 0;
       this.y1 = 0;
       this.y2 = 0;
-
-      this.filled = false;
-      this.drawn = false;
     }
 
     draw_cbf(buf, w, h) {
@@ -43,16 +41,11 @@ class RawScope extends GraphicObject {
         this.y2 = -this.buffer[(this.i + j + 2) % this.size] * h / 1 / 10 + h / 2;
         buf.line(x + this.offset + j * this.delta, y + this.y1, x + this.offset + (j + 1) * this.delta, y + this.y2);
       }
-      this.drawn = true;
     }
 
     trig() {
-      if (this.drawn && this.filled) { 
-        this.i = -1;
-        this.sample_counter = 0;
-        this.filled = false;
-      }
-      // this.changed = true;
+      this.divider = this.divider_sample_counter / this.size;
+      this.divider_sample_counter = 0;
     }
 
     process(sample) {
@@ -60,9 +53,10 @@ class RawScope extends GraphicObject {
       if (this.sample_counter > this.divider) {
         this.i ++;
         this.buffer[this.i] = sample;
-        if (this.i == this.size - 1) { this.i = -1; this.filled = true; this.drawn = false; }
+        if (this.i == this.size - 1) { this.i = -1; }
         this.sample_counter = 0;
       }
       this.sample_counter ++;
+      this.divider_sample_counter ++;
     }
 }
