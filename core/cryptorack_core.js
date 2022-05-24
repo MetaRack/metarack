@@ -1,5 +1,7 @@
 document.addEventListener('contextmenu', event => event.preventDefault());
 
+var rackrand = Math.random;
+
 let rackwidth = document.documentElement.clientWidth;
 let rackheight = document.documentElement.clientHeight;
 let fps = 20;
