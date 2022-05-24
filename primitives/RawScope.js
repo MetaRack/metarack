@@ -49,7 +49,6 @@ class RawScope extends GraphicObject {
     }
 
     process(sample) {
-      if (this.filled) return;
       if (this.sample_counter > this.divider) {
         this.i ++;
         this.buffer[this.i] = sample;
