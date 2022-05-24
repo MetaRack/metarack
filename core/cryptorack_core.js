@@ -352,8 +352,6 @@ class Encoder extends GraphicObject {
     buf.text(this.name.substring(0,4), w / 2, h * 5 / 6 + 1);
   }
 
-  //get() { return this.base_val; }
-
   get() { 
     if (this.changed) {
       this.nochange_counter = 0;
@@ -366,18 +364,10 @@ class Encoder extends GraphicObject {
         this.filter.in = this.base_val;
       }
       this.filter.process();
-      //console.log((this.base_val * this.c + this.prev_base_val * (1 - this.c)) + this.mod_coef * this.port.get());
       return this.filter.lp;
       
     }
     else {
-      // this.sample_counter = 0;
-      // this.prev_base_val = this.base_val;
-      // this.filter.in = this.base_val;
-      // this.filter.process();
-      // return this.filter.lp;
-      //return this.base_val; 
-
       this.sample_counter = 0;
       if (!this.nochange_flag) this.nochange_counter++;
       if (this.nochange_counter > sample_rate / 2) {
@@ -393,7 +383,6 @@ class Encoder extends GraphicObject {
       else {
         return this.base_val;
       }
-      //return this.base_val + this.mod_coef * this.port.get(); 
     }
     
   }
@@ -1300,7 +1289,6 @@ class Engine extends GraphicObject {
       s['modules'][this.modules[this.i_save].id] = this.modules[this.i_save].save();
     }
     for (this.i_save = 0; this.i_save < this.wires.length; this.i_save ++) s.wires.push(this.wires[this.i_save].save());
-    console.log(s);
     return s;
   }
 
