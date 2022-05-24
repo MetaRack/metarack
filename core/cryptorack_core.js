@@ -803,10 +803,11 @@ class Module extends GraphicObject {
   mouse_pressed(x, y, dx, dy) { 
     this._x = this.x;
     this._y = this.y;
+    this._xd = x - this.x;
   }
 
   mouse_dragged(x, y, dx, dy) {
-    this._x = Math.floor((x - engine.x / engine.scale - engine.spacing) / 5.08);
+    this._x = Math.floor((x - engine.x / engine.scale - engine.spacing - this._xd) / 5.08);
     this._x = this._x * 5.08 + engine.x / engine.scale + engine.spacing;
     this._y = Math.floor((y - engine.y / engine.scale - engine.module0.h - 2*engine.spacing) / engine.row_height);
     this._y = this._y * engine.row_height + engine.y / engine.scale + engine.module0.h + 2*engine.spacing;
