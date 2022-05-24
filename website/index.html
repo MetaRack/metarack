@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<style type="text/css">
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+</style>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>MetaRack</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.1/lib/p5.js"></script>
+    <script src="https://http://165.232.84.250:1338/17aa5afb9bce4072cb3f65ed67bf3e3e93f244d768de08b23a46fd6c3b8bf6033f230d746535125d8de77d5342/metarack.min.js"></script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      function fn_onclick() {
+        if(!audioContext) {
+          engine_run();
+        }
+      }
+
+      document.body.addEventListener('click', fn_onclick, true); 
+      document.body.onkeyup = function(e){
+        if(e.keyCode == 32){
+          if(!audioContext) {
+            engine_run();
+          }
+        }
+      }
+    </script>
+
+  </body>
+</html>
