@@ -1,6 +1,7 @@
 import subprocess
 import time
 import os
+import shutil
 
 def checkout():
     process = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
@@ -9,13 +10,13 @@ def checkout():
         return False
     return True
 
-def get_all_js_files(root):
+def get_all_files(root, frmt='.js'):
     files = []
     for f in os.listdir(root):
         f = os.path.join(root, f)
         if os.path.isdir(f):
-            files += get_all_js_files(f)
-        if os.path.isfile(f) and f[-3:] == '.js':
+            files += get_all_files(f, frmt)
+        if os.path.isfile(f) and f[-len(frmt):] == frmt:
             files.append(f)
     return files
 
@@ -40,13 +41,18 @@ def minify():
     except OSError:
         pass
 
-    files = get_all_js_files('./')
-    merge_files(files, './metarack.js')
+    js_files = get_all_files('./', '.js')
+    wasm_files = get_all_files('./bin', '.wasm')
+    for f in wasm_files:
+        shutil.copy(f, './website')
+    merge_files(js_files, './metarack.js')
     process = subprocess.Popen(["terser", "--compress", "--mangle", "--", "./metarack.js"], stdout=subprocess.PIPE)
     output = process.communicate()[0]
     with open('./website/metarack.min.js', 'w') as outfile:
         outfile.write(output.decode())
     print(f"minified, size {os.path.getsize('./website/metarack.min.js') / 1024:.2f}kb")
+
+minify()
 
 try:
     while True:
@@ -54,4 +60,4 @@ try:
             minify()
         time.sleep(5)
 except KeyboardInterrupt:
-    print('interrupted!')
+    print('exit')
