@@ -812,7 +812,7 @@ class Module extends GraphicObject {
     this._y = Math.floor((y - engine.y / engine.scale - engine.module0.h - 2*engine.spacing) / engine.row_height);
     this._y = this._y * engine.row_height + engine.y / engine.scale + engine.module0.h + 2*engine.spacing;
 
-    this._xy = engine.closest_place(this, this._x, this._y);
+    this._xy = engine.closest_place(this, this._x, this._y, engine.modules);
     if (this._xy != null) {
       this.x = this._xy[0];
       this.y = this._xy[1];
@@ -1235,7 +1235,8 @@ class Engine extends GraphicObject {
   hp2x(xhp){ return hp2x(xhp) + this.spacing; }
   hp2y(yhp){ return hp2y(yhp) + this.module0.h + (yhp + 1) * 2 * this.spacing + this.spacing; }
 
-  closest_place(m, x, y, modules) {
+  closest_place(m, x, y, modules=null) {
+    if (!modules) modules = this.modules;
     let mxhp = this.x2hp(x);
     let myhp = this.y2hp(y);
 
@@ -1258,7 +1259,6 @@ class Engine extends GraphicObject {
   }
 
   place_module(m, pos=null, modules=null) {
-    if (!modules) modules = this.modules;
     if (pos) {
       let xy = this.closest_place(m, this.hp2x(pos[0]), this.hp2y(pos[1]), modules);
       if (xy != null) { m.set_position(xy[0], xy[1]); return; }
