@@ -39,13 +39,13 @@ def minify():
     wasm_files = get_all_files('./bin', '.wasm')
 
     for f in wasm_files:
-        shutil.copy(f, './website')
+        shutil.copy(f, './website/demo')
     merge_files(js_files, './metarack.js')
     process = subprocess.Popen(["terser", "--compress", "--mangle", "--keep-classnames", "--", "./metarack.js"], stdout=subprocess.PIPE)
     output = process.communicate()[0]
-    with open('./website/metarack.min.js', 'w') as outfile:
+    with open('./website/demo/metarack.min.js', 'w') as outfile:
         outfile.write(output.decode())
-    print(f"minified, size {os.path.getsize('./website/metarack.min.js') / 1024:.2f}kb")
+    print(f"minified, size {os.path.getsize('./website/demo/metarack.min.js') / 1024:.2f}kb")
 
 if __name__ == '__main__':
     minify()
