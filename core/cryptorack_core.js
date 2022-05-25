@@ -1308,7 +1308,7 @@ class Engine extends GraphicObject {
   load_state(s) {
     let module_index = {'0': this.module0};
 
-    for (const m in s['modules']) { 
+    for (const m in s['modules']) {
       try {
         module_index[m] = new this.module_registry[s['modules'][m]['name']]();
         module_index[m].load(s['modules'][m]); 
