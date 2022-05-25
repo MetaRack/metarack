@@ -13,6 +13,7 @@ app.mount("/", StaticFiles(directory="resources"), name="resources")
 def init_website_files():
     minify()
 
+@app.on_event("startup")
 @repeat_every(seconds=10)
 def check_updates_task():
     if checkout():
