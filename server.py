@@ -11,6 +11,7 @@ app.mount("/", StaticFiles(directory="resources"), name="resources")
 
 @app.on_event("startup")
 def init_website_files():
+    checkout()
     minify()
 
 @app.on_event("startup")
