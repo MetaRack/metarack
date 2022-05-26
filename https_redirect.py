@@ -3,8 +3,7 @@ from fastapi import FastAPI
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
-app = FastAPI()
-
+app = FastAPI(docs_url=None, redoc_url=None)
 
 @app.route('/{_:path}')
 async def https_redirect(request: Request):
