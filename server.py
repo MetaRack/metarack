@@ -7,7 +7,8 @@ from fastapi.responses import RedirectResponse
 
 from build import checkout, minify
 
-hostname = '0.0.0.0'
+hostname = 'metarack.art'
+
 
 app = FastAPI()
 
@@ -37,4 +38,4 @@ async def read_item(userdesc: str = '', useremail: str = ''):
     return RedirectResponse(f"http://{hostname}/static/request_success.html")
 
 if __name__ == "__main__":
-    uvicorn.run("server:app", host=hostname, port=8080, reload=True)
+    uvicorn.run("server:app", host='0.0.0.0', port=8080, reload=True)
