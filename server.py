@@ -37,4 +37,4 @@ async def read_item(userdesc: str = '', useremail: str = ''):
     return RedirectResponse(f"http://{hostname}/static/request_success.html")
 
 if __name__ == "__main__":
-    uvicorn.run("server:app", host=hostname, port=80, reload=True)
+    uvicorn.run("server:app", host=hostname, port=8080, reload=True)
