@@ -28,14 +28,15 @@ def check_updates_task():
 
 @app.get('/')
 def index():
-  return RedirectResponse(f"http://{hostname}/static/index.html")
+  return RedirectResponse(f"https://{hostname}/static/index.html")
 
 @app.get("/request")
 async def read_item(userdesc: str = '', useremail: str = ''):
     now = datetime.datetime.now()
     with open("private/applications.txt", "a+") as f:
         f.write(f"{now.strftime('%Y-%m-%d %H:%M:%S')},{userdesc},{useremail}\n")
-    return RedirectResponse(f"http://{hostname}/static/request_success.html")
+    return RedirectResponse(f"https://{hostname}/static/request_success.html")
 
 if __name__ == "__main__":
-    uvicorn.run("server:app", host='0.0.0.0', port=8080, reload=True)
+    uvicorn.run("server:app", host='0.0.0.0', port=443, reload=True,
+                ssl_keyfile='private/metarack_nopass.pem', ssl_certfile='private/metarack_art.crt')
