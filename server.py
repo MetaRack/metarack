@@ -7,7 +7,7 @@ from fastapi.responses import RedirectResponse
 
 from build import checkout, minify
 
-hostname = 'matarack.art'
+hostname = '0.0.0.0'
 
 app = FastAPI()
 
