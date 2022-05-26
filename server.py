@@ -10,7 +10,7 @@ from build import checkout, minify
 hostname = 'metarack.art'
 
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None)
 
 app.mount("/17aa5afb9bce4072cb3f65ed67bf3e3e93f244d768de08b23a46fd6c3b8bf6033f230d746535125d8de77d5342", StaticFiles(directory="website/demo"), name="metarack_demo")
 app.mount("/static", StaticFiles(directory="website/landing", html=True), name="landing")
