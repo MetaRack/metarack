@@ -2,17 +2,7 @@ import os
 import shutil
 import subprocess
 
-def checkout(token=None):
-    if token:
-        process = subprocess.Popen(["git", "remote", "set-url", "origin", f"https://ferluht:{token}@github.com/ferluht/metarack"], stdout=subprocess.PIPE)
-        output = process.communicate()[0]
-    process = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
-    output = process.communicate()[0]
-    if (output.decode() == 'Already up to date.\n'):
-        return False
-    return True
-
-def get_all_files(root, frmt='.js'):
+def get_all_files(root='./', frmt='.js'):
     files = []
     for f in os.listdir(root):
         f = os.path.join(root, f)
@@ -22,7 +12,7 @@ def get_all_files(root, frmt='.js'):
             files.append(f)
     return files
 
-def merge_files(files, out):
+def merge_files(files=[], out='merged'):
     with open(out, 'w') as outfile:
         for fname in files:
             if 'p5' in fname:
@@ -32,23 +22,24 @@ def merge_files(files, out):
                 for line in infile:
                     outfile.write(line)
 
-def minify():
-    js_files  = get_all_files('./core', '.js')
-    js_files += get_all_files('./primitives', '.js')
-    js_files += get_all_files('./modules', '.js')
-    js_files += get_all_files('./bin', '.js')
+def minify(out_root='./'):
+    js_files  = get_all_files(root='./core', frmt='.js')
+    js_files += get_all_files(root='./primitives', frmt='.js')
+    js_files += get_all_files(root='./modules', frmt='.js')
+    js_files += get_all_files(root='./bin', frmt='.js')
     js_files.append('./index.js')
 
-    wasm_files = get_all_files('./bin', '.wasm')
+    wasm_files = get_all_files(root='./bin', frmt='.wasm')
 
     for f in wasm_files:
-        shutil.copy(f, './website/demo')
-    merge_files(js_files, './metarack.js')
+        shutil.copy(f, out_root)
+    merge_files(files=js_files, out='./metarack.js')
     process = subprocess.Popen(["terser", "--compress", "--mangle", "--keep-classnames", "--", "./metarack.js"], stdout=subprocess.PIPE)
     output = process.communicate()[0]
-    with open('./website/demo/metarack.min.js', 'w') as outfile:
+    fname = os.path.join(out_root, 'metarack.min.js')
+    with open(fname, 'w') as outfile:
         outfile.write(output.decode())
-    print(f"minified, size {os.path.getsize('./website/demo/metarack.min.js') / 1024:.2f}kb")
+    print(f"minified, size {os.path.getsize(fname) / 1024:.2f}kb")
 
 if __name__ == '__main__':
-    minify()
+    minify(out_root='./server/website/demo')
