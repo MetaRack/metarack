@@ -1,7 +1,7 @@
 FROM python:3.9
 
-RUN apt update
-RUN apt install -y nodejs npm
+RUN apt-get update
+RUN apt-get install -y nodejs npm
 RUN npm install -y terser -g
 
 COPY ./requirements.txt /requirements.txt
