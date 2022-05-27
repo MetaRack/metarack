@@ -1,5 +1,13 @@
 document.addEventListener('contextmenu', event => event.preventDefault());
 
+var rackrand = Math.random;
+
+let rackwidth = document.documentElement.clientWidth;
+let rackheight = document.documentElement.clientHeight;
+let fps = 20;
+let sample_rate = 44100;
+let background_color = 255;
+
 let engine;
 
 function hp2x(hp, round=false) {if (round) return Math.round(hp) * 5.08; return hp * 5.08;}
@@ -344,8 +352,6 @@ class Encoder extends GraphicObject {
     buf.text(this.name.substring(0,4), w / 2, h * 5 / 6 + 1);
   }
 
-  //get() { return this.base_val; }
-
   get() { 
     if (this.changed) {
       this.nochange_counter = 0;
@@ -358,18 +364,10 @@ class Encoder extends GraphicObject {
         this.filter.in = this.base_val;
       }
       this.filter.process();
-      //console.log((this.base_val * this.c + this.prev_base_val * (1 - this.c)) + this.mod_coef * this.port.get());
       return this.filter.lp;
       
     }
     else {
-      // this.sample_counter = 0;
-      // this.prev_base_val = this.base_val;
-      // this.filter.in = this.base_val;
-      // this.filter.process();
-      // return this.filter.lp;
-      //return this.base_val; 
-
       this.sample_counter = 0;
       if (!this.nochange_flag) this.nochange_counter++;
       if (this.nochange_counter > sample_rate / 2) {
@@ -385,7 +383,6 @@ class Encoder extends GraphicObject {
       else {
         return this.base_val;
       }
-      //return this.base_val + this.mod_coef * this.port.get(); 
     }
     
   }
@@ -806,15 +803,16 @@ class Module extends GraphicObject {
   mouse_pressed(x, y, dx, dy) { 
     this._x = this.x;
     this._y = this.y;
+    this._xd = x - this.x;
   }
 
   mouse_dragged(x, y, dx, dy) {
-    this._x = Math.floor((x - engine.x / engine.scale - engine.spacing) / 5.08);
+    this._x = Math.floor((x - engine.x / engine.scale - engine.spacing - this._xd) / 5.08);
     this._x = this._x * 5.08 + engine.x / engine.scale + engine.spacing;
     this._y = Math.floor((y - engine.y / engine.scale - engine.module0.h - 2*engine.spacing) / engine.row_height);
     this._y = this._y * engine.row_height + engine.y / engine.scale + engine.module0.h + 2*engine.spacing;
 
-    this._xy = engine.closest_place(this, this._x, this._y);
+    this._xy = engine.closest_place(this, this._x, this._y, engine.modules);
     if (this._xy != null) {
       this.x = this._xy[0];
       this.y = this._xy[1];
@@ -1146,6 +1144,9 @@ class Engine extends GraphicObject {
 
   set_size(w, h) {
     super.set_size(w, h);
+    this.rows = Math.floor(h / window.devicePixelRatio / 200);
+    if (this.rows < 1) this.rows = 1;
+    if (this.modules) this.replace_modules();
     this.reinit_view();
     if (this.module0) 
       this.module0.set_size(
@@ -1234,7 +1235,8 @@ class Engine extends GraphicObject {
   hp2x(xhp){ return hp2x(xhp) + this.spacing; }
   hp2y(yhp){ return hp2y(yhp) + this.module0.h + (yhp + 1) * 2 * this.spacing + this.spacing; }
 
-  closest_place(m, x, y) {
+  closest_place(m, x, y, modules=null) {
+    if (!modules) modules = this.modules;
     let mxhp = this.x2hp(x);
     let myhp = this.y2hp(y);
 
@@ -1242,12 +1244,12 @@ class Engine extends GraphicObject {
     if (myhp < 0) myhp = 0;
     if (myhp > this.rows - 1) myhp = this.rows - 1;
 
-    for (let i = 0; i < this.modules.length; i++) {
-      if (this.modules[i] == m) continue;
-      let ixhp = this.x2hp(this.modules[i].x);
-      let iyhp = this.y2hp(this.modules[i].y);
+    for (let i = 0; i < modules.length; i++) {
+      if (modules[i] == m) continue;
+      let ixhp = this.x2hp(modules[i].x);
+      let iyhp = this.y2hp(modules[i].y);
       if (((ixhp >= mxhp && ixhp < mxhp + x2hp(m.w, true)) ||
-           (mxhp >= ixhp && mxhp < ixhp + x2hp(this.modules[i].w, true))) && 
+           (mxhp >= ixhp && mxhp < ixhp + x2hp(modules[i].w, true))) && 
            (iyhp == myhp)) {
         return null;
       }
@@ -1256,18 +1258,26 @@ class Engine extends GraphicObject {
     return [this.hp2x(mxhp), this.hp2y(myhp)];
   }
 
-  place_module(m, pos=null) {
+  place_module(m, pos=null, modules=null) {
     if (pos) {
-      let xy = this.closest_place(m, this.hp2x(pos[0]), this.hp2y(pos[1]));
+      let xy = this.closest_place(m, this.hp2x(pos[0]), this.hp2y(pos[1]), modules);
       if (xy != null) { m.set_position(xy[0], xy[1]); return; }
     }
     for (let x = 0; ; x++) {
       for (let y = 0; y < this.rows; y ++) {
         let x_px = this.hp2x(x);
         let y_px = this.hp2y(y);
-        let xy = this.closest_place(m, x_px, y_px);
+        let xy = this.closest_place(m, x_px, y_px, modules);
         if (xy != null) { m.set_position(xy[0], xy[1]); return; }
       }
+    }
+  }
+
+  replace_modules() {
+    let modules = [];
+    for (let i = 0; i < this.modules.length; i ++) {
+      this.place_module(this.modules[i], null, modules);
+      modules.push(this.modules[i]);
     }
   }
 
@@ -1292,14 +1302,13 @@ class Engine extends GraphicObject {
       s['modules'][this.modules[this.i_save].id] = this.modules[this.i_save].save();
     }
     for (this.i_save = 0; this.i_save < this.wires.length; this.i_save ++) s.wires.push(this.wires[this.i_save].save());
-    console.log(s);
     return s;
   }
 
   load_state(s) {
     let module_index = {'0': this.module0};
 
-    for (const m in s['modules']) { 
+    for (const m in s['modules']) {
       try {
         module_index[m] = new this.module_registry[s['modules'][m]['name']]();
         module_index[m].load(s['modules'][m]); 

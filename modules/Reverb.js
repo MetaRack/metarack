@@ -2,7 +2,7 @@ class DattorroReverb extends Module {
   constructor() {
     super({w:hp2x(3)});
 
-    this.add_control(new Encoder({x:hp2x(0.5), y:hp2y(0.20), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'SIZE'}));
+    this.add_input(new InputEncoder({x:hp2x(0.5), y:hp2y(0.20), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'SIZE'}));
     this.add_control(new Encoder({x:hp2x(0.5), y:hp2y(0.33), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'DEC'}));
     this.add_control(new Encoder({x:hp2x(0.5), y:hp2y(0.46), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'D/W'}));
     this.add_input(new Port({x:hp2x(0.7), y:hp2y(0.59), r:hp2x(0.8), name:'I/L'}));
@@ -71,7 +71,7 @@ class DattorroReverb extends Module {
   process() {
     this.dw = this.c['D/W'].get()**2;
     this.decay = this.c['DEC'].get();
-    this.size = this.c['SIZE'].get()**2;
+    this.size = this.i['SIZE'].get()**2;
     this.dattorro.inputL = this.i['I/L'].get() / 10;
     this.dattorro.inputR = this.i['I/R'].get() / 10;
     this.dattorro.setTimeScale(this.size);

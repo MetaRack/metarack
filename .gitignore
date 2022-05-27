@@ -1,2 +1,4 @@
 *.DS_Store
 *.zip
+metarack.js
+website/metarack.min.js

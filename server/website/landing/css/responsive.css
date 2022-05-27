@@ -1,0 +1,38 @@
+@media (max-width:992px){
+    #testimonial .client-info{
+        flex-direction: column;
+    }
+    #testimonial .client-info img{
+        width: 10%;
+        height: 10%;
+    }
+    #testimonial .client-info h6{
+        margin: 10px 0;
+    }
+    #testimonial .client-info p{
+        line-height: 0;
+    }
+}
+@media (max-width:768px){
+    #about .abt-img{
+        text-align: center;
+    }
+    #template,
+    #project{
+        background-size: 75% 100%;
+    }
+    #features .features-body{
+        width: 65%;
+        margin: 0 auto;
+    }
+    .footer .link,
+    .footer .copyright{
+        text-align: center !important;
+    }
+}
+@media (max-width:567px){
+    #template,
+    #project{
+        background-size: 70% 70%;
+    }
+}

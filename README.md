@@ -2,10 +2,14 @@
   <img width="600" height="450" src="https://media.giphy.com/media/BYtdKil4uF281YWoEY/giphy.gif">
 </p>
 
-# cryptorack
+# metarack
 Javascript modular synthesizer with NFT in mind 🤦
 
-### Try online (reload page for randomization): [https://ferluht.github.io/cryptorack/](https://ferluht.github.io/cryptorack/)
+### [Try online](http://metarack.art/17aa5afb9bce4072cb3f65ed67bf3e3e93f244d768de08b23a46fd6c3b8bf6033f230d746535125d8de77d5342/index.html)
+
+# run server
+
+```cd server && docker-compose up```
 
 # how to
 In general Cryptorack is a simple declarative API allowing you to describe some modular patch, create your own visuals using [p5js](https://p5js.org), modulate them from each other and run the whole thing in browser.
