@@ -26,8 +26,10 @@ services:
   git-puller:
     image: git-puller
     build: .
+    environment:
+      GIT_PULL_INTERVAL: "10"
     volumes:
-      - ../:/repo
-      - ./server/src/git_puller.py:/repo/git_puller.py
-    working_dir: /repo  
+      - ./src/git_puller.py:/git_puller.py
+      - ./private/github-token:/github-token
+    working_dir: / 
     entrypoint: ["python","git_puller.py"]
