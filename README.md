@@ -7,10 +7,6 @@ Javascript modular synthesizer with NFT in mind 🤦
 
 ### [Try online](http://metarack.art/17aa5afb9bce4072cb3f65ed67bf3e3e93f244d768de08b23a46fd6c3b8bf6033f230d746535125d8de77d5342/index.html)
 
-# run server
-
-```cd server && docker-compose up```
-
 # development
 To implement some new audio module simply create a new file in modules directory using VCO module as a template. Module class must implement methods draw() and process() called every frame and every sample respectively. Everything else is up to you.
 
