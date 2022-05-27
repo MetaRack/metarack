@@ -16,6 +16,7 @@ def checkout():
     output = process.communicate()[0]
     if (output.decode() == 'Already up to date.\n'):
         return False
+    print(output)
     return True
 
 if __name__ == "__main__":
