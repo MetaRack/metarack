@@ -40,6 +40,11 @@ function expr2(t, c, p1, p2, p3, p4) {
   return (t / c) / (2 + p3) * (((t / c) >> (7 + p2)) % 5)
 }
 
+// J = new NoiseWasm();
+// D = new DelayWasm();
+// CH = new ClockedRandomChordsWasm();
+// R = new ReverbWasm();
+
 // CL1 = new Clock();
 // CH = new ClockedRandomChords();
 // FL2 = new ExponentialFilter();
