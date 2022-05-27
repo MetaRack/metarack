@@ -22,3 +22,12 @@ services:
     volumes:
       - ./src:/src  
     entrypoint: ["python","/src/https_redirect.py"]
+
+  git-puller:
+    image: git-puller
+    build: .
+    volumes:
+      - ../:/repo
+      - ./server/src/git_puller.py:/repo/git_puller.py
+    working_dir: /repo  
+    entrypoint: ["python","./git_puller.py"]

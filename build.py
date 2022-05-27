@@ -2,7 +2,10 @@ import os
 import shutil
 import subprocess
 
-def checkout():
+def checkout(token=None):
+    if token:
+        process = subprocess.Popen(["git", "remote", "set-url", "origin", f"https://ferluht:{token}@github.com/ferluht/metarack"], stdout=subprocess.PIPE)
+        output = process.communicate()[0]
     process = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
     output = process.communicate()[0]
     if (output.decode() == 'Already up to date.\n'):
