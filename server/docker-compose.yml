@@ -5,7 +5,7 @@ services:
     image: fastapi-env
     build: .
     ports: 
-      - "4443:1337"
+      - "443:1337"
     environment:
       DOMAIN: "metarack.art"
     depends_on:
@@ -20,7 +20,7 @@ services:
     image: fastapi-env
     build: .
     ports: 
-      - "8080:1337"
+      - "80:1337"
     depends_on:
       - "git-puller"
     volumes:
