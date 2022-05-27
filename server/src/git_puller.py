@@ -2,13 +2,14 @@ import os
 import time
 import shutil
 import subprocess
+from distutils.dir_util import copy_tree
 
 def clone(user='ferluht', url='github.com/ferluht/', repo='metarack', token=''):
     repo_url = os.path.join(url, repo)
-    if os.path.exists(repo) and os.path.isdir(repo):
-        shutil.rmtree(repo)
-    process = subprocess.Popen(["git", "clone", f"https://{user}:{token}@{repo_url}"], stdout=subprocess.PIPE)
+    process = subprocess.Popen(["git", "clone", f"https://{user}:{token}@{repo_url}", "temp"], stdout=subprocess.PIPE)
     output = process.communicate()[0]
+    copy_tree('temp', f"{repo}")
+    shutil.rmtree('temp')
 
 def checkout():
     process = subprocess.Popen(["git", "pull", "--rebase"], stdout=subprocess.PIPE)

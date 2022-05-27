@@ -8,20 +8,25 @@ services:
       - "4443:1337"
     environment:
       DOMAIN: "metarack.art"
+    depends_on:
+      - "git-puller"
     volumes:
-      - ./src:/src
+      - metarack:/metarack
       - ./private:/private
-      - ./website:/website
-    entrypoint: ["python","/src/main_app.py"]
+    working_dir: /metarack/server 
+    entrypoint: ["/bin/sh", "-c" , "sleep 10 && python /metarack/server/src/main_app.py"]
 
   redirect-service:
     image: fastapi-env
     build: .
     ports: 
       - "8080:1337"
+    depends_on:
+      - "git-puller"
     volumes:
-      - ./src:/src  
-    entrypoint: ["python","/src/https_redirect.py"]
+      - metarack:/metarack
+    working_dir: /metarack/server 
+    entrypoint: ["/bin/sh", "-c" , "sleep 10 && python /metarack/server/src/https_redirect.py"]
 
   git-puller:
     image: git-puller
@@ -29,7 +34,11 @@ services:
     environment:
       GIT_PULL_INTERVAL: "10"
     volumes:
+      - metarack:/metarack
       - ./src/git_puller.py:/git_puller.py
       - ./private/github-token:/github-token
     working_dir: / 
-    entrypoint: ["python","git_puller.py"]
+    entrypoint: ["python", "git_puller.py"]
+
+volumes:
+  metarack:
