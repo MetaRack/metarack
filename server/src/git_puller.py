@@ -27,10 +27,14 @@ if __name__ == "__main__":
 
     from metarack.build import minify
 
+    sleep_interval = int(os.getenv('GIT_PULL_INTERVAL'))
+    if sleep_interval is None:
+        sleep_interval = 10
+
     try:
         while True:
             if checkout():
                 minify(out_root='server/website/demo')
-        time.sleep(int(os.getenv('GIT_PULL_INTERVAL')))
+        time.sleep(sleep_interval)
     except KeyboardInterrupt:
         print('exit')

@@ -9,7 +9,7 @@ Javascript modular synthesizer with NFT in mind 🤦
 
 # run server
 
-```uvicorn server:app --reload --host 0.0.0.0 --port 1337 --log-config log_format.yaml --log-level 'info' --use-colors```
+```cd server && docker-compose up```
 
 # how to
 In general Cryptorack is a simple declarative API allowing you to describe some modular patch, create your own visuals using [p5js](https://p5js.org), modulate them from each other and run the whole thing in browser.

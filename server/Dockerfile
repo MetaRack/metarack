@@ -1,7 +1,5 @@
-FROM python:3.9
+FROM nikolaik/python-nodejs:python3.10-nodejs16
 
-RUN apt-get update
-RUN apt-get install -y nodejs npm
 RUN npm install -y terser -g
 
 COPY ./requirements.txt /requirements.txt
