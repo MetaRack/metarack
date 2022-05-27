@@ -26,4 +26,4 @@ async def read_item(userdesc: str = '', useremail: str = ''):
 
 if __name__ == "__main__":
     uvicorn.run("main_app:app", host='0.0.0.0', port=1337, reload=True,
-                ssl_keyfile='private/metarack_nopass.pem', ssl_certfile='private/metarack_art.crt')
+                ssl_keyfile='/private/metarack_nopass.pem', ssl_certfile='/private/metarack_art.crt')
