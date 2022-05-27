@@ -16,6 +16,7 @@ def checkout():
     output = process.communicate()[0]
     if (output.decode() == 'Already up to date.\n'):
         return False
+
     return True
 
 if __name__ == "__main__":
@@ -35,6 +36,6 @@ if __name__ == "__main__":
         while True:
             if checkout():
                 minify(out_root='server/website/demo')
-        time.sleep(sleep_interval)
+            time.sleep(sleep_interval)
     except KeyboardInterrupt:
         print('exit')
