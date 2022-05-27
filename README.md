@@ -11,27 +11,6 @@ Javascript modular synthesizer with NFT in mind 🤦
 
 ```cd server && docker-compose up```
 
-# how to
-In general Cryptorack is a simple declarative API allowing you to describe some modular patch, create your own visuals using [p5js](https://p5js.org), modulate them from each other and run the whole thing in browser.
-
-Create a new module:
-
-` VCO0 = new VCO('VCO0', 1337) ` - create a VCO with displaying name 'VCO0' and base frequency of 1337 Hz
-
-Then to connect one module to another:
-
-` VCO0.o['OUT'].connect(VCO1.i['FM'], scale=1, offset=0) ` - connect VCO0 output to FM input of VCO1 with scale 1 and offset 0 (scale is applied first).
-
-Set some parameters of module:
-
-` VCO0.i['WAVE'].set(-1) ` - set VCO0 to be square shaped.
-
-And finally to connect module to audio output:
-
-` VCO0.o['OUT'].connect(engine.OUT) `
-
-That's it! To check which inputs/outputs each module has simply go to modules folder and see module constructors. You also can find a self-explanatory (I believe) example of a patch in [index.js](index.js)
-
 # development
 To implement some new audio module simply create a new file in modules directory using VCO module as a template. Module class must implement methods draw() and process() called every frame and every sample respectively. Everything else is up to you.
 
