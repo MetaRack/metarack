@@ -31,8 +31,10 @@ def minify(prefix='./', out_root='./'):
 
     wasm_files = get_all_files(root=os.path.join(prefix, 'bin'), frmt='.wasm')
 
+    wasm_bin_path = os.path.join(out_root, 'bin')
+    os.makedirs(wasm_bin_path, exist_ok=True)
     for f in wasm_files:
-        shutil.copy(f, os.path.join(out_root, 'bin'))
+        shutil.copy(f, wasm_bin_path)
     merge_files(files=js_files, out='./metarack.js')
     process = subprocess.Popen(["terser", "--compress", "--mangle", "--keep-classnames", "--", "./metarack.js"], stdout=subprocess.PIPE)
     output = process.communicate()[0]
