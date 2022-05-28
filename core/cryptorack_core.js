@@ -1430,12 +1430,6 @@ function windowResized() {
   rackheight = document.documentElement.clientHeight;
   resizeCanvas(rackwidth, rackheight);
   engine.set_size(rackwidth, rackheight);
-
-  engine.changed=true;
-  engine.cbf = null;
-  engine.sbf = null;
-  engine.dbf = null;
-  engine.wbf = null;
   engine.stop = false;
 }
 
