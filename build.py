@@ -22,14 +22,14 @@ def merge_files(files=[], out='merged'):
                 for line in infile:
                     outfile.write(line)
 
-def minify(out_root='./'):
-    js_files  = get_all_files(root='./core', frmt='.js')
-    js_files += get_all_files(root='./primitives', frmt='.js')
-    js_files += get_all_files(root='./modules', frmt='.js')
-    js_files += get_all_files(root='./bin', frmt='.js')
-    js_files.append('./index.js')
+def minify(prefix='./', out_root='./'):
+    js_files  = get_all_files(root=os.path.join(prefix, 'core'), frmt='.js')
+    js_files += get_all_files(root=os.path.join(prefix, 'primitives'), frmt='.js')
+    js_files += get_all_files(root=os.path.join(prefix, 'modules'), frmt='.js')
+    js_files += get_all_files(root=os.path.join(prefix, 'bin'), frmt='.js')
+    js_files.append(os.path.join(prefix, 'index.js'))
 
-    wasm_files = get_all_files(root='./bin', frmt='.wasm')
+    wasm_files = get_all_files(root=os.path.join(prefix, 'bin'), frmt='.wasm')
 
     for f in wasm_files:
         shutil.copy(f, out_root)
@@ -39,6 +39,7 @@ def minify(out_root='./'):
     fname = os.path.join(out_root, 'metarack.min.js')
     with open(fname, 'w') as outfile:
         outfile.write(output.decode())
+    os.remove('./metarack.js')
     print(f"minified, size {os.path.getsize(fname) / 1024:.2f}kb")
 
 if __name__ == '__main__':
