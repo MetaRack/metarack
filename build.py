@@ -32,7 +32,8 @@ def minify(prefix='./', out_root='./'):
     wasm_files = get_all_files(root=os.path.join(prefix, 'bin'), frmt='.wasm')
 
     wasm_bin_path = os.path.join(out_root, 'bin')
-    os.makedirs(wasm_bin_path, exist_ok=True)
+    if not os.path.exists(wasm_bin_path):
+        os.makedirs(wasm_bin_path)
     for f in wasm_files:
         shutil.copy(f, wasm_bin_path)
     merge_files(files=js_files, out='./metarack.js')
