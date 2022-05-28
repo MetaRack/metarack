@@ -33,7 +33,7 @@ def minify(prefix='./', out_root='./'):
 
     wasm_bin_path = os.path.join(out_root, 'bin')
     if os.path.exists(wasm_bin_path):
-        os.rmdir(wasm_bin_path)
+        shutil.rmtree(wasm_bin_path)
     os.makedirs(wasm_bin_path)
     for f in wasm_files:
         shutil.copy(f, wasm_bin_path)
