@@ -937,6 +937,8 @@ class Engine extends GraphicObject {
     this.module0.set_position(this.spacing, this.spacing);
     this.attach(this.module0);
 
+    this.save_endpoint = null;
+
     this.reinit();
   }
 
@@ -1302,6 +1304,20 @@ class Engine extends GraphicObject {
       s['modules'][this.modules[this.i_save].id] = this.modules[this.i_save].save();
     }
     for (this.i_save = 0; this.i_save < this.wires.length; this.i_save ++) s.wires.push(this.wires[this.i_save].save());
+    
+    if (this.save_endpoint) {
+      try {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", this.save_endpoint, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({
+          'state': s
+        }));
+      } catch {
+        console.log('unable to sync with server');
+      }
+    }
+
     return s;
   }
 
@@ -1325,7 +1341,11 @@ class Engine extends GraphicObject {
         console.error(error);
       }
     }
-    engine.undo_checkpoint();
+    this.undo_checkpoint();
+  }
+
+  set_save_endpoint(url) {
+    this.save_endpoint = url;
   }
 }
 
