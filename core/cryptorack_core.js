@@ -1289,8 +1289,8 @@ class Engine extends GraphicObject {
   }
 
   clear_state() {
-    this.reinit();
     while (this.wires.length > 0) this.remove_wire(this.wires[0]);
+    this.reinit();
   }
 
   save_state() {
