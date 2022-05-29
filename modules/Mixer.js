@@ -110,25 +110,56 @@ class Mixer extends Module {
 }
 
 
-class Mixer100 extends Module {
-  constructor() {
-    super({name:'Mixer100', w:hp2x(140) + 13, h:20});
-    for (var i = 0; i < 98; i ++) {
-      this.add_input(new Port({x:hp2x((i % 49) / 49 * 140) + 7, y: 9 * Math.floor(i / 49) + 1, r:4, name:'IN' + i.toString()}));
+class StereoMixer extends Module {
+  constructor(chan_num) {
+    super({w:hp2x(chan_num * 2 + 2.5)});
+    this.chan_num = chan_num;
+    this.channels = new Array(chan_num);
+    this.gains = new Array(chan_num+1);
+    for (let i = 0; i < chan_num; i ++) {
+      this.channels[i] = new Array(2);
+      this.channels[i][0] = new Port({x:hp2x(i * 2 + 0.5), y:hp2y(0.05), r:4, name:`${i+1}L`});
+      this.channels[i][1] = new Port({x:hp2x(i * 2 + 0.5), y:hp2y(0.15), r:4, name:`${i+1}R`});
+      this.gains[i] = new Encoder({x:hp2x(i * 2 + 0.5), y:hp2y(0.25), r:hp2x(0.8), vmin:0, vmax:1, val:0.5, name:`AMP${i}`});
+      this.add_input(this.channels[i][0]);
+      this.add_input(this.channels[i][1]);
+      this.add_control(this.gains[i]);
     }
-    this.add_output(new Port({x:hp2x(0), y:0, r:4, name:'OUT', visible: false}));
-    this.value = 0;
+    this.add_output(new Port({x:hp2x(chan_num * 2 + 0.5), y:hp2y(0.05), r:4, name:'O/L'}));
+    this.add_output(new Port({x:hp2x(chan_num * 2 + 0.5), y:hp2y(0.15), r:4, name:'O/R'}));
+    this.gains[chan_num] = new Encoder({x:hp2x(chan_num * 2 + 0.5), y:hp2y(0.25), r:hp2x(0.8), vmin:0, vmax:chan_num, val:1, name:`AMP`});
+    this.add_control(this.gains[chan_num]);
+    this.lvalue = 0;
+    this.L = 0;
+    this.R = 0;
+    this.it = 0;
+    this.amp = 0;
   }
 
   process() {
-    this.value = 0;
-    for (var name in this.i) {
-      this.value += this.i[name].get() / 56;
+    this.L = 0;
+    this.R = 0;
+    for (this.it = 0; this.it < this.chan_num; this.it ++) {
+      this.amp = this.gains[this.it].get();
+      this.lvalue = this.channels[this.it][0].get() / this.chan_num * this.amp;
+      this.L += this.lvalue;
+      if (this.channels[this.it][1].port.wires.length > 0)
+        this.R += this.channels[this.it][1].get() / this.chan_num * this.amp;
+      else
+        this.R += this.lvalue;
     }
-    this.o['OUT'].set(this.value);
+    this.amp = this.gains[this.chan_num].get();
+    this.o['O/L'].set(this.L * this.amp);
+    this.o['O/R'].set(this.R * this.amp);
   }
 }
 
+class StereoMixer4 extends StereoMixer { constructor() { super(4); } }
+class StereoMixer8 extends StereoMixer { constructor() { super(8); } }
+class StereoMixer16 extends StereoMixer { constructor() { super(16); } }
+
 engine.add_module_class(Bus);
 engine.add_module_class(Mixer);
-engine.add_module_class(Mixer100);
+engine.add_module_class(StereoMixer4);
+engine.add_module_class(StereoMixer8);
+engine.add_module_class(StereoMixer16);
