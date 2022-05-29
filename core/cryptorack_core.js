@@ -399,7 +399,7 @@ class Encoder extends GraphicObject {
     this.changed=true;
   }
   mouse_released(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.changed = true; engine.undo_checkpoint();}
-  double_clicked(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = this.def_val; this.mod = this.def_mod; this.changed = true; }
+  double_clicked(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = this.def_val; this.mod = this.def_mod; this.changed = true; engine.undo_checkpoint();}
 
   save() { return this.base_val.toFixed(6); }
   load(s) { 
