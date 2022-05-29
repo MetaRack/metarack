@@ -43,7 +43,7 @@ def minify(prefix='./', out_root='./'):
     fname = os.path.join(out_root, 'metarack.min.js')
     with open(fname, 'w') as outfile:
         outfile.write(output.decode())
-    os.remove('./metarack.js')
+    if os.path.exists('./metarack.js'): os.remove('./metarack.js')
     print(f"minified, size {os.path.getsize(fname) / 1024:.2f}kb")
 
 if __name__ == '__main__':
