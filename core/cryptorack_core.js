@@ -399,7 +399,7 @@ class Encoder extends GraphicObject {
     this.changed=true;
   }
   mouse_released(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.changed = true; engine.undo_checkpoint();}
-  double_clicked(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = this.def_val; this.mod = this.def_mod; this.changed = true; }
+  double_clicked(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = this.def_val; this.mod = this.def_mod; this.changed = true; engine.undo_checkpoint();}
 
   save() { return this.base_val.toFixed(6); }
   load(s) { 
@@ -937,6 +937,8 @@ class Engine extends GraphicObject {
     this.module0.set_position(this.spacing, this.spacing);
     this.attach(this.module0);
 
+    this.save_endpoint = null;
+
     this.reinit();
   }
 
@@ -1289,8 +1291,8 @@ class Engine extends GraphicObject {
   }
 
   clear_state() {
-    this.reinit();
     while (this.wires.length > 0) this.remove_wire(this.wires[0]);
+    this.reinit();
   }
 
   save_state() {
@@ -1302,6 +1304,20 @@ class Engine extends GraphicObject {
       s['modules'][this.modules[this.i_save].id] = this.modules[this.i_save].save();
     }
     for (this.i_save = 0; this.i_save < this.wires.length; this.i_save ++) s.wires.push(this.wires[this.i_save].save());
+    
+    if (this.save_endpoint) {
+      try {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", this.save_endpoint, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({
+          'state': s
+        }));
+      } catch {
+        console.log('unable to sync with server');
+      }
+    }
+
     return s;
   }
 
@@ -1325,7 +1341,11 @@ class Engine extends GraphicObject {
         console.error(error);
       }
     }
-    engine.undo_checkpoint();
+    this.undo_checkpoint();
+  }
+
+  set_save_endpoint(url) {
+    this.save_endpoint = url;
   }
 }
 
@@ -1430,12 +1450,6 @@ function windowResized() {
   rackheight = document.documentElement.clientHeight;
   resizeCanvas(rackwidth, rackheight);
   engine.set_size(rackwidth, rackheight);
-
-  engine.changed=true;
-  engine.cbf = null;
-  engine.sbf = null;
-  engine.dbf = null;
-  engine.wbf = null;
   engine.stop = false;
 }
 

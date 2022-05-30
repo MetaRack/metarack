@@ -2,3 +2,4 @@
 *.zip
 metarack.js
 website/metarack.min.js
+*__pycache__*
