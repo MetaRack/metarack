@@ -1,0 +1,6 @@
+[submodule "c-modules/3rdparty/libsamplerate"]
+	path = c-modules/3rdparty/libsamplerate
+	url = https://github.com/libsndfile/libsamplerate
+[submodule "c-modules/emsdk"]
+	path = c-modules/emsdk
+	url = https://github.com/emscripten-core/emsdk
