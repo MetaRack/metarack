@@ -112,7 +112,7 @@ class Mixer extends Module {
 
 class StereoMixer extends Module {
   constructor(chan_num) {
-    super({w:hp2x(chan_num * 2 + 2.5)});
+    super({w:hp2x(chan_num * 2 + 3)});
     this.chan_num = chan_num;
     this.channels = new Array(chan_num);
     this.gains = new Array(chan_num+1);
@@ -121,10 +121,10 @@ class StereoMixer extends Module {
     this.solos = new Array(chan_num);
     for (let i = 0; i < chan_num; i ++) {
       this.channels[i] = new Array(2);
-      this.channels[i][0] = new Port({x:hp2x(i * 2 + 0.5), y:hp2y(0.60), r:4, name:`${i+1}L`});
-      this.channels[i][1] = new Port({x:hp2x(i * 2 + 0.5), y:hp2y(0.70), r:4, name:`${i+1}R`});
-      this.gains[i] = new Encoder({x:hp2x(i * 2 + 0.5), y:hp2y(0.80), r:hp2x(0.8), vmin:0, vmax:1, val:0.5, name:`AMP${i+1}`});
-      this.pans[i] = new InputEncoder({x:hp2x(i * 2 + 0.5), y:hp2y(0.90), r:hp2x(0.8), vmin:0, vmax:1, val:0.5, name:`PAN${i+1}`});
+      this.channels[i][0] = new Port({x:hp2x(i * 2 + 0.75), y:hp2y(0.60), r:4, name:`${i+1}L`});
+      this.channels[i][1] = new Port({x:hp2x(i * 2 + 0.75), y:hp2y(0.70), r:4, name:`${i+1}R`});
+      this.gains[i] = new Encoder({x:hp2x(i * 2 + 0.75), y:hp2y(0.80), r:hp2x(0.8), vmin:0, vmax:1, val:0.5, name:`AMP${i+1}`});
+      this.pans[i] = new InputEncoder({x:hp2x(i * 2 + 0.75), y:hp2y(0.90), r:hp2x(0.8), vmin:0, vmax:1, val:0.5, name:`PAN${i+1}`});
       // this.mutes[i] = new Button({x:hp2x(i * 2 + 0.5), y:hp2y(0.95), r:hp2x(0.8), name:`MUT${i+1}`});
       this.add_input(this.channels[i][0]);
       this.add_input(this.channels[i][1]);
@@ -132,9 +132,9 @@ class StereoMixer extends Module {
       this.add_input(this.pans[i]);
       // this.add_control(this.mutes[i]);
     }
-    this.add_output(new Port({x:hp2x(chan_num * 2 + 0.5), y:hp2y(0.60), r:4, name:'O/L'}));
-    this.add_output(new Port({x:hp2x(chan_num * 2 + 0.5), y:hp2y(0.70), r:4, name:'O/R'}));
-    this.gains[chan_num] = new Encoder({x:hp2x(chan_num * 2 + 0.5), y:hp2y(0.80), r:hp2x(0.8), vmin:0, vmax:chan_num, val:1, name:`AMP`});
+    this.add_output(new Port({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.60), r:4, name:'O/L'}));
+    this.add_output(new Port({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.70), r:4, name:'O/R'}));
+    this.gains[chan_num] = new Encoder({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.80), r:hp2x(0.8), vmin:0, vmax:chan_num, val:1, name:`AMP`});
     this.add_control(this.gains[chan_num]);
     this.lvalue = 0;
     this.L = 0;
