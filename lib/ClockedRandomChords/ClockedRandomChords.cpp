@@ -1,9 +1,8 @@
 #include <stdio.h>
-#include "emscripten.h"
-#include <emscripten/bind.h>
 #include "stdlib.h"
 #include <math.h>
-
+#include "emscripten.h"
+#include <emscripten/bind.h>
 #include "../dsp/ADSR.hpp"
 #include "../dsp/VCO.hpp"
 #include "../dsp/SH.hpp"
@@ -69,7 +68,6 @@ public:
     }
   }
 
-  //double process(double* buf, double _gate, double _A, double _D, double _S, double _R, double _P1, double _P2, double _P3, double _shape, double _scale, double _root, double _offset, double _width) {
   void process() {
 
     update_params();
@@ -94,8 +92,6 @@ public:
 
       out += SHP[proc_i]->out * ENV[proc_i]->out / 10 / 3;
     }
-    // buf[0] = out;
-    // return out;
   }
 };
 
@@ -105,7 +101,6 @@ extern "C" {
     return new ClockedRandomChords();
   }
 
-  //double process(ClockedRandomChords* ptr, double* buf, double _gate, double _A, double _D, double _S, double _R, double _P1, double _P2, double _P3, double _shape, double _scale, double _root, double _offset, double _width) {
   void process(ClockedRandomChords* ptr, double* buf) {
     ptr->gate = buf[0];
 
