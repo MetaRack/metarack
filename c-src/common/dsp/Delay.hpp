@@ -1,10 +1,7 @@
-#include <stdio.h>
-#include "emscripten.h"
-#include <emscripten/bind.h>
-#include "stdlib.h"
+#pragma once
 #include <math.h>
-#include "../3rdparty/libsamplerate/src/samplerate.h"
-#include "../common/dsp/RingBuffer.hpp"
+#include "../libsamplerate-0.1.9/src/samplerate.h"
+#include "RingBuffer.hpp"
 #include <cmath>
 
 #define HISTORY_SIZE (1<<21)
@@ -110,23 +107,3 @@ struct Delay {
 		// return out;
 	}
 };
-
-extern "C" {
-
-  void* constructor() {
-    return new Delay();
-  }
-
-  //double process(Delay* ptr, double _in, double _feedback, double _delay, double _mix) {
-  void process(Delay* ptr, double* buf) {
-  	ptr->in = buf[0];
-  	ptr->feedback = buf[1];
-  	ptr->delay = buf[2];
-  	ptr->mix = buf[3];
-
-    ptr->process();
-
-    buf[4] = ptr->out;
-  }
-
-}

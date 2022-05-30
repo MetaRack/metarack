@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include "stdlib.h"
 #include <emscripten/bind.h>
-#include "../dsp/SmoothCrossFade.hpp"
-#include "../dsp/ExpFilter.hpp"
-#include "../dsp/Delay.hpp"
+#include "../common/dsp/SmoothCrossFade.hpp"
+#include "../common/dsp/ExpFilter.hpp"
+#include "../common/dsp/Delay.hpp"
 
 
 class PingPong {
