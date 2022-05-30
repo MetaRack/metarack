@@ -4,12 +4,12 @@
 #include "stdlib.h"
 #include <math.h>
 
-#include "ADSR.hpp"
-#include "VCO.hpp"
-#include "SH.hpp"
-#include "BG.hpp"
-#include "Saturn.hpp"
-#include "Scale.hpp"
+#include "../dsp/ADSR.hpp"
+#include "../dsp/VCO.hpp"
+#include "../dsp/SH.hpp"
+#include "../dsp/BG.hpp"
+#include "../dsp/Saturn.hpp"
+#include "../dsp/Scale.hpp"
 
 #define _USE_MATH_DEFINES
 

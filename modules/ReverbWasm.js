@@ -4,7 +4,7 @@ class ReverbWasm extends Module {
 
     this.is_loaded = false;
     this.is_constructed = false;
-    this.file = "./bin/DattorroReverb.wasm";
+    this.file = "bin/DattorroReverb.wasm";
     this.Reverb_Module = new createModule(this.file);
     this.is_loaded = this.Reverb_Module.flag;
 
@@ -64,3 +64,5 @@ class ReverbWasm extends Module {
     
   }
 }
+
+engine.add_module_class(ReverbWasm);
