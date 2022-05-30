@@ -1,1 +1,0 @@
-/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc @CMakeFiles/callback_test.dir/objects1.rsp -o callback_test.js @CMakeFiles/callback_test.dir/linklibs.rsp
