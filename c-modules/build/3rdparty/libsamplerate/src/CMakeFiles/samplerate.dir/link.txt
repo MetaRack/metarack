@@ -1,2 +1,0 @@
-/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emar qc libsamplerate.a CMakeFiles/samplerate.dir/samplerate.c.o CMakeFiles/samplerate.dir/src_linear.c.o CMakeFiles/samplerate.dir/src_sinc.c.o CMakeFiles/samplerate.dir/src_zoh.c.o
-/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emranlib libsamplerate.a
