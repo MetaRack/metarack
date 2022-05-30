@@ -15,9 +15,7 @@
 
 ```source ./emsdk_env.sh```
 
-### Build module
-
-```cd <module_dir>```
+### Build modules
 
 ```mkdir build```
 
@@ -26,3 +24,5 @@
 ```emcmake cmake ..```
 
 ```make```
+
+Wasm files should appear in ./bin
