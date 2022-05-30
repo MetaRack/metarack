@@ -24,7 +24,7 @@ class ReverbWasm extends Module {
     this.in_l = this.i['I/L'].get();
     this.in_r = this.i['I/R'].get();
     this.size = this.c['SIZE'].get()**2;
-    this.decay = this.c['DEC'].get();
+    this.decay = this.c['DEC'].get()**2;
     this.dw = this.c['D/W'].get()**2;
   }
 
