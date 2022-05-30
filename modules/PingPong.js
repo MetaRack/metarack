@@ -40,8 +40,8 @@ class PingPong extends Module {
     	this.add_output(new Port({x:hp2x(4), y:110, r:4, name:'O/L'}));
     	this.add_output(new Port({x:hp2x(5.7), y:110, r:4, name:'O/R'}));
 
-    	this.delay_l = new DelayPrim();
-    	this.delay_r = new DelayPrim();
+    	this.delay_l = new DelayWasmPrim();
+    	this.delay_r = new DelayWasmPrim();
     	this.filter_r = new ExponentialFilterPrim({freq:2000});
     	this.filter_l = new ExponentialFilterPrim({freq:2000});
 
@@ -77,8 +77,8 @@ class PingPong extends Module {
     	this.clock_l = Math.floor(sample_rate * (this.time_l / 10));
     	this.clock_r = Math.floor(sample_rate * (this.time_r / 10));
 
-    	this.delay_l.time = this.clock_l / sample_rate;
-    	this.delay_r.time = this.clock_r / sample_rate;
+    	this.delay_l.time = this.time_l;//this.clock_l / sample_rate;
+    	this.delay_r.time = this.time_r;//this.clock_r / sample_rate;
 
     	this.sync_flag = this.sync_button.get();
     	this.sync_led.set(!this.sync_flag * 255);
@@ -147,13 +147,16 @@ class PingPong extends Module {
 		// 	this.filter_l.in = this.delay_r.out;
 		// }
 		// else {
-		this.delay_r.in = this.in * (1 - this.crossfade_amp.get()) + this.delay_r.out * this.crossfade_amp.get();
-		this.delay_l.in = this.in * (1 - this.crossfade_amp.get()) + this.delay_l.out * this.crossfade_amp.get();
-		this.filter_l.in = this.delay_l.out;
-		this.filter_r.in = this.delay_r.out;
+		this.delay_r.in = this.in// * (1 - this.crossfade_amp.get()) + this.delay_r.out * this.crossfade_amp.get();
+		this.delay_l.in = this.in// * (1 - this.crossfade_amp.get()) + this.delay_l.out * this.crossfade_amp.get();
+		// this.filter_l.in = this.delay_l.out;
+		// this.filter_r.in = this.delay_r.out;
 
-		this.out_l = this.filter_l.lp;
-		this.out_r = this.filter_r.lp;
+		// this.out_l = this.filter_l.lp;
+		// this.out_r = this.filter_r.lp;
+
+		this.out_l = this.delay_l.out;
+		this.out_r = this.delay_r.out;
 
 		this.sample_counter_l++;
 		this.sample_counter_r++;
@@ -164,8 +167,8 @@ class PingPong extends Module {
 		
 		this.delay_l.process();
     	this.delay_r.process();
-    	this.filter_l.process();
-    	this.filter_r.process();
+    	// this.filter_l.process();
+    	// this.filter_r.process();
 
 		this.o['O/L'].set(this.out_l);
 		this.o['O/R'].set(this.out_r);
