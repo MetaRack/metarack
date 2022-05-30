@@ -1,0 +1,1 @@
+ ../src/libsamplerate.a -lfftw3 -lsndfile 

@@ -1,0 +1,23 @@
+3rdparty/libsamplerate/src/CMakeFiles/samplerate.dir/src_linear.c.o: \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/3rdparty/libsamplerate/src/src_linear.c \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/build/3rdparty/libsamplerate/config.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/cache/sysroot/include/assert.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/cache/sysroot/include/stdio.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/cache/sysroot/include/wasi/api.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/lib/clang/15.0.0/include/stddef.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/lib/clang/15.0.0/include/stdint.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/cache/sysroot/include/bits/stdint.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/cache/sysroot/include/compat/stdlib.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/cache/sysroot/include/stdlib.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/cache/sysroot/include/alloca.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/cache/sysroot/include/compat/string.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/cache/sysroot/include/string.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/cache/sysroot/include/strings.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/cache/sysroot/include/compat/math.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/cache/sysroot/include/math.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/3rdparty/libsamplerate/src/common.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/lib/clang/15.0.0/include/stdbool.h \
+  /Users/ferluht/Dev/metarack/metarack/c-modules/3rdparty/libsamplerate/include/samplerate.h

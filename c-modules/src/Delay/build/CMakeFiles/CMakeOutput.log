@@ -1,0 +1,122 @@
+The target system is: Emscripten - 1 - x86
+The host system is: Darwin - 18.7.0 - x86_64
+Determining if the include file stdbool.h exists passed with the following output:
+Change Dir: /Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/local/bin/gmake -f Makefile cmTC_599df/fast && /usr/local/bin/gmake  -f CMakeFiles/cmTC_599df.dir/build.make CMakeFiles/cmTC_599df.dir/build
+gmake[1]: Entering directory '/Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_599df.dir/CheckIncludeFile.c.o
+/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc    -MD -MT CMakeFiles/cmTC_599df.dir/CheckIncludeFile.c.o -MF CMakeFiles/cmTC_599df.dir/CheckIncludeFile.c.o.d -o CMakeFiles/cmTC_599df.dir/CheckIncludeFile.c.o -c /Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+shared:INFO: (Emscripten: Running sanity checks)
+Linking C executable cmTC_599df.js
+/usr/local/Cellar/cmake/3.20.3/bin/cmake -E cmake_link_script CMakeFiles/cmTC_599df.dir/link.txt --verbose=1
+/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc @CMakeFiles/cmTC_599df.dir/objects1.rsp -o cmTC_599df.js 
+gmake[1]: Leaving directory '/Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file unistd.h exists passed with the following output:
+Change Dir: /Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/local/bin/gmake -f Makefile cmTC_a5e33/fast && /usr/local/bin/gmake  -f CMakeFiles/cmTC_a5e33.dir/build.make CMakeFiles/cmTC_a5e33.dir/build
+gmake[1]: Entering directory '/Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_a5e33.dir/CheckIncludeFile.c.o
+/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc    -MD -MT CMakeFiles/cmTC_a5e33.dir/CheckIncludeFile.c.o -MF CMakeFiles/cmTC_a5e33.dir/CheckIncludeFile.c.o.d -o CMakeFiles/cmTC_a5e33.dir/CheckIncludeFile.c.o -c /Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_a5e33.js
+/usr/local/Cellar/cmake/3.20.3/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a5e33.dir/link.txt --verbose=1
+/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc @CMakeFiles/cmTC_a5e33.dir/objects1.rsp -o cmTC_a5e33.js 
+gmake[1]: Leaving directory '/Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp'
+
+
+
+Performing C SOURCE FILE Test HAVE_VISIBILITY succeeded with the following output:
+Change Dir: /Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/local/bin/gmake -f Makefile cmTC_d273f/fast && /usr/local/bin/gmake  -f CMakeFiles/cmTC_d273f.dir/build.make CMakeFiles/cmTC_d273f.dir/build
+gmake[1]: Entering directory '/Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_d273f.dir/src.c.o
+/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc -DHAVE_VISIBILITY  -fvisibility=hidden -Werror -MD -MT CMakeFiles/cmTC_d273f.dir/src.c.o -MF CMakeFiles/cmTC_d273f.dir/src.c.o.d -o CMakeFiles/cmTC_d273f.dir/src.c.o -c /Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_d273f.js
+/usr/local/Cellar/cmake/3.20.3/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d273f.dir/link.txt --verbose=1
+/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc  -fvisibility=hidden -Werror @CMakeFiles/cmTC_d273f.dir/objects1.rsp -o cmTC_d273f.js 
+gmake[1]: Leaving directory '/Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp'
+
+
+Source file was:
+__attribute__((visibility("default"))) int foo(void);
+                         __attribute__((visibility("hidden")))  int bar(void);
+                         int foo (void) {return 0;}
+                         int bar (void) {return 1;}
+                         int main(void) {return 0;}
+Determining if the include file sys/times.h exists passed with the following output:
+Change Dir: /Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/local/bin/gmake -f Makefile cmTC_21898/fast && /usr/local/bin/gmake  -f CMakeFiles/cmTC_21898.dir/build.make CMakeFiles/cmTC_21898.dir/build
+gmake[1]: Entering directory '/Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_21898.dir/CheckIncludeFile.c.o
+/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc    -MD -MT CMakeFiles/cmTC_21898.dir/CheckIncludeFile.c.o -MF CMakeFiles/cmTC_21898.dir/CheckIncludeFile.c.o.d -o CMakeFiles/cmTC_21898.dir/CheckIncludeFile.c.o -c /Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_21898.js
+/usr/local/Cellar/cmake/3.20.3/bin/cmake -E cmake_link_script CMakeFiles/cmTC_21898.dir/link.txt --verbose=1
+/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc @CMakeFiles/cmTC_21898.dir/objects1.rsp -o cmTC_21898.js 
+gmake[1]: Leaving directory '/Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function alarm exists passed with the following output:
+Change Dir: /Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/local/bin/gmake -f Makefile cmTC_4bda2/fast && /usr/local/bin/gmake  -f CMakeFiles/cmTC_4bda2.dir/build.make CMakeFiles/cmTC_4bda2.dir/build
+gmake[1]: Entering directory '/Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_4bda2.dir/CheckFunctionExists.c.o
+/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc   -DCHECK_FUNCTION_EXISTS=alarm -MD -MT CMakeFiles/cmTC_4bda2.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_4bda2.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_4bda2.dir/CheckFunctionExists.c.o -c /usr/local/Cellar/cmake/3.20.3/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTC_4bda2.js
+/usr/local/Cellar/cmake/3.20.3/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4bda2.dir/link.txt --verbose=1
+/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc  -DCHECK_FUNCTION_EXISTS=alarm @CMakeFiles/cmTC_4bda2.dir/objects1.rsp -o cmTC_4bda2.js 
+gmake[1]: Leaving directory '/Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function signal exists passed with the following output:
+Change Dir: /Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/local/bin/gmake -f Makefile cmTC_4f954/fast && /usr/local/bin/gmake  -f CMakeFiles/cmTC_4f954.dir/build.make CMakeFiles/cmTC_4f954.dir/build
+gmake[1]: Entering directory '/Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_4f954.dir/CheckFunctionExists.c.o
+/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc   -DCHECK_FUNCTION_EXISTS=signal -MD -MT CMakeFiles/cmTC_4f954.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_4f954.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_4f954.dir/CheckFunctionExists.c.o -c /usr/local/Cellar/cmake/3.20.3/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTC_4f954.js
+/usr/local/Cellar/cmake/3.20.3/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4f954.dir/link.txt --verbose=1
+/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc  -DCHECK_FUNCTION_EXISTS=signal @CMakeFiles/cmTC_4f954.dir/objects1.rsp -o cmTC_4f954.js 
+wasm-ld: warning: function signature mismatch: signal
+>>> defined as () -> i32 in CMakeFiles/cmTC_4f954.dir/CheckFunctionExists.c.o
+>>> defined as (i32, i32) -> i32 in /Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/libc-debug.a(signal.o)
+gmake[1]: Leaving directory '/Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the SIGALRM exist passed with the following output:
+Change Dir: /Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/local/bin/gmake -f Makefile cmTC_e4192/fast && /usr/local/bin/gmake  -f CMakeFiles/cmTC_e4192.dir/build.make CMakeFiles/cmTC_e4192.dir/build
+gmake[1]: Entering directory '/Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_e4192.dir/CheckSymbolExists.c.o
+/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc    -MD -MT CMakeFiles/cmTC_e4192.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_e4192.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_e4192.dir/CheckSymbolExists.c.o -c /Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_e4192.js
+/usr/local/Cellar/cmake/3.20.3/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e4192.dir/link.txt --verbose=1
+/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc @CMakeFiles/cmTC_e4192.dir/objects1.rsp -o cmTC_e4192.js 
+gmake[1]: Leaving directory '/Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp'
+
+
+File /Users/ferluht/Dev/metarack/metarack/c-modules/Delay/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <signal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef SIGALRM
+  return ((int*)(&SIGALRM))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}

@@ -1,0 +1,1 @@
+/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc @CMakeFiles/clone_test.dir/objects1.rsp -o clone_test.js @CMakeFiles/clone_test.dir/linklibs.rsp

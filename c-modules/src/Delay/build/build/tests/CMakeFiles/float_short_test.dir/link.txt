@@ -1,0 +1,1 @@
+/Users/ferluht/Dev/metarack/metarack/c-modules/emsdk/upstream/emscripten/emcc @CMakeFiles/float_short_test.dir/objects1.rsp -o float_short_test.js @CMakeFiles/float_short_test.dir/linklibs.rsp
