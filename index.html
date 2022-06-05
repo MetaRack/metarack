@@ -18,6 +18,14 @@
     margin-right: auto;
     position: absolute;
   }
+
+  .sync {
+    display:flex;
+    justify-content:flex-end;
+    width:90%;
+    padding:0;
+  }
+
 </style>
 <html>
   <head>
@@ -31,6 +39,9 @@
   </head>
   <body>
 
+    <div class="sync">
+      <button onclick="sync()">SYNC</button>
+    </div>
     <div class="synth" id="synth">
 
     </div>
