@@ -177,7 +177,7 @@ class ClockedRandomChords extends Module {
     super.draw_cbf(buf, w, h);
     let sw = 5;
     let rounding = 5; 
-    buf.stroke(60); buf.strokeWeight(sw); buf.strokeJoin(ROUND); buf.fill(255);
+    buf.stroke(60); buf.strokeWeight(sw); buf.strokeJoin(buf.ROUND); buf.fill(255);
     buf.rect(sw / 2 + w * 0.05, sw / 2 + h * 0.05, w * 0.9 - sw, h * 0.3 - sw, rounding, rounding, rounding, rounding);
 
     buf.stroke(60);

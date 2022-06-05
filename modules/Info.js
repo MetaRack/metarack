@@ -14,7 +14,7 @@ class Info extends Module {
 
     buf.textSize(h / 20);
     buf.fill(60);
-    buf.textAlign(LEFT, TOP);
+    buf.textAlign(buf.LEFT, buf.TOP);
     buf.strokeWeight(sw / 10);
     buf.text(text, sw + w * 0.07, sw + h * 0.1);
   }
