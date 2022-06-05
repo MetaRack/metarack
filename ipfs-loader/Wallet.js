@@ -1,8 +1,8 @@
 // import { TezosToolkit } from '@taquito/taquito';
 // import { BeaconWallet } from '@taquito/beacon-wallet';
 
-const TezosToolkit = window.taquito.TezosToolkit;
-const BeaconWallet = window.beacon-wallet.BeaconWallet;
+const TezosToolkit = taquito.TezosToolkit;
+const BeaconWallet = beacon_wallet.BeaconWallet;
 
 const tezos = new TezosToolkit('https://testnet-tezos.giganode.io');
 const options = {
@@ -16,6 +16,7 @@ const options = {
     },
   },
 };
+
 const wallet = new BeaconWallet(options);
 
 const sync = async () => {
