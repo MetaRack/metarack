@@ -21,7 +21,6 @@
 </style>
 <html>
   <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
     <meta charset="UTF-8">
     <title>MetaRack</title>
 
@@ -98,24 +97,14 @@
     <script language="javascript" type="text/javascript" src="./modules/Filter.js"></script>
     <script language="javascript" type="text/javascript" src="./modules/BernoulliGate.js"></script>
     <script language="javascript" type="text/javascript" src="./modules/Scope.js"></script>
-    <!-- <script language="javascript" type="text/javascript" src="./ipfs-loader/Loader.js"></script> -->
 
 
     <script src="taquito.js"></script>
-    <script language="javascript" type="module" src="./ipfs-loader/Wallet.js"></script>
+    
+    <script language="javascript" type="text/javascript" src="./ipfs-loader/Loader.js"></script>
+    <script language="javascript" type="text/javascript" src="./ipfs-loader/Wallet.js"></script>
 
     <script language="javascript" type="text/javascript" src="./index.js"></script>
-
-    <script type="text/javascript">
-
-      function fn_onclick() {
-        if(!audioContext) {
-          engine_run();
-        }
-      }
-
-      document.body.addEventListener('click', fn_onclick, true); 
-    </script>
 
   </body>
 </html>

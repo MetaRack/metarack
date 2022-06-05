@@ -135,3 +135,11 @@ document.body.onkeyup = function(e){
     engine.cmdpressed = false;
   }
 }
+
+function fn_onclick() {
+  if(!audioContext) {
+    engine_run();
+  }
+}
+
+document.body.addEventListener('click', fn_onclick, true);
