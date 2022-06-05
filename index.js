@@ -2,7 +2,7 @@ ms = new ModuleStyle(panel=255, frame=60, shadow=70, name=40, lining=100, label=
 ps = new PortStyle(hole=255, ring=80, text=100, istext=true);
 ws = new WireStyle(core=255, edge=80);
 
-engine.set_size(rackwidth, rackheight);
+// engine.set_size(rackwidth, rackheight);
 engine.set_module_style(ms);
 engine.set_port_style(ps);
 engine.set_wire_style(ws);
@@ -12,12 +12,126 @@ state_string = `{"modules":{"1":{"name":"Clock","i":{"BPM":{"val":"101.000000","
 state = JSON.parse(state_string)
 engine.load_state(state);
 
-function setup() {
-  createCanvas(rackwidth, rackheight);
-  frameRate(fps);
+function drawrack(p) {
+  p.setup = function () {
+    let pw = p.canvas.parentElement.offsetWidth;
+    let ph = p.canvas.parentElement.offsetHeight;
+    var cnv = p.createCanvas(pw, ph);
+    cnv.mousePressed(mouse_pressed);
+    cnv.mouseMoved(mouse_dragged);
+    cnv.mouseReleased(mouse_released);
+    cnv.doubleClicked(double_clicked);
+    cnv.mouseWheel(mouse_wheel);
+
+    engine.set_size(pw, ph);
+    p.frameRate(fps);
+    p.background(0);
+    console.log(pw, ph);
+  }
+
+  p.draw = function () {
+    engine.draw(p, 0, 0);
+  }
+
+  p.windowResized = function () {
+    engine.stop = true;
+    let pw = p.canvas.parentElement.offsetWidth;
+    let ph = p.canvas.parentElement.offsetHeight;
+    p.resizeCanvas(pw, ph);
+    engine.set_size(pw, ph);
+    console.log(pw, ph);
+    engine.stop = false;
+  }
+
+  function mouse_pressed(event) {
+    if (p.mouseX > engine.ax && p.mouseX < engine.ax + engine.w && p.mouseY > engine.ay && p.mouseY < engine.ay + engine.h) {
+      if (p.mouseButton == p.LEFT) engine.mouse_pressed(p.mouseX - engine.ax, p.mouseY - engine.ay, p.movedX, p.movedY);
+      if (p.mouseButton == p.RIGHT) console.log('prop');
+    }
+  }
+
+  function mouse_dragged() {
+    engine.mouse_dragged(p.mouseX - engine.ax, p.mouseY - engine.ay, p.movedX, p.movedY);
+  }
+
+  function mouse_released() {
+    engine.mouse_released(p.mouseX - engine.ax, p.mouseY - engine.ay, p.movedX, p.movedY);
+  }
+
+  function double_clicked() {
+    engine.double_clicked(p.mouseX - engine.ax, p.mouseY - engine.ay, p.movedX, p.movedY);
+  }
+
+  function mouse_wheel(event) {
+    engine.set_offset(engine.x - event.deltaX / 5, 0);
+  }
 }
 
-function draw() { 
-  background(0,0,0,0);
-  engine.draw(0, 0); 
+new p5(drawrack, window.document.getElementById('synth'));
+
+
+document.body.onkeydown = function(e){
+
+  if(e.keyCode == 32){
+    if(!audioContext) {
+      engine_run();
+    }
+  }
+
+  if(e.keyCode == 91){
+    engine.cmdpressed = true;
+  }
+
+  if (e.keyCode === 83) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(engine.save_state())], {
+      type: "text/plain"
+    }));
+    a.setAttribute("download", "state.mrs");
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  if (e.keyCode === 76) {
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = e => { 
+       // getting a hold of the file reference
+       var file = e.target.files[0]; 
+
+       // setting up the reader
+       var reader = new FileReader();
+       reader.readAsText(file,'UTF-8');
+
+       // here we tell the reader what to do when it's done reading...
+       reader.onload = readerEvent => {
+          var content = readerEvent.target.result; // this is the content!
+          engine.load_state( JSON.parse(content) );
+       }
+    }
+    input.click();
+  }
+
+  if (e.keyCode === 67) {
+    engine.clear_state();
+  }
+
+  if (e.keyCode === 85) {
+    engine.undo_last_action();
+  }
+
+  if (e.keyCode === 8) {
+    engine.delete_last_module();
+  }
+
+  if (e.keyCode === 70) {
+    document.body.requestFullscreen();
+  }
+}
+
+document.body.onkeyup = function(e){
+  if (e.keyCode === 91) {
+    engine.cmdpressed = false;
+  }
 }
