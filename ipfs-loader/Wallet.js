@@ -11,7 +11,7 @@ const options = {
   name: 'metarack',
   preferredNetwork: 'ithacanet',
 };
-const metarackTokensAddress = 'KT19EGcwYy8xFS7WVyf6sc1WrLwEnj8GwuKz';
+const metarackTokensAddress = 'KT1AnqHWFffY8PtokAAqWaWixKNYmBm29jeU';
 
 const wallet = new BeaconWallet(options);
 
