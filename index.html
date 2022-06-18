@@ -43,6 +43,22 @@
   <body>
 
     <script language="javascript" type="text/javascript" src="./lib/p5.js"></script>
+    <script>
+      const rackSketch = (sketch) => {
+
+        sketch.setup = () => {
+          sketch.createCanvas(rackwidth, rackheight);
+          sketch.frameRate(fps);
+        }
+
+        sketch.draw = () => {
+          sketch.background(0,0,0,0);
+          engine.draw(0, 0);
+        };
+      };
+
+      let rackp5 = new p5(rackSketch);
+    </script>
 
     <!-- <script language="javascript" type="text/javascript" src="./core/settings.js"></script>
     <script language="javascript" type="text/javascript" src="./core/protoport.js"></script>
@@ -117,6 +133,8 @@
 
 
 
+
+
     <!-- <button>Play</button> -->
     <script language="javascript" type="text/javascript" src="./index.js"></script>
 
@@ -138,6 +156,17 @@
         }
       }
     </script>
+
+    <div id="root_container"></div>
+    <!-- Примечание: при деплое на продакшен замените «development.js» на «production.min.js». -->
+
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-modal@3.15.1/dist/react-modal.js" crossorigin></script>
+
+    <script language="javascript" type="text/javascript" src="./App.js"></script>
+
+    <script src="root.js"></script>
 
   </body>
 </html>

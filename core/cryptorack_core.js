@@ -3,7 +3,7 @@ document.addEventListener('contextmenu', event => event.preventDefault());
 var rackrand = Math.random;
 
 let rackwidth = document.documentElement.clientWidth;
-let rackheight = document.documentElement.clientHeight;
+let rackheight = document.documentElement.clientHeight - 20;
 let fps = 20;
 let sample_rate = 44100;
 let background_color = 255;
@@ -37,7 +37,7 @@ class PortStyle {
 }
 
 class WireStyle {
-  constructor (core=[100, 100, 180, 255], edge=40) {
+  constructor(core=[100, 100, 180, 255], edge=40) {
     this.core = core;
     this.edge = edge;
   }
@@ -58,7 +58,8 @@ class ModuleStyle {
 // GRAPHICOBJECT
 
 class GraphicObject {
-  constructor({x=0, y=0, w=0, h=0, name='name undefined', visible=true}={}) {
+  constructor({_p5=rackp5, x=0, y=0, w=0, h=0, name='name undefined', visible=true}={}) {
+    this._p5 = _p5;
     this.set_position(x, y);
     this.set_size(w, h);
     this.gparent = null;
@@ -88,8 +89,8 @@ class GraphicObject {
 
     this.ax = x; this.ay = y;
 
-    if (!this.cbf && this.draw_cbf) { this.cbf = createGraphics(this.w * engine.scale * engine.res_multiplier, this.h * engine.scale * engine.res_multiplier); this.draw_cbf(this.cbf, this.cbf.width, this.cbf.height); }
-    if (!this.sbf && this.draw_sbf) { this.sbf = createGraphics(this.w * engine.scale * engine.res_multiplier, this.h * engine.scale * engine.res_multiplier); }
+    if (!this.cbf && this.draw_cbf) { this.cbf = this._p5.createGraphics(this.w * engine.scale * engine.res_multiplier, this.h * engine.scale * engine.res_multiplier); this.draw_cbf(this.cbf, this.cbf.width, this.cbf.height); }
+    if (!this.sbf && this.draw_sbf) { this.sbf = this._p5.createGraphics(this.w * engine.scale * engine.res_multiplier, this.h * engine.scale * engine.res_multiplier); }
     
     if (this.changed && this.draw_sbf) {
       sbf.erase(); sbf.noStroke(); sbf.rect(x + this.x, y + this.y, this.w, this.h); sbf.noErase();
@@ -129,8 +130,8 @@ class GraphicObject {
 // PORT
 
 class ProtoPort extends GraphicObject {
-  constructor({x=10, y=10, r=7, name='', style=new PortStyle(), default_value=0, visible=true, isinput=false}={}) {
-    super({x:x, y:y, w:r*2, h:r*2, name:name, visible:visible});
+  constructor({_p5=rackp5, x=10, y=10, r=7, name='', style=new PortStyle(), default_value=0, visible=true, isinput=false}={}) {
+    super({_p5:_p5, x:x, y:y, w:r*2, h:r*2, name:name, visible:visible});
     this.channels = 1;
     this.isinput = isinput;
     this.in_wire = null;
@@ -205,8 +206,8 @@ class ProtoPort extends GraphicObject {
 }
 
 class Led extends GraphicObject {
-  constructor({x=0, y=0, r=10, brightness=1} = {}) {
-    super ({x:x, y:y, w:2*r, h:r*2, name:'Led'});
+  constructor({_p5=rackp5, x=0, y=0, r=10, brightness=1} = {}) {
+    super ({_p5:_p5, x:x, y:y, w:2*r, h:r*2, name:'Led'});
     this.brightness = brightness;
   }
 
@@ -228,8 +229,8 @@ class Led extends GraphicObject {
 }
 
 class Button extends GraphicObject {
-  constructor({x=0, y=0, r=10, state=false} = {}) {
-    super ({x:x, y:y, w:2*r, h:r*2, name:'Button'});
+  constructor({_p5=rackp5, x=0, y=0, r=10, state=false} = {}) {
+    super ({_p5:_p5, x:x, y:y, w:2*r, h:r*2, name:'Button'});
     this.state = state;
   }
 
@@ -253,8 +254,8 @@ class Button extends GraphicObject {
 }
 
 class Port extends GraphicObject {
-  constructor({x=0, y=0, r=10, name='', style=new PortStyle(), default_value=0, visible=true, isinput=false}={}) {
-    super({x:x, y:y, w:2*r, h:r*3, name:name, visible:visible});
+  constructor({_p5=rackp5, x=0, y=0, r=10, name='', style=new PortStyle(), default_value=0, visible=true, isinput=false}={}) {
+    super({_p5:_p5, x:x, y:y, w:2*r, h:r*3, name:name, visible:visible});
     let pr = r * Math.pow(7 / this.w, 0.8);
     let px = this.w / 2 - pr;
     let py = this.h / 1.5 / 2 - pr;
@@ -269,7 +270,7 @@ class Port extends GraphicObject {
 
     buf.textSize(w / 4);
     buf.fill(60);
-    buf.textAlign(CENTER, CENTER);
+    buf.textAlign(this._p5.CENTER, this._p5.CENTER);
     buf.strokeWeight(sw / 10);
     buf.text(this.name.substring(0,5), w / 2, h * 5 / 6 + 1);
   }
@@ -284,8 +285,8 @@ class Port extends GraphicObject {
 }
 
 class Encoder extends GraphicObject {
-  constructor({x=0, y=0, r=10, name='?', val=5, vmin=-10, vmax=10, precision=6, mod=0.1}={}) {
-    super({x:x, y:y, w:2*r, h:3*r, name:name});
+  constructor({_p5=rackp5, x=0, y=0, r=10, name='?', val=5, vmin=-10, vmax=10, precision=6, mod=0.1}={}) {
+    super({_p5:_p5, x:x, y:y, w:2*r, h:3*r, name:name});
     this.def_val = val;
     this.def_mod = mod;
     this.base_val = val;
@@ -329,11 +330,11 @@ class Encoder extends GraphicObject {
     let sw = 3;
     sw = 4;
     buf.stroke(60); buf.strokeWeight(sw); buf.noFill();
-    this.ang_high = this.val2ang(this.base_val.toFixed(this.precision)) + HALF_PI;
-    if (this.ang_high - HALF_PI > 0.05) 
-      buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, HALF_PI, this.ang_high - 0.05);
+    this.ang_high = this.val2ang(this.base_val.toFixed(this.precision)) + this._p5.HALF_PI;
+    if (this.ang_high - this._p5.HALF_PI > 0.05) 
+      buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, this._p5.HALF_PI, this.ang_high - 0.05);
     else 
-      buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, this.ang_high - 0.05, HALF_PI);
+      buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, this.ang_high - 0.05, this._p5.HALF_PI);
     sw = 2;
     buf.strokeWeight(sw);
     buf.line(w / 2 + Math.cos(this.ang_high) * (this.r - 5), w / 2 + Math.sin(this.ang_high) * (this.r - 5), 
@@ -346,7 +347,7 @@ class Encoder extends GraphicObject {
     sw = 0.1;
     buf.textSize(w / 4);
     buf.fill(60);
-    buf.textAlign(CENTER, CENTER);
+    buf.textAlign(this._p5.CENTER, this._p5.CENTER);
     buf.strokeWeight(sw);
     buf.text(this.base_val.toFixed(this.precision), w / 2, h / 3);
     buf.text(this.name.substring(0,4), w / 2, h * 5 / 6 + 1);
@@ -411,11 +412,11 @@ class Encoder extends GraphicObject {
 }
 
 class StepEncoder extends Encoder {
-  constructor({x=0, y=0, r=10, name='?', val=5, vmin=-10, vmax=10, mod=0.1, step=1, nonzero=true}={}) {
+  constructor({_p5=rackp5, x=0, y=0, r=10, name='?', val=5, vmin=-10, vmax=10, mod=0.1, step=1, nonzero=true}={}) {
     if (nonzero)
-      super({x:x, y:y, r:r, name:name, val:val, vmin:(vmin+step), vmax:vmax, mod:mod});
+      super({_p5:_p5, x:x, y:y, r:r, name:name, val:val, vmin:(vmin+step), vmax:vmax, mod:mod});
     else
-      super({x:x, y:y, r:r, name:name, val:val, vmin:vmin, vmax:vmax, mod:mod});
+      super({_p5:_p5, x:x, y:y, r:r, name:name, val:val, vmin:vmin, vmax:vmax, mod:mod});
     this.nonzero = nonzero;
     this.step = step;
     this.y0 = 0;
@@ -440,11 +441,11 @@ class StepEncoder extends Encoder {
     let sw = 3;
     sw = 4;
     buf.stroke(60); buf.strokeWeight(sw); buf.noFill();
-    this.ang_high = this.val2ang(this.base_val) + HALF_PI;
-    if (this.ang_high - HALF_PI > 0.05) 
-      buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, HALF_PI, this.ang_high - 0.05);
+    this.ang_high = this.val2ang(this.base_val) + this._p5.HALF_PI;
+    if (this.ang_high - this._p5.HALF_PI > 0.05) 
+      buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, this._p5.HALF_PI, this.ang_high - 0.05);
     else 
-      buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, this.ang_high - 0.05, HALF_PI);
+      buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, this.ang_high - 0.05, this._p5.HALF_PI);
     sw = 2;
     buf.strokeWeight(sw);
     buf.line(w / 2 + Math.cos(this.ang_high) * (this.r - 5), w / 2 + Math.sin(this.ang_high) * (this.r - 5), 
@@ -457,7 +458,7 @@ class StepEncoder extends Encoder {
     sw = 0.1;
     buf.textSize(w / 4);
     buf.fill(60);
-    buf.textAlign(CENTER, CENTER);
+    buf.textAlign(this._p5.CENTER, this._p5.CENTER);
     buf.strokeWeight(sw);
     if ((this.base_val <= 0) && (this.nonzero)) 
       buf.text((this.base_val - this.step).toFixed(this.precision), w / 2, h / 3);
@@ -501,9 +502,9 @@ class InputEncoder extends Encoder {
     if (this.port.isinput && this.port.wires.length > 0) {
       let sw = 1.5;
       let dv = this.mod * (this.vmax - this.vmin);
-      this.ang_low = this.val2ang(this.base_val - dv) + HALF_PI;
+      this.ang_low = this.val2ang(this.base_val - dv) + this._p5.HALF_PI;
       buf.stroke(60); buf.strokeWeight(sw); buf.noFill();
-      this.ang_high = this.val2ang(this.base_val + dv) + HALF_PI;
+      this.ang_high = this.val2ang(this.base_val + dv) + this._p5.HALF_PI;
       buf.line(w / 2 + Math.cos(this.ang_high) * (this.r - 1), w / 2 + Math.sin(this.ang_high) * (this.r - 1), 
            w / 2 + Math.cos(this.ang_high) * (this.r + 3), w / 2 + Math.sin(this.ang_high) * (this.r + 3));
 
@@ -598,7 +599,7 @@ class InputEncoder extends Encoder {
 // WIRE
 
 class Wire extends GraphicObject {
-  constructor({a=null, b=null, style=new WireStyle()}={}) {
+  constructor({_p5=rackp5, a=null, b=null, style=new WireStyle()}={}) {
     super();
     this.a = a;
     this.b = b;
@@ -701,9 +702,10 @@ class Wire extends GraphicObject {
 // MODULE
 
 class Module extends GraphicObject {
-  constructor({name='', x=0, y=0, w=0, h=128.5, style = new ModuleStyle()}) {
-    super({x:x, y:y, w:w, h:h});
+  constructor({_p5=rackp5, name='', x=0, y=0, w=0, h=128.5, style = new ModuleStyle()}) {
+    super({_p5:_p5, x:x, y:y, w:w, h:h});
     this.name = this.constructor.name
+    this._p5 = _p5;
     this.i = {};
     this.o = {};
     this.c = {};
@@ -717,7 +719,7 @@ class Module extends GraphicObject {
     let rounding = 5;
     buf.background(0,0,0,0);
 
-    buf.stroke(this.style.shadow); buf.strokeWeight(sw); buf.strokeJoin(ROUND); buf.fill(this.style.panel);
+    buf.stroke(this.style.shadow); buf.strokeWeight(sw); buf.strokeJoin(this._p5.ROUND); buf.fill(this.style.panel);
     buf.rect(sw / 2, sw / 2, w - sw, h - sw, rounding, rounding, rounding, rounding);
 
     buf.stroke(this.style.lining); buf.strokeWeight(sw / 3);
@@ -727,8 +729,8 @@ class Module extends GraphicObject {
       x1 += line_step;
       buf.line(x1, 0, 0, x1);
     }
-    buf.stroke(255); buf.strokeWeight(10 * scale); buf.noFill();
-    buf.arc(rounding, h - rounding, rounding*2.5, rounding*2.5, HALF_PI - 0.01, PI + 0.01);
+    buf.stroke(255); buf.strokeWeight(10 * this._p5.scale); buf.noFill();
+    buf.arc(rounding, h - rounding, rounding*2.5, rounding*2.5, this._p5.HALF_PI - 0.01, this._p5.PI + 0.01);
 
     buf.fill(50);
     let displ = 0.5;
@@ -767,9 +769,9 @@ class Module extends GraphicObject {
       sw = 0.1;
       buf.textSize(15);
       buf.fill(60);
-      buf.textAlign(CENTER, CENTER);
+      buf.textAlign(this._p5.CENTER, this._p5.CENTER);
       buf.strokeWeight(sw);
-      buf.text(this.name.substring(0, Math.floor((w - w / 3) / textWidth(this.name) * this.name.length * 0.7)), w / 2, 15);
+      buf.text(this.name.substring(0, Math.floor((w - w / 3) / this._p5.textWidth(this.name) * this.name.length * 0.7)), w / 2, 15);
     }
 
     sw = 1.5;
@@ -868,7 +870,7 @@ class Module0 extends Module {
     // sw = 0.1;
     // buf.textSize(w * 0.18);
     // buf.fill(60);
-    // buf.textAlign(CENTER, CENTER);
+    // buf.textAlign(this._p5.CENTER, this._p5.CENTER);
     // buf.strokeWeight(sw);
     // buf.text('LVLS', w / 2, sw*2 + h * 0.63 + h * 0.04 / 2);
   }
@@ -910,10 +912,11 @@ class Module0 extends Module {
 // ENGINE
 
 class Engine extends GraphicObject {
-  constructor({w=rackwidth, h=rackheight, visible=true}={}) {
-    super({w:w, h:h, visible:visible});
-
+  constructor({_p5=rackp5, w=rackwidth, h=rackheight, visible=true}={}) {
+    super({_p5:_p5, w:w, h:h, visible:visible});
+    this._p5 = _p5;
     this.module_registry = {};
+    this.module_keys = [];
 
     this.module_style = new ModuleStyle();
     this.port_style = new PortStyle();
@@ -985,10 +988,10 @@ class Engine extends GraphicObject {
   draw(x, y) {
     if (!this.visible) return;
     this.ax = x; this.ay = y;
-    if (!this.cbf) this.cbf = createGraphics(this.w, this.h);
-    if (!this.sbf) this.sbf = createGraphics(this.w, this.h);
-    if (!this.dbf) this.dbf = createGraphics(this.w, this.h);
-    if (!this.wbf) this.wbf = createGraphics(this.w, this.h);
+    if (!this.cbf) this.cbf = this._p5.createGraphics(this.w, this.h);
+    if (!this.sbf) this.sbf = this._p5.createGraphics(this.w, this.h);
+    if (!this.dbf) this.dbf = this._p5.createGraphics(this.w, this.h);
+    if (!this.wbf) this.wbf = this._p5.createGraphics(this.w, this.h);
     
     if (this.changed || this.wbf_changed) { this.wbf.clear(); }
     
@@ -1025,11 +1028,11 @@ class Engine extends GraphicObject {
       for (this.i_draw = 0; this.i_draw < this.wires.length; this.i_draw ++) 
         this.wires[this.i_draw].draw(this.wbf, this.x / this.scale, this.y / this.scale);
     this.cbf.pop(); this.sbf.pop(); this.dbf.pop(); this.wbf.pop();
-    image(this.cbf, x, y, this.w, this.h);
-    image(this.sbf, x, y, this.w, this.h);
-    image(this.dbf, x, y, this.w, this.h);
-    image(this.wbf, x, y, this.w, this.h);
-    const sw = 3; stroke(60); strokeWeight(sw); noFill(); rect(x + sw / 2, y + sw / 2, this.w - sw, this.h - sw);
+    this._p5.image(this.cbf, x, y, this.w, this.h);
+    this._p5.image(this.sbf, x, y, this.w, this.h);
+    this._p5.image(this.dbf, x, y, this.w, this.h);
+    this._p5.image(this.wbf, x, y, this.w, this.h);
+    const sw = 3; this._p5.stroke(60); this._p5.strokeWeight(sw); this._p5.noFill(); this._p5.rect(x + sw / 2, y + sw / 2, this.w - sw, this.h - sw);
     this.changed = false;
     this.wbf_changed = false;
   }
@@ -1041,7 +1044,7 @@ class Engine extends GraphicObject {
         this.rack_max_width = this.x2hp(this.modules[this.i_width].x + this.modules[this.i_width].w);
   }
 
-  add_module_class(mc) { this.module_registry[mc.name] = mc; }
+  add_module_class(mc) { this.module_registry[mc.name] = mc; this.module_keys.push(mc.name) }
 
   add_module(m) { 
     this.modules.push(m);
@@ -1360,36 +1363,36 @@ function metamodule(m) {
 // ADDITIONAL_METHODS
 
 let audioContext;
-engine = new Engine({w:10, h:10, visible:false});
+engine = new Engine({_p5:rackp5, w:10, h:10, visible:false});
 
-function mousePressed(event) {
-  if (mouseX > engine.ax && mouseX < engine.ax + engine.w && mouseY > engine.ay && mouseY < engine.ay + engine.h) {
-    if (mouseButton == LEFT) engine.mouse_pressed(mouseX - engine.ax, mouseY - engine.ay, movedX, movedY);
-    if (mouseButton == RIGHT) console.log('prop');
+rackp5.mousePressed = (event) => {
+  if (rackp5.mouseX > engine.ax && rackp5.mouseX < engine.ax + engine.w && rackp5.mouseY > engine.ay && rackp5.mouseY < engine.ay + engine.h) {
+    if (rackp5.mouseButton == rackp5.LEFT) engine.mouse_pressed(rackp5.mouseX - engine.ax, rackp5.mouseY - engine.ay, rackp5.movedX, rackp5.movedY);
+    if (rackp5.mouseButton == rackp5.RIGHT) console.log('prop');
   }
 }
 
-function mouseDragged() {
-  engine.mouse_dragged(mouseX - engine.ax, mouseY - engine.ay, movedX, movedY);
+rackp5.mouseDragged = () => {
+  engine.mouse_dragged(rackp5.mouseX - engine.ax, rackp5.mouseY - engine.ay, rackp5.movedX, rackp5.movedY);
 }
 
-function mouseReleased() {
-  engine.mouse_released(mouseX - engine.ax, mouseY - engine.ay, movedX, movedY);
+rackp5.mouseReleased = () => {
+  engine.mouse_released(rackp5.mouseX - engine.ax, rackp5.mouseY - engine.ay, rackp5.movedX, rackp5.movedY);
 }
 
-function doubleClicked() {
-  engine.double_clicked(mouseX - engine.ax, mouseY - engine.ay, movedX, movedY);
+rackp5.doubleClicked = () => {
+  engine.double_clicked(rackp5.mouseX - engine.ax, rackp5.mouseY - engine.ay, rackp5.movedX, rackp5.movedY);
 }
 
-function mouseWheel(event) {
+rackp5.mouseWheel = (event) => {
   engine.set_offset(engine.x - event.deltaX / 5, 0);
 }
 
-function keyPressed() {
-  if (keyCode === 91) {
+rackp5.keyPressed = () => {
+  if (rackp5.keyCode === 91) {
     engine.cmdpressed = true;
   }
-  if (keyCode === 83) {
+  if (rackp5.keyCode === 83) {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([JSON.stringify(engine.save_state())], {
       type: "text/plain"
@@ -1401,7 +1404,7 @@ function keyPressed() {
     // engine.save_state();
   }
 
-  if (keyCode === 76) {
+  if (rackp5.keyCode === 76) {
     var input = document.createElement('input');
     input.type = 'file';
     input.onchange = e => { 
@@ -1421,34 +1424,34 @@ function keyPressed() {
     input.click();
   }
 
-  if (keyCode === 67) {
+  if (rackp5.keyCode === 67) {
     engine.clear_state();
   }
 
-  if (keyCode === 85) {
+  if (rackp5.keyCode === 85) {
     engine.undo_last_action();
   }
 
-  if (keyCode === 8) {
+  if (rackp5.keyCode === 8) {
     engine.delete_last_module();
   }
 
-  if (keyCode === 70) {
+  if (rackp5.keyCode === 70) {
     document.body.requestFullscreen();
   }
 }
 
-function keyReleased() {
-  if (keyCode === 91) {
+rackp5.keyReleased = () => {
+  if (rackp5.keyCode === 91) {
     engine.cmdpressed = false;
   }
 }
 
-function windowResized() {
+rackp5.windowResized = () => {
   engine.stop = true;
   rackwidth = document.documentElement.clientWidth;
-  rackheight = document.documentElement.clientHeight;
-  resizeCanvas(rackwidth, rackheight);
+  rackheight = document.documentElement.clientHeight - 20;
+  rackp5.resizeCanvas(rackwidth, rackheight);
   engine.set_size(rackwidth, rackheight);
   engine.stop = false;
 }
