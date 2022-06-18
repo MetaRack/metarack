@@ -1,8 +1,7 @@
 class Info extends Module {
 
-  constructor(freq, _p5=rackp5) {
+  constructor(freq) {
     super({w:hp2x(20)});
-    this._p5 = _p5;
   }
 
   draw_cbf(buf, w, h) {
@@ -15,7 +14,7 @@ class Info extends Module {
 
     buf.textSize(h / 20);
     buf.fill(60);
-    buf.textAlign(this._p5.LEFT, this._p5.TOP);
+    buf.textAlign(LEFT, TOP);
     buf.strokeWeight(sw / 10);
     buf.text(text, sw + w * 0.07, sw + h * 0.1);
   }

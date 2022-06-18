@@ -1,7 +1,7 @@
 class VCO extends Module {
 
-  constructor(freq=120, _p5=rackp5) {
-    super({w:hp2x(10), _p5:_p5});
+  constructor(freq=120) {
+    super({w:hp2x(10)});
     this.freq = freq;
     this.delta = Math.PI * 2 / (sample_rate / freq);
     this.phase = 0;

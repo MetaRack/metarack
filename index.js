@@ -12,12 +12,12 @@ state_string = `{"modules":{"1":{"name":"Clock","i":{"BPM":{"val":"101.000000","
 state = JSON.parse(state_string)
 engine.load_state(state);
 
-// function setup() {
-//   createCanvas(rackwidth, rackheight);
-//   frameRate(fps);
-// }
+function setup() {
+  createCanvas(rackwidth, rackheight);
+  frameRate(fps);
+}
 
-// function draw() { 
-//   background(0,0,0,0);
-//   engine.draw(0, 0); 
-// }
+function draw() { 
+  background(0,0,0,0);
+  engine.draw(0, 0); 
+}
