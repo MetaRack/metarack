@@ -160,7 +160,7 @@ function App() {
 		React.createElement(
 			'button',
 			{ onClick: handleOpenModal },
-			'New Module'
+			'Add module'
 		),
 		React.createElement(
 			ReactModal,

@@ -1,5 +1,20 @@
 document.addEventListener('contextmenu', event => event.preventDefault());
 
+const rackSketch = (sketch) => {
+
+  sketch.setup = () => {
+    sketch.createCanvas(rackwidth, rackheight);
+    sketch.frameRate(fps);
+  }
+
+  sketch.draw = () => {
+    sketch.background(0,0,0,0);
+    engine.draw(0, 0);
+  };
+};
+
+let rackp5 = new p5(rackSketch);
+
 var rackrand = Math.random;
 
 let rackwidth = document.documentElement.clientWidth;

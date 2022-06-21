@@ -27,6 +27,7 @@ def minify(prefix='./', out_root='./'):
     js_files += get_all_files(root=os.path.join(prefix, 'primitives'), frmt='.js')
     js_files += get_all_files(root=os.path.join(prefix, 'modules'), frmt='.js')
     js_files += get_all_files(root=os.path.join(prefix, 'bin'), frmt='.js')
+    js_files += get_all_files(root=os.path.join(prefix, 'react'), frmt='.js')
     js_files.append(os.path.join(prefix, 'index.js'))
 
     wasm_files = get_all_files(root=os.path.join(prefix, 'bin'), frmt='.wasm')
@@ -47,4 +48,4 @@ def minify(prefix='./', out_root='./'):
     print(f"minified, size {os.path.getsize(fname) / 1024:.2f}kb")
 
 if __name__ == '__main__':
-    minify(out_root='./server/website/demo')
+    minify(out_root='../website/demo')
