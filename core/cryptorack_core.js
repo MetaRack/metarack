@@ -10,6 +10,10 @@ const rackSketch = (sketch) => {
   sketch.draw = () => {
     sketch.background(0,0,0,0);
     engine.draw(0, 0);
+    if ((vco_flag) && (mixer_flag)) {
+      create(); 
+      mixer_flag = false;
+    }
   };
 };
 
@@ -369,37 +373,38 @@ class Encoder extends GraphicObject {
   }
 
   get() { 
-    if (this.changed) {
-      this.nochange_counter = 0;
-      this.nochange_flag = false;
-      this.c = this.sample_counter / (sample_rate / fps);
-      this.sample_counter++;
-      if (this.c <= 1)
-        this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
-      else {
-        this.filter.in = this.base_val;
-      }
-      this.filter.process();
-      return this.filter.lp;
+    // if (this.changed) {
+    //   this.nochange_counter = 0;
+    //   this.nochange_flag = false;
+    //   this.c = this.sample_counter / (sample_rate / fps);
+    //   this.sample_counter++;
+    //   if (this.c <= 1)
+    //     this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
+    //   else {
+    //     this.filter.in = this.base_val;
+    //   }
+    //   this.filter.process();
+    //   return this.filter.lp;
       
-    }
-    else {
-      this.sample_counter = 0;
-      if (!this.nochange_flag) this.nochange_counter++;
-      if (this.nochange_counter > sample_rate / 2) {
-        this.nochange_counter = 0;
-        this.nochange_flag = true;
-      }
-      this.prev_base_val = this.base_val;
-      if (!this.nochange_flag) {
-        this.filter.in = this.base_val;
-        this.filter.process();
-        return this.filter.lp;
-      }
-      else {
-        return this.base_val;
-      }
-    }
+    // }
+    // else {
+    //   this.sample_counter = 0;
+    //   if (!this.nochange_flag) this.nochange_counter++;
+    //   if (this.nochange_counter > sample_rate / 2) {
+    //     this.nochange_counter = 0;
+    //     this.nochange_flag = true;
+    //   }
+    //   this.prev_base_val = this.base_val;
+    //   if (!this.nochange_flag) {
+    //     this.filter.in = this.base_val;
+    //     this.filter.process();
+    //     return this.filter.lp;
+    //   }
+    //   else {
+    //     return this.base_val;
+    //   }
+    // }
+    return this.base_val;
     
   }
 
@@ -1378,6 +1383,7 @@ function metamodule(m) {
 // ADDITIONAL_METHODS
 
 let audioContext;
+let VCONode;
 engine = new Engine({_p5:rackp5, w:10, h:10, visible:false});
 
 rackp5.mousePressed = (event) => {
@@ -1472,20 +1478,21 @@ rackp5.windowResized = () => {
 }
 
 function engine_run() {
-  audioContext = new AudioContext();
-  let scriptNode = audioContext.createScriptProcessor(2048, 0, 2);
+  
+  // let scriptNode = audioContext.createScriptProcessor(2048, 0, 2);
 
-  scriptNode.onaudioprocess = function(audioProcessingEvent) {
-    let outputBuffer = audioProcessingEvent.outputBuffer;
+  // scriptNode.onaudioprocess = function(audioProcessingEvent) {
+  //   // let outputBuffer = audioProcessingEvent.outputBuffer;
 
-    let outputL = outputBuffer.getChannelData(0);
-    let outputR = outputBuffer.getChannelData(1);
-    for (let sample = 0; sample < outputL.length; sample++) {
-      engine.process();
-      outputL[sample] = engine.module0.L;
-      outputR[sample] = engine.module0.R;
-    }
-  }
+  //   // let outputL = outputBuffer.getChannelData(0);
+  //   // let outputR = outputBuffer.getChannelData(1);
+  //   for (let sample = 0; sample < outputL.length; sample++) {
+  //     engine.process();
+  //     console.log('hehe')
+  //     // outputL[sample] = engine.module0.L;
+  //     // outputR[sample] = engine.module0.R;
+  //   }
+  // }
 
-  scriptNode.connect(audioContext.destination);
+  //scriptNode.connect(audioContext.destination);
 }
