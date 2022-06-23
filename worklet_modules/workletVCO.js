@@ -2,9 +2,12 @@ class workletVCO extends Module {
 
   constructor(freq=120, _p5=rackp5) {
     super({w:hp2x(10), _p5:_p5});
-
+    this.out = 0;
     this.VCONode = new AudioWorkletNode(audioContext, 'vco');
     this.flag = true;
+
+    this.scope = new RawScope({x: this.w * 0.05, y:this.h * 0.05, w:this.w - this.w * 0.1, h:this.h*0.25, size:30, divider:64});
+    this.attach(this.scope);
 
     this.delta = Math.PI * 2 / (sample_rate / freq);
     this.phase = 0;
@@ -24,6 +27,8 @@ class workletVCO extends Module {
     this.mod_prev = 0;
     this.phase_inc = 0;
 
+    this.j = 0;
+
     this._alpha = 0.01;
   }
 
@@ -42,6 +47,17 @@ class workletVCO extends Module {
 
   draw_dbf() {
     this.update_params();
+    this.VCONode.port.postMessage('now');
+    this.VCONode.port.onmessage = (e) => {
+      for (this.j = 0; this.j < e.data.length; this.j++) {
+        this.phase += e.data[this.j][0];
+        this.scope.process(e.data[this.j][1]);
+        if (this.phase > Math.PI * 2) {
+          this.phase -= Math.PI * 2;
+          this.scope.trig();
+        }
+      }
+    }
   }
 
   process() {
