@@ -42,7 +42,8 @@ class MixerProcessor extends AudioWorkletProcessor {
         this.input = inputs[this.j];
         this.inputChannel = this.input[0];
         //this.out += inputChannel[i] * this.amp[j] / 4;
-        this.out += this.inputChannel[this.i] / inputs.length;
+        if (this.i < this.inputChannel.length)
+          this.out += this.inputChannel[this.i] / inputs.length;
       }
 
       this.outputChannel[this.i] = this.out;

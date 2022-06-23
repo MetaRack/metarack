@@ -36,6 +36,9 @@ class VCOProcessor extends AudioWorkletProcessor {
     this.i = 0;
     this.j = 0;
 
+    this.phase_inc_send = 0;
+    this.out_send = 0;
+
     this.output = 0;
     this.outputChannel = 0;
 
@@ -47,10 +50,10 @@ class VCOProcessor extends AudioWorkletProcessor {
       this.buf[this.j] = 0;
     }
 
-    this.port.onmessage = (e) => {
-      this.port.postMessage(this.buf);
-      this.buf = [];
-    }
+    // this.port.onmessage = (e) => {
+    //   this.port.postMessage(this.buf);
+    //   this.buf = [];
+    // }
   }
 
   set_frequency(f) {
@@ -102,7 +105,18 @@ class VCOProcessor extends AudioWorkletProcessor {
         if (this.mod != this.mod_prev) { this.phase_inc = this.delta * Math.pow(2, this.mod); this.mod_prev = this.mod; }
         
         channel[this.i] = this.out;
-
+        
+        this.phase_inc_send += this.phase_inc;
+        this.out_send += this.out;
+        if ((this.i % 10) == 0) {
+          this.buf.push([this.phase_inc_send, this.out]);
+          this.phase_inc_send = 0;
+          this.out_send = 0;
+        }
+        if (this.buf.length > 100) {
+          this.port.postMessage(this.buf);
+          this.buf = [];
+        }
         this.phase += this.phase_inc;
         if (this.phase > Math.PI * 2) {
           this.phase -= Math.PI * 2;
@@ -110,7 +124,7 @@ class VCOProcessor extends AudioWorkletProcessor {
 
       }
     })
-    this.buf.push([this.phase_inc, this.out]);
+
     return true;
   }
 }

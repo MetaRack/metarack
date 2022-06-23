@@ -28,7 +28,16 @@ class workletVCO extends Module {
     this.phase_inc = 0;
 
     this.j = 0;
-
+    this.VCONode.port.onmessage = (e) => {
+      for (this.j = 0; this.j < e.data.length; this.j++) {
+        this.phase += e.data[this.j][0];
+        this.scope.process(e.data[this.j][1]);
+        if (this.phase > Math.PI * 2) {
+          this.phase -= Math.PI * 2;
+          this.scope.trig();
+        }
+      }
+    }
     this._alpha = 0.01;
   }
 
@@ -47,17 +56,7 @@ class workletVCO extends Module {
 
   draw_dbf() {
     this.update_params();
-    this.VCONode.port.postMessage('now');
-    this.VCONode.port.onmessage = (e) => {
-      for (this.j = 0; this.j < e.data.length; this.j++) {
-        this.phase += e.data[this.j][0];
-        this.scope.process(e.data[this.j][1]);
-        if (this.phase > Math.PI * 2) {
-          this.phase -= Math.PI * 2;
-          this.scope.trig();
-        }
-      }
-    }
+    // this.VCONode.port.postMessage('now');
   }
 
   process() {
