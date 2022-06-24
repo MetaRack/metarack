@@ -17,11 +17,11 @@ class MixerProcessor extends AudioWorkletProcessor {
     this.i = 0;
     this.j = 0;
 
-    this.output = 0;
-    this.outputChannel = 0;
+    this.output = [];
+    this.outputChannel = [];
 
-    this.input = 0;
-    this.inputChannel = 0;
+    this.input = [];
+    this.inputChannel = [];
   }
 
   process (inputs, outputs, parameters) {
@@ -40,10 +40,11 @@ class MixerProcessor extends AudioWorkletProcessor {
       this.out = 0;
       for (this.j = 0; this.j < inputs.length; this.j++) {
         this.input = inputs[this.j];
-        this.inputChannel = this.input[0];
-        //this.out += inputChannel[i] * this.amp[j] / 4;
-        if (this.i < this.inputChannel.length)
-          this.out += this.inputChannel[this.i] / inputs.length;
+        if (this.input.length > 0) {
+          this.inputChannel = this.input[0];
+          if (this.i < this.inputChannel.length)
+            this.out += this.inputChannel[this.i] / inputs.length;
+        }
       }
 
       this.outputChannel[this.i] = this.out;
