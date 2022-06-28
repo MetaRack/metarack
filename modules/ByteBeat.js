@@ -39,7 +39,7 @@ class ByteBeat extends Module {
     this.vldv = this.i['VLDV'].get().toFixed(0);
     if (this.expr)
       this.value = this.expr(this.counter, this.vldv, this.p1, this.p2, this.p3, this.p4);
-    this.o['OUT'].set((this.value % 0xFF) / 25.6 - 5);
+    this.o['OUT'].set(((this.value % 0xFF) / 25.6 - 5) / 10);
     //this.o['CLK'].set(~(this.counter / (2048 * Math.pow(2, this.cldv)) & 1));
     this.o['CLK'].set(Math.floor(this.counter / (2048 * Math.pow(2, this.cldv))) & 1);
     this.counter++;

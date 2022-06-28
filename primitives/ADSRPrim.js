@@ -27,6 +27,11 @@ class ADSRPrim {
 	    if (this.S < 0.000001) this.S = 0.000001;
 	    if (this.R < 0.1) this.R = 0.1;
 
+	    if (this.prev_a > 10) this.prev_a = 10;
+	    if (this.D > 10) this.D = 10;
+	    if (this.S > 1) this.S = 1;
+	    if (this.R > 50) this.R = 50;
+
 	    if (this.gate > 0) {
 	      switch(this.stage) {
 	        case 'R':
@@ -52,6 +57,8 @@ class ADSRPrim {
 
 	      }
 	    } else {
+	      if (this.A < 0.1) this.A = 0.1;
+	      if (this.A > 10) this.A = 10;
 	      this.prev_a = this.A;
 	      switch (this.stage) {
 	        case 'A':

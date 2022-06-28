@@ -45,6 +45,9 @@ class Scale extends Module {
     this.gate_length = 100;
     this.gate_counter = 0;
 
+    this.k = 0;
+    this.j = 0;
+
     this.value = 0;
     
     this.mod = 0;
@@ -55,10 +58,10 @@ class Scale extends Module {
     this.scale = 0;
     this.root = 0;
     this.semitones = [];
-    for (var j = 0; j < this.scales[this.scale].length; j++) { 
-      this.semitones.push((this.root + this.scales[this.scale][j]) % 12);
+    for (this.j = 0; this.j < this.scales[this.scale].length; this.j++) { 
+      this.semitones.push((this.root + this.scales[this.scale][this.j]) % 12);
     }
-    for(var i = 0; i < this.semitones.length; i ++) this.semitones[i] /= 12;
+    for(this.k = 0; this.k < this.semitones.length; this.k++) this.semitones[this.k] /= 12;
     this.prev_scale = 0;
     this.prev_root = 0;
     this.set_param();
@@ -71,9 +74,9 @@ class Scale extends Module {
   get_closest_note(v) {
     this.cl_i = 0;
     this.v_frac = v - Math.floor(v);
-    for(var i = 0; i < this.semitones.length; i++) {
-      if (Math.abs(this.semitones[i] / 12 - this.v_frac) < Math.abs(this.semitones[this.cl_i] / 12 - this.v_frac)) 
-        this.cl_i = i;
+    for(this.k = 0; this.k < this.semitones.length; this.k++) {
+      if (Math.abs(this.semitones[this.k] / 12 - this.v_frac) < Math.abs(this.semitones[this.cl_i] / 12 - this.v_frac)) 
+        this.cl_i = this.k;
     }
     return (Math.floor(v) + this.semitones[this.cl_i] / 12);
   }
@@ -82,16 +85,16 @@ class Scale extends Module {
     this.root = this.c['ROOT'].get().toFixed(0) - 1;
     if (this.root != this.prev_root) {
       this.semitones = [];
-      for (var j = 0; j < this.scales[this.scale].length; j++) { 
-        this.semitones.push((this.root + this.scales[this.scale][j]) % 12);
+      for (this.j = 0; this.j < this.scales[this.scale].length; this.j++) { 
+        this.semitones.push((this.root + this.scales[this.scale][this.j]) % 12);
       }
     }
     this.scale = this.c['SCL'].get().toFixed(0) - 1;
     if (this.scale != this.prev_scale) {
       this.semitones = [];
       if (this.scale == -1) this.scale = 0;
-      for (var j = 0; j < this.scales[this.scale].length; j++) { 
-        this.semitones.push((this.root + this.scales[this.scale][j]) % 12);
+      for (this.j = 0; this.j < this.scales[this.scale].length; this.j++) { 
+        this.semitones.push((this.root + this.scales[this.scale][this.j]) % 12);
       }
     }
   }

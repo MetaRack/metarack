@@ -6,7 +6,10 @@ class ReverbWasm extends Module {
     this.is_constructed = false;
     this.file = "bin/DattorroReverb.wasm";
     this.Reverb_Module = new createModule(this.file);
-    this.is_loaded = this.Reverb_Module.flag;
+    //this.is_loaded = this.Reverb_Module.flag;
+    this.Reverb_Module.module['onRuntimeInitialized'] = function() {
+      this.is_loaded = true;
+    }
 
     this.add_control(new Encoder({x:hp2x(0.5), y:hp2y(0.20), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'SIZE'}));
     this.add_control(new Encoder({x:hp2x(0.5), y:hp2y(0.33), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'DEC'}));

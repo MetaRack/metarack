@@ -37,6 +37,10 @@ class ExponentialFilterPrim{
     this.buf = this.in;
     this.coeff_in = this.freq / 10000;
     if (this.coeff_in > 1) this.coeff_in = 0.999;
+    if (this.coeff_in < 0) this.coeff_in = 0;
+
+    if (this.coeff_res > 1) this.coeff_res = 0.999;
+    if (this.coeff_res < 0) this.coeff_res = 0;
 
     this.highpass_delay.in = this.in;
 

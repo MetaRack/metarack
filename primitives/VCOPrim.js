@@ -4,8 +4,7 @@ class VCOPrim {
 	    this.delta = Math.PI * 2 / (sample_rate / freq);
 	    this.phase = 0;
 
-	    let cv = 0.0001;
-	    this.cv = cv;
+	    this.cv = 0;
 	    this.fm = 0;
 	    this.wave = 0;
 	    this.pw = 0.5;
@@ -16,7 +15,7 @@ class VCOPrim {
 	    this.type = 0;
 	    this.mod = 0;
 	    this.mod_prev = 0;
-	    this.phase_inc = 0;
+	    this.phase_inc = this.delta;
 	    this.phase_mod = 0;
 
 	    this._alpha = 0.01;
@@ -35,6 +34,15 @@ class VCOPrim {
   	}
 
   	process() {
+  		if (this.wave < -10) this.wave = -10;
+  		if (this.wave > 10) this.wave = 10;
+
+  		if (this.pw < 0) this.pw = 0;
+  		if (this.pw > 0.5) this.pw = 0.5;
+
+  		if (this.amp < 0) this.amp = 0;
+  		if (this.amp > 1) this.amp = 1;
+
 	    this.type = this.wave / 10;
 	    if (this.type >= 0) {
 	      this.value = Math.sin(this.phase + this.phase_mod) * (1 - this.type) + ((this.phase + this.phase_mod) / Math.PI - 1) * this.type;

@@ -117,6 +117,16 @@ class ScalePrim {
   // }
 
   process() {
+    this.root = Math.round(this.root);
+    this.scale = Math.round(this.scale);
+
+    if (this.root < 0) this.root = 0;
+    if (this.root > 11) this.root = 11;
+
+    if (this.scale < 0) this.scale = 0;
+    if (this.scale > 8) this.scale = 8;
+
+
     this.set_param();
     this.value = this.get_closest_note(Math.round(this.in * 12) / 12);
     if (this.last_value != this.value) {

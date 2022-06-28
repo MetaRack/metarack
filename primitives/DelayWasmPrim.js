@@ -2,9 +2,12 @@ class DelayWasmPrim {
   constructor() {
     this.is_loaded = false;
     this.is_constructed = false;
-    this.file = "bin/Delay.wasm";
+    this.file = "c-modules/bin/Delay.wasm";
     this.Delay_Module = new createModule(this.file);
     this.is_loaded = this.Delay_Module.flag;
+    // this.Delay_Module.module['onRuntimeInitialized'] = function() {
+    //   this.is_loaded = true;
+    // }
 
     // this.add_input(new InputEncoder({x:hp2x(0.6), y:26, r:7, val:1, vmin:0.001, vmax:10, name:'TIME'}));
     // this.add_input(new InputEncoder({x:hp2x(0.6), y:46, r:7, val:0, vmin: 0, vmax:1, name:'FB'}));
@@ -26,6 +29,14 @@ class DelayWasmPrim {
 
   process() {
     this.out = 0;
+    if (this.dw < 0) this.dw = 0;
+    if (this.dw > 1) this.dw = 1;
+
+    if (this.fb < 0) this.fb = 0;
+    if (this.fb > 1) this.fb = 1;
+
+    if (this.time < 0) this.time = 0.01;
+    if (this.time > 10) this.time = 9.99;
     
     if (this.is_loaded) {
       this.Delay_constructor = this.Delay_Module.module.cwrap('constructor', 'number', []);

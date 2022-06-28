@@ -19,7 +19,7 @@ class Juno extends Module {
 
 		this.add_input(new Port({x:hp2x(0.8), y:28, r:6, name:'GATE'}));
 		//this.add_input(new Port({x:hp2x(0.8), y:8, r:6, name:'PTCH'}));
-		this.add_input(new InputEncoder({x:hp2x(0.6), y:6, r:7, mod:10, val:0, name:'PTCH'}));
+		this.add_input(new Port({x:hp2x(0.6), y:6, r:7, name:'PTCH'}));
     	this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'OUT'}));
 
 		this.ADSR = new ADSRPrim();
@@ -195,7 +195,7 @@ class NonlinearLab extends Module {
 
 		this.fluct1 = this.i['FLC1'].get();
 		this.osc1_cv = this.i['OSC1'].get() + (rackrand() - 0.5) * (this.fluct1 * 100) + this.pitch;
-		this.OSC1.cv = this.osc1_cv;
+		this.OSC1.cv = this.osc1_cv + 0.00001;
 		this.pm1 = this.i['PM1'].get();
 		this.fold1 = this.i['FLD1'].get();
 		this.amp1 = this.i['AMP1'].get();
@@ -205,7 +205,7 @@ class NonlinearLab extends Module {
 
     	this.fluct2 = this.i['FLC2'].get();
     	this.osc2_cv = this.i['OSC2'].get() + (rackrand() - 0.5) * (this.fluct2 * 100) + this.pitch;
-    	this.OSC2.cv = this.osc2_cv;
+    	this.OSC2.cv = this.osc2_cv + 0.00001;
     	this.pm2 = this.i['PM2'].get();
 		this.fold2 = this.i['FLD2'].get();
 		this.amp2 = this.i['AMP2'].get();
@@ -269,7 +269,7 @@ class NonlinearLab extends Module {
 
 		this.fluct1 = this.i['FLC1'].get();
 		this.osc1_cv = this.i['OSC1'].get() + (rackrand() - 0.5) * (this.fluct1 * 100) + this.pitch;
-		this.OSC1.cv = this.osc1_cv;
+		this.OSC1.cv = this.osc1_cv + 0.00001;
 		this.pm1 = this.i['PM1'].get();
 		this.OSC1.phase_mod = this.pm1 * (2 * Math.PI);
 		this.fold1 = this.i['FLD1'].get();
@@ -279,7 +279,7 @@ class NonlinearLab extends Module {
 
     	this.fluct2 = this.i['FLC2'].get();
     	this.osc2_cv = this.i['OSC2'].get() + (rackrand() - 0.5) * (this.fluct2 * 100) + this.pitch;
-    	this.OSC2.cv = this.osc2_cv;
+    	this.OSC2.cv = this.osc2_cv + 0.00001;
     	this.pm2 = this.i['PM2'].get();
     	this.OSC2.phase_mod = this.pm2 * (2 * Math.PI);
 		this.fold2 = this.i['FLD2'].get();

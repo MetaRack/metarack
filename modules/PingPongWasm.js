@@ -2,10 +2,12 @@ class PingPongWasm extends Module {
   constructor() {
     super({w:hp2x(8)});
     this.is_loaded = false;
-      this.is_constructed = false;
-      this.file = "bin/PingPong.wasm";
-      this.PP_Module = new createModule(this.file);
-      this.is_loaded = this.PP_Module.flag;
+    this.is_constructed = false;
+    this.file = "bin/PingPong.wasm";
+    this.PP_Module = new createModule(this.file);
+    this.PP_Module.module['onRuntimeInitialized'] = function() {
+      this.is_loaded = true;
+    }
 
     this.add_input(new InputEncoder({x:hp2x(0.6), y:6, r:7, val:0.66, vmin:0, vmax:1, name:'FB'}));
     this.add_input(new InputEncoder({x:hp2x(4.6), y:6, r:7, val:1, vmin:0, vmax:1, name:'D/W'}));

@@ -72,13 +72,15 @@ class DattorroReverb extends Module {
     this.dw = this.c['D/W'].get()**2;
     this.decay = this.c['DEC'].get();
     this.size = this.i['SIZE'].get()**2;
-    this.dattorro.inputL = this.i['I/L'].get() / 10;
-    this.dattorro.inputR = this.i['I/R'].get() / 10;
+    // this.dattorro.inputL = this.i['I/L'].get() / 10;
+    // this.dattorro.inputR = this.i['I/R'].get() / 10;
+    this.dattorro.inputL = this.i['I/L'].get();
+    this.dattorro.inputR = this.i['I/R'].get();
     this.dattorro.setTimeScale(this.size);
     this.dattorro.decay = this.decay;
     this.dattorro.process();
-    this.dattorro.outputL *= 4;
-    this.dattorro.outputR *= 4;
+    // this.dattorro.outputL *= 4;
+    // this.dattorro.outputR *= 4;
     this.o['O/L'].set(this.dattorro.inputL + (this.dattorro.outputL - this.dattorro.inputL) * this.dw);
     this.o['O/R'].set(this.dattorro.inputR + (this.dattorro.outputR - this.dattorro.inputR) * this.dw);
   }

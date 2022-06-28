@@ -68,4 +68,4 @@ class Sequencer extends Module {
   }
 }
 
-//engine.add_module_class(Sequencer);
+engine.add_module_class(Sequencer);

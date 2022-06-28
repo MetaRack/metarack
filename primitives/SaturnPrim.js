@@ -9,8 +9,8 @@ class SaturnPrim {
 		this.sat = 1;
 		this.in = 0;
 		this.out = 0;
-		this.LP = new ExponentialFilterPrim();
-		this.LP.freq = 5000;
+		// this.LP = new ExponentialFilterPrim();
+		// this.LP.freq = 8000;
 	}
 
 	sigmoid(x) {
@@ -38,6 +38,9 @@ class SaturnPrim {
 		//this.in = this.i['IN'].get();
 		//this.in = this.in * this.sat;
 
+		if (this.fold < 0) this.fold = 0;
+		if (this.fold > 5) this.fold = 5;
+		
 		this.out = this.in * (this.fold + 1);
 
 		while (this.out > 1) {
@@ -54,9 +57,9 @@ class SaturnPrim {
 		this.out = this.out * this.sat;
 		if (this.sat > 1)
 			this.out = this.saturate(this.out, 0);
-		this.LP.in = this.out;
-		this.LP.process();
+		// this.LP.in = this.out;
+		// this.LP.process();
 
-		this.out = this.LP.lp;	  
+		// this.out = this.LP.lp;	  
 	}
 }
