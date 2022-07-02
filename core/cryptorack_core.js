@@ -10,10 +10,6 @@ const rackSketch = (sketch) => {
   sketch.draw = () => {
     sketch.background(0,0,0,0);
     engine.draw(0, 0);
-    if ((vco_flag) && (mixer_flag)) {
-      create(); 
-      mixer_flag = false;
-    }
   };
 };
 
@@ -199,6 +195,18 @@ class ProtoPort extends GraphicObject {
   }
 
   unplug_wire(w) {
+
+    if ((w.a != null) && (w.b != null)) {
+      if ((w.a.module.name.indexOf('worklet') == 0) && (w.b.module.name.indexOf('worklet') == 0)) {
+        if (w.b.isinput) {
+          w.a.module.node.disconnect(w.b.module.node, w.a.module.outputs[w.a.name], w.b.module.inputs[w.b.name]);
+        }
+        else {
+          w.b.module.node.disconnect(w.a.module.node, w.b.module.outputs[w.b.name], w.a.module.inputs[w.a.name]);
+        }
+      }
+    }
+
     let i = this.wires.indexOf(w);
     if (i !== -1) this.wires.splice(i, 1);
     if (this == w.a) w.a = null;
@@ -543,46 +551,46 @@ class InputEncoder extends Encoder {
   draw_dbf(buf, x, y, w, h) { this.mod_coef = (this.port.wires.length > 0) * 0.1 * this.mod * (this.vmax - this.vmin); }
   
   get() { 
-    if (this.changed) {
-      this.nochange_counter = 0;
-      this.nochange_flag = false;
-      this.c = this.sample_counter / (sample_rate / fps);
-      this.sample_counter++;
-      if (this.c <= 1) {
-        //this.filter.in = ((Math.sin((this.c - 0.5) * Math.PI) / 2) + 0.5) * (this.base_val - this.prev_base_val) + this.prev_base_val;
-        this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
+    // if (this.changed) {
+    //   this.nochange_counter = 0;
+    //   this.nochange_flag = false;
+    //   this.c = this.sample_counter / (sample_rate / fps);
+    //   this.sample_counter++;
+    //   if (this.c <= 1) {
+    //     //this.filter.in = ((Math.sin((this.c - 0.5) * Math.PI) / 2) + 0.5) * (this.base_val - this.prev_base_val) + this.prev_base_val;
+    //     this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
 
-        //return ((Math.sin((this.c - 0.5) * Math.PI) / 2) + 0.5) * (this.base_val - this.prev_base_val) + this.prev_base_val + this.mod_coef * this.port.get();
-      }
-      else {
-        this.filter.in = this.base_val;
-        //this.filter2.in = this.filter.lp;
-        //return this.base_val + this.mod_coef * this.port.get(); 
-      }
-      //this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
-      this.filter.process();
-      //this.filter2.process();
-      return this.filter.lp + this.mod_coef * this.port.get();
+    //     //return ((Math.sin((this.c - 0.5) * Math.PI) / 2) + 0.5) * (this.base_val - this.prev_base_val) + this.prev_base_val + this.mod_coef * this.port.get();
+    //   }
+    //   else {
+    //     this.filter.in = this.base_val;
+    //     //this.filter2.in = this.filter.lp;
+    //     //return this.base_val + this.mod_coef * this.port.get(); 
+    //   }
+    //   //this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
+    //   this.filter.process();
+    //   //this.filter2.process();
+    //   return this.filter.lp + this.mod_coef * this.port.get();
       
-    }
-    else {
-      this.sample_counter = 0;
-      if (!this.nochange_flag) this.nochange_counter++;
-      if (this.nochange_counter > sample_rate * 2) {
-        this.nochange_counter = 0;
-        this.nochange_flag = true;
-      }
-      this.prev_base_val = this.base_val;
-      if (!this.nochange_flag) {
-        this.filter.in = this.base_val;
-        this.filter.process();
-        return this.filter.lp + this.mod_coef * this.port.get();
-      }
-      else {
-        return this.base_val + this.mod_coef * this.port.get();
-      }
-      //return this.base_val + this.mod_coef * this.port.get(); 
-    }
+    // }
+    // else {
+    //   this.sample_counter = 0;
+    //   if (!this.nochange_flag) this.nochange_counter++;
+    //   if (this.nochange_counter > sample_rate * 2) {
+    //     this.nochange_counter = 0;
+    //     this.nochange_flag = true;
+    //   }
+    //   this.prev_base_val = this.base_val;
+    //   if (!this.nochange_flag) {
+    //     this.filter.in = this.base_val;
+    //     this.filter.process();
+    //     return this.filter.lp + this.mod_coef * this.port.get();
+    //   }
+    //   else {
+    //     return this.base_val + this.mod_coef * this.port.get();
+    //   }
+    return this.base_val + this.mod_coef * this.port.get(); 
+    
   }
   set(v) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = v; this.changed = true;}
   connect(c) {
@@ -686,12 +694,34 @@ class Wire extends GraphicObject {
     this.a = a.port; this.b = b.port;
     this.a.plug_wire(this);
     this.b.plug_wire(this);
+    //console.log([this.a.module.name, this.a.name, this.b.module.name, this.b.name]);
+    //console.log([this.a.isinput, this.b.isinput]);
+    if ((this.a.module.name.indexOf('worklet') == 0) && (this.b.module.name.indexOf('worklet') == 0)) {
+      if (this.b.isinput) {
+        this.a.module.node.connect(this.b.module.node, this.a.module.outputs[this.a.name], this.b.module.inputs[this.b.name]);
+      }
+      else {
+        this.b.module.node.connect(this.a.module.node, this.b.module.outputs[this.b.name], this.a.module.inputs[this.a.name]);
+      }
+      //console.log([this.a.module.node, this.b.module.node, this.a.module.outputs[this.a.name], this.b.module.inputs[this.b.name]] )
+    }
     return true;
   }
 
   disconnect() {
+    //console.log([this.a, this.b])
     if (this.a) this.a.unplug_wire(this);
     if (this.b) this.b.unplug_wire(this);
+
+    // if ((this.a.module.name.indexOf('worklet') == 0) && (this.b.module.name.indexOf('worklet') == 0)) {
+    //   if (this.b.isinput) {
+    //     this.a.module.node.disconnect(this.b.module.node, this.a.module.outputs[this.a.name], this.b.module.inputs[this.b.name]);
+    //   }
+    //   else {
+    //     this.b.module.node.disconnect(this.a.module.node, this.b.module.outputs[this.b.name], this.a.module.inputs[this.a.name]);
+    //   }
+    //   //console.log([this.a.module.node, this.b.module.node, this.a.module.outputs[this.a.name], this.b.module.inputs[this.b.name]] )
+    // }
   }
 
   save() {
@@ -1137,6 +1167,12 @@ class Engine extends GraphicObject {
     let i = this.modules.indexOf(m); 
     if (i !== -1) this.modules.splice(i, 1);
     this.detach(m);
+
+    if (m.name.indexOf('worklet') == 0) {
+      m.node.disconnect();
+      m.node.parameters.get("isPresent").value = 0;
+    }
+
     delete this.module_index[m.id];
     this.changed = true;
     this.undo_checkpoint();
@@ -1388,7 +1424,7 @@ engine = new Engine({_p5:rackp5, w:10, h:10, visible:false});
 
 rackp5.mousePressed = (event) => {
   if (rackp5.mouseX > engine.ax && rackp5.mouseX < engine.ax + engine.w && rackp5.mouseY > engine.ay && rackp5.mouseY < engine.ay + engine.h) {
-    if (rackp5.mouseButton == rackp5.LEFT) engine.mouse_pressed(rackp5.mouseX - engine.ax, rackp5.mouseY - engine.ay, rackp5.movedX, rackp5.movedY);
+    if (rackp5.mouseButton == rackp5.LEFT) {engine.mouse_pressed(rackp5.mouseX - engine.ax, rackp5.mouseY - engine.ay, rackp5.movedX, rackp5.movedY); audioContext.resume()};
     if (rackp5.mouseButton == rackp5.RIGHT) console.log('prop');
   }
 }

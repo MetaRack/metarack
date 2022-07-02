@@ -22,25 +22,28 @@ engine.visible = true;
 // }
 
 let vco_flag = false;
-let mixer_flag = false;
+let audio_flag = false;
+let delay_flag = false;
 audioContext = new AudioContext();
+audioContext.audioWorklet.addModule('../worklet_modules/audioProcessor.js').then(() => {audio_flag = true});
 audioContext.audioWorklet.addModule('../worklet_modules/VCOProcessor.js').then(() => {vco_flag = true});
-audioContext.audioWorklet.addModule('../worklet_modules/MixerProcessor.js').then(() => {mixer_flag = true});
+audioContext.audioWorklet.addModule('../worklet_modules/DelayProcessor.js').then(() => {delay_flag = true});
 
 //open_audio('../worklet_modules/VCOProcessor.js', 'vco');
-let num = 100;
-V = new Array(num)
+//let num = 100;
+//V = new workletDelay();
 let create = () => {
-	M = new workletMixer()
+	// M = new workletMixer()
 
-	for (let i = 0; i < num; i++) {
-		V[i] = new workletVCO();
-		V[i].c['FM'].set((Math.random() - 0.5) * 3);
-		V[i].c['AMP'].set(Math.random());
-		V[i].VCONode.connect(M.MixerNode, 0, i);
-	}
+	// for (let i = 0; i < num; i++) {
+	// 	V[i] = new workletVCO();
+	// 	V[i].c['FM'].set((Math.random() - 0.5) * 3);
+	// 	V[i].c['AMP'].set(Math.random());
+	// 	V[i].VCONode.connect(M.MixerNode, 0, i);
+	// }
 
-	M.MixerNode.connect(audioContext.destination);
+	// M.MixerNode.connect(audioContext.destination);
+	// audioContext.resume();
 }
 
 // V1 = new workletVCO()
