@@ -121,6 +121,14 @@ function newFX(num) {
 function newNoise(num) {
   const noise = new RandomNoise();
   noise.randomize();
+  const rand = new RandomGenerator();
+  if (Math.random() < 0.5) {
+    rand.o['OUT'].connect(noise.i['FX'])
+    rand.o['OUT'].connect(noise.i['TYPE'])
+  } else {
+    rand.o['OUT'].connect(noise.i['PAN'])
+    rand.o['OUT'].connect(noise.i['CLR'])
+  }
 
   noise.o['O/L'].connect(mixer.i[`${num}L`])
   noise.o['O/R'].connect(mixer.i[`${num}R`])
