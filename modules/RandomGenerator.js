@@ -4,12 +4,12 @@ class RandomGenerator extends Module {
 		this.offset = 0;
 		this.scale = 0;
 		this.pm = 0;
-		this.add_output(new Port({x:hp2x(7.7), y:hp2y(0.89), r:hp2x(0.8), default_value:0, name:'OUT'}));
-		this.add_control(new Encoder({x:hp2x(1), y:46, r:7, vmin:0.01, vmax:10, val:1, name:'FREQ'}));
-		this.add_input(new InputEncoder({x:hp2x(4), y:46, r:7, vmin:-5, vmax:5, val:0, name:'CV'}));
-		this.add_input(new InputEncoder({x:hp2x(7), y:46, r:7, vmin:-5, vmax:5, val:0, name:'OFST'}));
-		this.add_input(new InputEncoder({x:hp2x(2), y:66, r:7, vmin:0.01, vmax:5, val:1, name:'SCL'}));
-		this.add_input(new InputEncoder({x:hp2x(5), y:66, r:7, vmin:0, vmax:1, val:0, name:'PM'}));
+		this.add_output(new Port({x:hp2x(7.3), y:hp2y(0.85), r:hp2x(1), name:'OUT'}));
+		this.add_control(new Encoder({x:hp2x(0.6), y:46, r:7, vmin:0.01, vmax:10, val:1, name:'FREQ'}));
+		this.add_input(new InputEncoder({x:hp2x(3.6), y:46, r:7, vmin:-5, vmax:5, val:0, name:'CV'}));
+		this.add_input(new InputEncoder({x:hp2x(6.6), y:46, r:7, vmin:-5, vmax:5, val:0, name:'OFST'}));
+		this.add_input(new InputEncoder({x:hp2x(1.9), y:70, r:7, vmin:0.01, vmax:5, val:1, name:'SCL'}));
+		this.add_input(new InputEncoder({x:hp2x(4.9), y:70, r:7, vmin:0, vmax:1, val:0, name:'PM'}));
 
 		this.OSC = new VCOPrim();
 		this.prev_out = -1;

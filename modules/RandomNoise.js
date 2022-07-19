@@ -4,65 +4,69 @@ class RandomNoise extends Module {
   constructor() {
     super({w:hp2x(10)});
 
-    this.add_input(new InputEncoder({x:hp2x(1), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:1, name:'MOD'}));
-    this.add_input(new InputEncoder({x:hp2x(4), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P4'}));
-    this.add_input(new InputEncoder({x:hp2x(7), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P5'}));
-    this.add_input(new InputEncoder({x:hp2x(1), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P1'}));
-    this.add_input(new InputEncoder({x:hp2x(4), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P2'}));
-    this.add_input(new InputEncoder({x:hp2x(7), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P3'}));
-    this.add_output(new Port({x:hp2x(0.7), y:hp2y(0.79), r:hp2x(0.8), name:'O/L'}));
-    this.add_output(new Port({x:hp2x(0.7), y:hp2y(0.89), r:hp2x(0.8), name:'O/R'}));
+    this.add_input(new InputEncoder({x:hp2x(3.7), y:hp2y(0.6), r:hp2x(1.5), vmin:1, vmax:5, val:1, precision: 0, name:'TYPE'}));
+    this.add_input(new InputEncoder({x:hp2x(6.7), y:hp2y(0.6), r:hp2x(1.5), vmin:0, vmax:1, val:0.5, name:'CLR'}));
+    this.add_input(new InputEncoder({x:hp2x(0.7), y:hp2y(0.4), r:hp2x(1.5), vmin:0, vmax:1, val:0.5, name:'FX'}));
+    this.add_input(new InputEncoder({x:hp2x(3.7), y:hp2y(0.4), r:hp2x(1.5), vmin:0, vmax:1, val:0.5, name:'PAN'}));
+    this.add_output(new Port({x:hp2x(4.8), y:hp2y(0.85), r:hp2x(1), name:'O/L'}));
+    this.add_output(new Port({x:hp2x(7.3), y:hp2y(0.85), r:hp2x(1), name:'O/R'}));
 
     this.scope = new RawScope({x: this.w * 0.05, y:this.h * 0.05, w:this.w - this.w * 0.1, h:this.h*0.25, size:30, divider:64});
     this.attach(this.scope);
     this.delta = Math.PI * 2 / (sample_rate / 2);
     this.phase_inc = this.delta;
 
-    this.max_enc = 5;
-    this.p = new Array(5);
+    this.p = this.i['FX'].get();
     this.gate = 0;
     this.pitch = 0;
     this.j = 0;
     this.out = 0;
     this.max_param = 11;
     this.counter = 0;
-    this.vldv = Math.round(Math.random() * 3) + 1;
+    this.vldv = Math.round(this.i['TYPE'].get());
     this.params = new Array(this.max_param);
     this.lfos = new Array(this.max_enc);
     this.lfo_connect = new Array(this.max_enc);
     this.enc_connect = new Array(this.max_enc);
-    this.pick_lfo();
-    this.pick_enc();
-    for (this.j = 0; this.j < this.max_enc; this.j++) {
-      this.lfos[this.j] = new VCOPrim();
-      this.lfos[this.j].set_frequency(Math.random() / 6);
-    }
+    // this.pick_lfo();
+    // this.pick_enc();
+    // for (this.j = 0; this.j < this.max_enc; this.j++) {
+    //   this.lfos[this.j] = new VCOPrim();
+    //   this.lfos[this.j].set_frequency(Math.random() / 6);
+    // }
 
-    this.params[0] = Math.random() * 10;
-    this.params[1] = Math.random() * 10;
-    this.params[2] = Math.random() * 10;
-    this.params[3] = Math.random() * 10;    
+    // this.params[0] = Math.random() * 10;
+    // this.params[1] = Math.random() * 10;
+    // this.params[2] = Math.random() * 10;
+    // this.params[3] = Math.random() * 10;    
 
-    this.reverb = new DattorroReverbPrim();
-    this.params[4] = 0.7 + Math.random() / 3;
-    this.params[5] = 0.7 + Math.random() / 3;
-    this.params[6] = 0.6 + Math.random() / 5;
+    // this.reverb = new DattorroReverbPrim();
+    // this.params[4] = 0.7 + Math.random() / 3;
+    // this.params[5] = 0.7 + Math.random() / 3;
+    // this.params[6] = 0.6 + Math.random() / 5;
     this.chorus = new ChorusPrim();
-    this.params[7] = 0.2 + Math.random() / 3; //level
-    this.params[8] = Math.random() * 2; //rate
+    // this.params[7] = 0.2 + Math.random() / 3; //level
+    // this.params[8] = Math.random() * 2; //rate
     this.filter = new ExponentialFilterPrim();
-    this.params[9] = (Math.random() * 1400) + 600; //freq;
-    this.params[10] = Math.random() / 2;//res
+    // this.params[9] = (Math.random() * 1400) + 600; //freq;
+    // this.params[10] = Math.random() / 2;//res
 
     this.expr = function (t, c, p1, p2, p3, p4) {
-      return (((t / c) / 2 % (p1 * 13)) + 3) * 2 + (((t / c) / 4 % (p2 * 19)) >> (p3 * 3) + 1)  | (((t / c) ^ (p4) * 11))
+      return (((t / c) / 2 % (p1)) + 3) * 2 + (((t / c) / 4 % (p2)) >> (p3) + 1)  | (((t / c) ^ (p4)))
     }
 
     this.expr2 = function (t, c, p1, p2, p3, p4) {
-      return (t / c) / (2 + p3) * (((t / c) >> (7 + p2)) % 5)
+      return (t / c) / (p3) * (((t / c) >> (p2)) % 5)
     }
 
     this.update_params();
+  }
+
+  randomize() {
+    this.i['PAN'].set(Math.random());
+    this.i['FX'].set(Math.random());
+    this.i['TYPE'].set(Math.round(Math.random() * 5));
+    this.i['CLR'].set(Math.random());
   }
 
   pick_lfo() {
@@ -108,13 +112,11 @@ class RandomNoise extends Module {
   update_params() {
     this.counter++;
 
-    this.p[3] = this.i['P4'].get();
-    this.p[4] = this.i['P5'].get();
-    this.mod = this.i['MOD'].get();
-    this.p[0] = this.i['P1'].get();
-    this.p[1] = this.i['P2'].get();
-    this.p[2] = this.i['P3'].get();
-
+    this.p = this.i['FX'].get();
+    this.vldv = Math.round(this.i['TYPE'].get());
+    this.chorus.rate = this.i['PAN'].get(); 
+    this.chorus.level = this.chorus.rate * 2; 
+    this.filter.freq = (this.i['CLR'].get() * 1400) + 600;
 
     // for (this.j = 0; this.j < this.max_enc; this.j++) {
     //   //this.params[this.lfo_connect[this.j]] += this.lfos[this.j].out / 2 * this.mod;
@@ -124,17 +126,14 @@ class RandomNoise extends Module {
     //   //this.params[this.enc_connect[this.j]] *= this.p[this.j];
     // }
 
-    for (this.j = 0; this.j < 4; this.j++) {
-      this.params[this.j] = Math.max(this.params[this.j], 1);
-    }
+    // for (this.j = 0; this.j < 4; this.j++) {
+    //   this.params[this.j] = Math.max(this.params[this.j], 1);
+    // }
 
-    this.reverb.size = Math.sqrt(Math.max(0.5, this.params[4]));
-    this.reverb.decay = Math.max(0.5, this.params[5]);
-    this.reverb.dw = Math.sqrt(Math.max(0.7, this.params[6]));
-    this.chorus.level = this.params[7];
-    this.chorus.rate = this.params[8];
-    this.filter.freq = Math.min(Math.max(this.params[9], 600), 2000);
-    this.filter.coeff_res = this.params[10];
+    // this.chorus.level = this.params[7];
+    // this.chorus.rate = this.params[8];
+    // this.filter.freq = Math.min(Math.max(this.params[9], 600), 2000);
+    // this.filter.coeff_res = this.params[10];
 
     // for (this.j = 0; this.j < this.max_enc; this.j++) {
     //   this.params[this.enc_connect[this.j]] /= ((this.p[this.j] + 0.1) * 2);
@@ -160,16 +159,18 @@ class RandomNoise extends Module {
     this.out_l = 0;
     this.out_r = 0;
 
-    this.value1 = this.expr(this.counter, this.vldv, Math.round(this.params[0]), Math.round(this.params[1]), Math.round(this.params[2]), Math.round(this.params[3]));
-    this.value2 = this.expr2(this.counter, this.vldv, Math.round(this.params[0]), Math.round(this.params[1]), Math.round(this.params[2]), Math.round(this.params[3]));
-    
+
+
+    //console.log([this.counter, this.vldv, Math.round(this.p), Math.round(this.p * 8), Math.round(this.p * 4), Math.round(this.p)])
+    if (this.vldv == 0) this.vldv = 1;
+    this.value1 = this.expr(this.counter, this.vldv, Math.round(this.p * Math.random() * 15) + 1, Math.round(this.p * Math.random() * 19) + 1, Math.round(this.p * Math.random() * 5) + 1, Math.round(this.p * Math.random() * 12) + 1);
+    this.value2 = this.expr2(this.counter, this.vldv, Math.round(this.p * Math.random() * 2) + 1, Math.round(this.p * Math.random() * 10) + 1, Math.round(this.p * Math.random() * 5) + 1, Math.round(this.p) + 1);
+
     if (isNaN(this.value1) || isNaN(this.value2))
-      console.log('hehe')
+      return
 
     this.value1 = ((this.value1 % 0xFF) / 25.6) / 10;
     this.value2 = ((this.value2 % 0xFF) / 25.6) / 10;
-
-
 
     this.filter.in = (this.value2 + this.value1) / 2;
     // this.reverb.in_l = this.filter.lp;
@@ -183,9 +184,9 @@ class RandomNoise extends Module {
     // this.reverb.process();
     this.chorus.process();
 
-    for (this.j = 0; this.j < this.max_enc; this.j++) {
-      this.lfos[this.j].process();
-    }
+    // for (this.j = 0; this.j < this.max_enc; this.j++) {
+    //   this.lfos[this.j].process();
+    // }
 
     this.out_l /= 5;
     this.out_r /= 5;

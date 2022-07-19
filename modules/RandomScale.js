@@ -2,13 +2,28 @@
 
 class RandomScale extends Module {
   constructor() {
-    super({w:hp2x(5)});
+    super({w:hp2x(8)});
 
-    this.add_input(new InputEncoder({x:hp2x(2.5), y:hp2y(0.20), r:hp2x(1), vmin:0, vmax:1, val:1, name:'MOD'}));
-    this.add_input(new InputEncoder({x:hp2x(0.5), y:hp2y(0.20), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P1'}));
-    this.add_input(new InputEncoder({x:hp2x(0.5), y:hp2y(0.33), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P2'}));
-    this.add_input(new Port({x:hp2x(0.7), y:hp2y(0.79), r:hp2x(0.8), name:'GATE'}));
-    this.add_output(new Port({x:hp2x(0.7), y:hp2y(0.89), r:hp2x(0.8), name:'OUT'}));
+    this.note_names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+    this.scales = [
+      'Major',
+      'Minor',
+      'Harmonic\nMinor',
+      'Mixolydian',
+      'Melodic\nMinor',
+      'Harmonic\nMajor',
+      'Melodic\nMajor',
+      'Hungarian\nMajor',
+      'Hungarian\nMinor'
+    ]
+
+    this.add_input(new InputEncoder({x:hp2x(0.9), y:56, r:7, vmin:0, vmax:1, val:1, name:'MOD'}));
+    this.add_input(new InputEncoder({x:hp2x(4.3), y:56, r:7, vmin:0, vmax:1, val:0.5, name:'OFST'}));
+    this.add_input(new InputEncoder({x:hp2x(0.9), y:81, r:7, vmin:0, vmax:1, val:0.5, name:'WDTH'}));
+    this.add_input(new InputEncoder({x:hp2x(4.3), y:81, r:7, vmin:0, vmax:1, val:0.5, name:'DIV'}));
+    this.add_input(new Port({x:hp2x(4.3), y:106, r:7, name:'GATE'}));
+    this.add_output(new Port({x:hp2x(0.9), y:106, r:7, name:'OUT'}));
     this.max_enc = 2;
     this.p = new Array(2);
     this.gate = 0;
@@ -46,6 +61,29 @@ class RandomScale extends Module {
     this.update_params();
   }
 
+  randomize() {
+    this.i['DIV'].set(Math.random());
+    this.i['WDTH'].set(Math.random());
+    this.i['MOD'].set(Math.random());
+    this.i['OFST'].set(Math.random());
+  }
+
+
+  draw_cbf(buf, w, h) {
+    super.draw_cbf(buf, w, h);
+    let sw = 1;
+    buf.stroke(60); buf.strokeWeight(sw); buf.fill(230);
+    buf.rect(sw + w * 0.05, sw + h / 3 * 0.05 + 40, w - 2 * sw - w * 0.1, h/ 3 - 2 * sw - h / 3 * 0.1);
+
+    let text = "Root: " + this.note_names[this.params[1]] + "\nScale: " + this.scales[this.params[0]];
+
+    buf.textSize(h / 30);
+    buf.fill(60);
+    buf.textAlign(this._p5.LEFT, this._p5.TOP);
+    buf.strokeWeight(sw / 10);
+    buf.text(text, sw + w * 0.07, sw + h / 3 * 0.1 + 40);
+  }
+
   pick_lfo() {
     this.lfo_connect[0] = Math.floor(Math.random() * (this.max_param));
 
@@ -65,16 +103,16 @@ class RandomScale extends Module {
   update_params() {
 
     this.mod = this.i['MOD'].get();
-    this.p[0] = this.i['P1'].get();
-    this.p[1] = this.i['P2'].get();
+    this.p[0] = this.i['OFST'].get();
+    this.p[1] = this.i['WDTH'].get();
     this.gate = this.i['GATE'].get();
 
 
     for (this.j = 0; this.j < this.max_enc; this.j++) {
-      this.params[this.lfo_connect[this.j]] *= (this.lfos[this.j].out + 1.1) * (this.mod + 0.001);
+      this.params[this.lfo_connect[this.j]] += (this.lfos[this.j].out) * (this.mod + 0.001) * 5;
       //this.params[this.lfo_connect[this.j]] += this.lfos[this.j].out * 2 * this.mod;
       //this.params[this.enc_connect[this.j]] += (this.p[this.j] - 0.5) * 2;
-      this.params[this.enc_connect[this.j]] *= ((this.p[this.j] + 0.1) * 2);
+      //this.params[this.enc_connect[this.j]] *= ((this.p[this.j] + 0.1) * 2);
     }
 
     for (this.j = 0; this.j < 4; this.j++) {
@@ -93,11 +131,11 @@ class RandomScale extends Module {
     if (this.params[4] < 0) this.params[4] = 0;
     if (this.params[4] > 3) this.params[4] = 3;
 
-    this.div = Math.floor(this.params[4]) + 1;
+    this.div = (Math.floor(this.params[4] * this.i['DIV'].get()) + 1);
 
     for (this.j = 0; this.j < this.max_enc; this.j++) {
-      this.params[this.enc_connect[this.j]] /= ((this.p[this.j] + 0.1) * 2);
-      this.params[this.lfo_connect[this.j]] /= (this.lfos[this.j].out + 1.1) * (this.mod + 0.001);
+      //this.params[this.enc_connect[this.j]] /= ((this.p[this.j] + 0.1) * 2);
+      this.params[this.lfo_connect[this.j]] -= (this.lfos[this.j].out) * (this.mod + 0.001 * 5);
       //this.params[this.lfo_connect[this.j]] -= this.lfos[this.j].out / 2 * this.mod;
       //this.params[this.enc_connect[this.j]] -= (this.p[this.j] - 0.5) * 2;
       //this.params[this.enc_connect[this.j]] *= this.p[this.j];
@@ -122,7 +160,7 @@ class RandomScale extends Module {
       this.sh.gate = 0;
     }
     //this.sh.gate = this.gate;
-    this.sh.in = (Math.random() - 0.5) * this.params[3] + this.params[2];
+    this.sh.in = (Math.random() - 0.5) * (this.params[3] * this.p[1] * 1) + (this.params[2] * (this.p[0] - 0.5) * 2);
 
     this.scale.in = this.sh.out;
     this.out = this.scale.out;

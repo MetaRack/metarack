@@ -3,11 +3,11 @@ class RandomLead extends Module {
     super({w:hp2x(10)});
 
     this.add_input(new InputEncoder({x:hp2x(1), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:1, name:'MOD'}));
-    this.add_input(new InputEncoder({x:hp2x(4), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P4'}));
-    this.add_input(new InputEncoder({x:hp2x(7), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P5'}));
-    this.add_input(new InputEncoder({x:hp2x(1), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P1'}));
-    this.add_input(new InputEncoder({x:hp2x(4), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P2'}));
-    this.add_input(new InputEncoder({x:hp2x(7), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P3'}));
+    this.add_input(new InputEncoder({x:hp2x(4), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'CLR'}));
+    this.add_input(new InputEncoder({x:hp2x(7), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'PW'}));
+    this.add_input(new InputEncoder({x:hp2x(1), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'ENV'}));
+    this.add_input(new InputEncoder({x:hp2x(4), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'PROB'}));
+    this.add_input(new InputEncoder({x:hp2x(7), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'WAVE'}));
     this.add_input(new Port({x:hp2x(3.7), y:hp2y(0.89), r:hp2x(0.8), name:'GATE'}));
     this.add_input(new Port({x:hp2x(5.7), y:hp2y(0.89), r:hp2x(0.8), name:'PTCH'}));
     this.add_output(new Port({x:hp2x(7.7), y:hp2y(0.89), r:hp2x(0.8), name:'OUT'}));
@@ -61,6 +61,15 @@ class RandomLead extends Module {
     }
 
     this.update_params();
+  }
+
+  randomize() {
+    this.i['PROB'].set(Math.random());
+    this.i['WAVE'].set(Math.random());
+    this.i['MOD'].set(Math.random());
+    this.i['ENV'].set(Math.random());
+    this.i['PW'].set(Math.random());
+    this.i['CLR'].set(Math.random());
   }
 
   draw_cbf(buf, w, h) {
@@ -129,47 +138,47 @@ class RandomLead extends Module {
   }
 
   update_params() {
-    this.p[3] = this.i['P4'].get();
-    this.p[4] = this.i['P5'].get();
+    this.p[3] = this.i['CLR'].get();
+    this.p[4] = this.i['PW'].get();
     this.mod = this.i['MOD'].get();
-    this.p[0] = this.i['P1'].get();
-    this.p[1] = this.i['P2'].get();
-    this.p[2] = this.i['P3'].get();
+    this.p[0] = this.i['ENV'].get();
+    this.p[1] = this.i['PROB'].get();
+    this.p[2] = this.i['WAVE'].get();
     this.gate = this.i['GATE'].get();
     this.pitch = this.i['PTCH'].get();
 
 
-    // for (this.j = 0; this.j < this.max_enc; this.j++) {
-    //   //this.params[this.lfo_connect[this.j]] += (this.lfos[this.j].out / 2 * this.mod);
-    //   this.params[this.lfo_connect[this.j]] *= (this.lfos[this.j].out + 1.1) * (this.mod + 0.001);
-    //   this.params[this.enc_connect[this.j]] *= ((this.p[this.j] + 0.1) * 2);
-    //   //this.params[this.enc_connect[this.j]] *= this.p[this.j];
-    // }
+    for (this.j = 0; this.j < this.max_enc; this.j++) {
+      //this.params[this.lfo_connect[this.j]] += (this.lfos[this.j].out / 2 * this.mod);
+      this.params[this.lfo_connect[this.j]] *= (this.lfos[this.j].out + 1.1) * (this.mod + 0.001);
+      //this.params[this.enc_connect[this.j]] *= ((this.p[this.j] + 0.1) * 2);
+      //this.params[this.enc_connect[this.j]] *= this.p[this.j];
+    }
 
     for (this.j = 0; this.j < 3; this.j++) {
-      this.osc[this.j].pw = this.params[0 + 10*this.j];
-      this.osc[this.j].wave = this.params[1 + 10*this.j];
+      this.osc[this.j].pw = this.params[0 + 10*this.j] * (this.p[4]) * 1.7;
+      this.osc[this.j].wave = this.params[1 + 10*this.j] * (this.p[2]) * 1.7;
       this.osc[this.j].amp = Math.max(this.params[2 + 10*this.j], 0.7);
       this.osc[this.j].cv = this.pitch;
 
-      this.env[this.j].A = this.params[3 + 10*this.j];
-      this.env[this.j].D = this.params[4 + 10*this.j];
-      this.env[this.j].S = this.params[5 + 10*this.j];
-      this.env[this.j].R = this.params[6 + 10*this.j];
+      this.env[this.j].A = this.params[3 + 10*this.j] * (this.p[0] + 0.3) * 1.7;
+      this.env[this.j].D = this.params[4 + 10*this.j] * (this.p[0] + 0.3) * 1.7;
+      this.env[this.j].S = this.params[5 + 10*this.j] * (this.p[0] + 0.3) * 1.7;
+      this.env[this.j].R = this.params[6 + 10*this.j] * (this.p[0] + 0.3) * 1.7;
 
-      this.bg[this.j].p = this.params[7 + 10*this.j];
+      this.bg[this.j].p = this.params[7 + 10*this.j] * (this.p[1] + 0.3) * 1.7;
 
-      this.filter[this.j].freq = Math.min(Math.max(this.params[8 + 10*this.j], 1000), 8000);
+      this.filter[this.j].freq = Math.min(Math.max(this.params[8 + 10*this.j] * (this.p[3] + 0.3) * 1.7, 1000), 8000);
       // this.filter[this.j].freq = this.params[8 + 10*this.j];
       this.filter[this.j].coeff_res = this.params[9 + 10*this.j];
     }
 
-    // for (this.j = 0; this.j < this.max_enc; this.j++) {
-    //   this.params[this.enc_connect[this.j]] /= ((this.p[this.j] + 0.1) * 2);
-    //   this.params[this.lfo_connect[this.j]] /= (this.lfos[this.j].out + 1.1) * (this.mod + 0.001);
-    //   //this.params[this.lfo_connect[this.j]] -= (this.lfos[this.j].out / 2 * this.mod);
-    //   //this.params[this.enc_connect[this.j]] *= this.p[this.j];
-    // }
+    for (this.j = 0; this.j < this.max_enc; this.j++) {
+      //this.params[this.enc_connect[this.j]] /= ((this.p[this.j] + 0.1) * 2);
+      this.params[this.lfo_connect[this.j]] /= (this.lfos[this.j].out + 1.1) * (this.mod + 0.001);
+      //this.params[this.lfo_connect[this.j]] -= (this.lfos[this.j].out / 2 * this.mod);
+      //this.params[this.enc_connect[this.j]] *= this.p[this.j];
+    }
   }
 
   process() {

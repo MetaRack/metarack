@@ -39,6 +39,8 @@ function newLead(num) {
 
   const lead = new RandomLead();
   const scale = new RandomScale();
+  lead.randomize();
+  scale.randomize();
   
   if (!isClock) {
     clock = new Clock();
@@ -66,8 +68,9 @@ function newLead(num) {
 
 function newFX(num) {
   const fx = new RandomFX();
+  fx.randomize();
   const audio = new VCO();
-  audio.i['CV'].set((Math.random() - 0.5) * 4);
+  audio.i['CV'].set((Math.random() - 0.5) * 2 - 1);
   audio.i['WAVE'].set((Math.random() - 0.5));
   audio.i['AMP'].set(0.25);
 
@@ -75,9 +78,9 @@ function newFX(num) {
   rand.c['FREQ'].set(Math.random() * 2);
 
   if (Math.random() < 1) {
-    rand.o['OUT'].connect(audio.i['CV']);
-    rand.o['OUT'].connect(audio.i['WAVE']);
-    rand.o['OUT'].connect(audio.i['AMP']);
+    rand.o['OUT'].connect(fx.i['FB/L']);
+    rand.o['OUT'].connect(fx.i['FB/R']);
+    rand.o['OUT'].connect(fx.i['LVL']);
   }
 
   audio.o['OUT'].connect(fx.i['I/L']);
@@ -117,10 +120,16 @@ function newFX(num) {
 
 function newNoise(num) {
   const noise = new RandomNoise();
+  noise.randomize();
 
   noise.o['O/L'].connect(mixer.i[`${num}L`])
   noise.o['O/R'].connect(mixer.i[`${num}R`])
 }
+
+// let k = new RandomLead();
+// new RandomScale();
+// new Clock();
+//k.randomize()
 
 const mixer = new StereoMixer4();
 const reverb = new DattorroReverb();

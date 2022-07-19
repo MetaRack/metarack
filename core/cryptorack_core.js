@@ -544,19 +544,12 @@ class InputEncoder extends Encoder {
       this.c = this.sample_counter / (sample_rate / fps);
       this.sample_counter++;
       if (this.c <= 1) {
-        //this.filter.in = ((Math.sin((this.c - 0.5) * Math.PI) / 2) + 0.5) * (this.base_val - this.prev_base_val) + this.prev_base_val;
         this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
-
-        //return ((Math.sin((this.c - 0.5) * Math.PI) / 2) + 0.5) * (this.base_val - this.prev_base_val) + this.prev_base_val + this.mod_coef * this.port.get();
       }
       else {
         this.filter.in = this.base_val;
-        //this.filter2.in = this.filter.lp;
-        //return this.base_val + this.mod_coef * this.port.get(); 
       }
-      //this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
       this.filter.process();
-      //this.filter2.process();
       return this.filter.lp + this.mod_coef * this.port.get();
       
     }
