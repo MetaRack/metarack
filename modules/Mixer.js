@@ -156,7 +156,7 @@ class StereoMixer extends Module {
   }
 
   draw_dbf(buf, x, y, w, h) {
-    buf.fill([50, 130, 50]);
+    buf.stroke(60);
     for (this.dit = 0; this.dit < this.chan_num; this.dit ++) {
       this.damp = this.gains[this.dit].get();
       this.dampL = Math.abs(this.channels[this.dit][0].get()) / 1 * this.damp;

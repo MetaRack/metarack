@@ -95,7 +95,7 @@ class ClockedRandomChordsWasm extends Module {
 class ClockedRandomChords extends Module {
   constructor(_p5=rackp5) {
     super({w:hp2x(10)});
-    this._p5 = _p5;
+    buf = _p5;
     this.add_input(new InputEncoder({x:hp2x(0.7), y:hp2y(0.55), r:hp2x(1), vmin:0, vmax:10, val:1, name:'A'}));
     this.add_input(new InputEncoder({x:hp2x(2.9), y:hp2y(0.55), r:hp2x(1), vmin:0, vmax:10, val:1, name:'D'}));
     this.add_input(new InputEncoder({x:hp2x(5.1), y:hp2y(0.55), r:hp2x(1), vmin:0, vmax:1, val:0.1, name:'S'}));
@@ -197,7 +197,7 @@ class ClockedRandomChords extends Module {
     super.draw_cbf(buf, w, h);
     let sw = 5;
     let rounding = 5; 
-    buf.stroke(60); buf.strokeWeight(sw); buf.strokeJoin(this._p5.ROUND); buf.fill(255);
+    buf.stroke(60); buf.strokeWeight(sw); buf.strokeJoin(buf.ROUND); buf.fill(255);
     buf.rect(sw / 2 + w * 0.05, sw / 2 + h * 0.05, w * 0.9 - sw, h * 0.3 - sw, rounding, rounding, rounding, rounding);
 
     buf.stroke(60);

@@ -2,6 +2,12 @@ ms = new ModuleStyle(panel=255, frame=60, shadow=70, name=40, lining=100, label=
 ps = new PortStyle(hole=255, ring=80, text=100, istext=true);
 ws = new WireStyle(core=255, edge=80);
 
+
+let pw = document.documentElement.clientWidth;
+let ph = document.documentElement.clientHeight;
+
+let rackwidth = pw * 0.8;
+let rackheight = ph * 0.8;
 engine.set_size(rackwidth, rackheight);
 engine.set_module_style(ms);
 engine.set_port_style(ps);
@@ -164,12 +170,13 @@ for (let i = 1; i <=4; i++) {
 // state = JSON.parse(state_string)
 // engine.load_state(state);
 
-// function setup() {
-//   createCanvas(rackwidth, rackheight);
-//   frameRate(fps);
-// }
 
-// function draw() { 
-//   background(0,0,0,0);
-//   engine.draw(0, 0); 
-// }
+function setup() {
+  createCanvas(pw, ph);
+  frameRate(fps);
+}
+
+function draw() { 
+  background(0,0,0,0);
+  engine.draw(pw * 0.1, ph * 0.1); 
+}

@@ -8,59 +8,12 @@
 </style>
 <html>
   <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
-    <meta charset="UTF-8">
-    <title>MetaRack</title>
-    <script id="fxhash-snippet">
-      //---- do not edit the following code (you can indent as you wish)
-      let alphabet = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"
-      var fxhash = "oo" + Array(49).fill(0).map(_=>alphabet[(Math.random()*alphabet.length)|0]).join('')
-      let b58dec = str=>[...str].reduce((p,c)=>p*alphabet.length+alphabet.indexOf(c)|0, 0)
-      let fxhashTrunc = fxhash.slice(2)
-      let regex = new RegExp(".{" + ((fxhash.length/4)|0) + "}", 'g')
-      let hashes = fxhashTrunc.match(regex).map(h => b58dec(h))
-      let sfc32 = (a, b, c, d) => {
-        return () => {
-          a |= 0; b |= 0; c |= 0; d |= 0
-          var t = (a + b | 0) + d | 0
-          d = d + 1 | 0
-          a = b ^ b >>> 9
-          b = c + (c << 3) | 0
-          c = c << 21 | c >>> 11
-          c = c + t | 0
-          return (t >>> 0) / 4294967296
-        }
-      }
-      var fxrand = sfc32(...hashes)
-      // call this method to trigger the preview
-      function fxpreview() {
-        console.log("fxhash: TRIGGER PREVIEW")
-      }
-      //---- /do not edit the following code
-    </script>
-    <!-- if you need to import js scripts do it here -->
-
-    <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-modal@3.15.1/dist/react-modal.js" crossorigin></script>
 
     <script language="javascript" type="text/javascript" src="./lib/p5.js"></script>
-
-    <script language="javascript" type="text/javascript" src="./react/app.js"></script>
 
   </head>
   <body>
 
-    <!-- <script language="javascript" type="text/javascript" src="./core/settings.js"></script>
-    <script language="javascript" type="text/javascript" src="./core/protoport.js"></script>
-    <script language="javascript" type="text/javascript" src="./core/wire.js"></script>
-    <script language="javascript" type="text/javascript" src="./core/protomodule.js"></script>
-    <script language="javascript" type="text/javascript" src="./core/protovisual.js"></script>
-    <script language="javascript" type="text/javascript" src="./core/engine.js"></script>
-    <script language="javascript" type="text/javascript" src="./core/port.js"></script>
-    <script language="javascript" type="text/javascript" src="./core/module.js"></script>
-    <script language="javascript" type="text/javascript" src="./core/visual.js"></script>
- -->
     <script language="javascript" type="text/javascript" src="./core/cryptorack_core.js"></script>
 
     <script language="javascript" type="text/javascript" src="./primitives/CreateModule.js"></script>
@@ -129,14 +82,9 @@
     <script language="javascript" type="text/javascript" src="./modules/Scope.js"></script>
 
 
-
-
-
-    <!-- <button>Play</button> -->
     <script language="javascript" type="text/javascript" src="./index.js"></script>
 
     <script type="text/javascript">
-      fxpreview();
 
       function fn_onclick() {
         if(!audioContext) {
@@ -145,23 +93,7 @@
       }
 
       document.body.addEventListener('click', fn_onclick, true); 
-      document.body.onkeyup = function(e){
-        if(e.keyCode == 32){
-          if(!audioContext) {
-            engine_run();
-          }
-        }
-      }
-    </script>
-
-    <div id="root_container"></div>
-    <!-- Примечание: при деплое на продакшен замените «development.js» на «production.min.js». -->
-
-    <script language="javascript" type="text/javascript">
-      const e = React.createElement;
-
-      const domContainer = document.querySelector('#root_container');
-      ReactDOM.render(e(App), domContainer);
+    
     </script>
 
   </body>

@@ -79,7 +79,7 @@ class RandomScale extends Module {
 
     buf.textSize(h / 30);
     buf.fill(60);
-    buf.textAlign(this._p5.LEFT, this._p5.TOP);
+    buf.textAlign(buf.LEFT, buf.TOP);
     buf.strokeWeight(sw / 10);
     buf.text(text, sw + w * 0.07, sw + h / 3 * 0.1 + 40);
   }

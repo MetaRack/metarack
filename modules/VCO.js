@@ -1,12 +1,12 @@
 class VCO extends Module {
 
-  constructor(freq=120, _p5=rackp5) {
-    super({w:hp2x(10), _p5:_p5});
+  constructor(freq=120) {
+    super({w:hp2x(10)});
     this.freq = freq;
     this.delta = Math.PI * 2 / (sample_rate / freq);
     this.phase = 0;
 
-    this.scope = new RawScope({x: this.w * 0.05, y:this.h * 0.05, w:this.w - this.w * 0.1, h:this.h*0.25, size:30, divider:64});
+    this.scope = new RawScope({x:hp2x(0.5), y:hp2y(0.07), w:hp2x(9), h:hp2y(0.25), size:30, divider:64});
     this.attach(this.scope);
 
     let cv = 0.0001;
