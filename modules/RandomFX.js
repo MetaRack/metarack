@@ -2,9 +2,9 @@ class RandomFX extends Module {
   constructor() {
     super({w:hp2x(5)});
 
-    this.add_input(new InputEncoder({x:hp2x(2.5), y:hp2y(0.20), r:hp2x(1), vmin:0, vmax:1, val:1, name:'LVL'}));
+    this.add_input(new InputEncoder({x:hp2x(2.5), y:hp2y(0.20), r:hp2x(1), vmin:0, vmax:1, val:0.8, name:'LVL'}));
     this.add_input(new InputEncoder({x:hp2x(2.5), y:hp2y(0.33), r:hp2x(1), vmin:0, vmax:1, val:1, name:'D/W'}));
-    this.add_input(new InputEncoder({x:hp2x(2.5), y:hp2y(0.46), r:hp2x(1), vmin:0, vmax:1, val:0.3, name:'MOD'}));
+    this.add_input(new InputEncoder({x:hp2x(2.5), y:hp2y(0.46), r:hp2x(1), vmin:0, vmax:1, val:0.9, name:'MOD'}));
     this.add_input(new InputEncoder({x:hp2x(0.5), y:hp2y(0.20), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P1'}));
     this.add_input(new InputEncoder({x:hp2x(0.5), y:hp2y(0.33), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P2'}));
     this.add_input(new InputEncoder({x:hp2x(0.5), y:hp2y(0.46), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P3'}));
@@ -159,8 +159,11 @@ class RandomFX extends Module {
     this.reverb.in_l = this.delay_l.out;
     this.reverb.in_r = this.delay_r.out; 
 
-    this.out_l = this.reverb.out_l * this.dw + this.in_l * (1 - this.dw);
-    this.out_r = this.reverb.out_r * this.dw + this.in_r * (1 - this.dw);
+    // this.out_l = this.reverb.out_l * this.dw + this.in_l * (1 - this.dw);
+    // this.out_r = this.reverb.out_r * this.dw + this.in_r * (1 - this.dw);
+
+    this.out_l = this.delay_l.out * this.dw + this.in_l * (1 - this.dw);
+    this.out_r = this.delay_r.out * this.dw + this.in_r * (1 - this.dw);
 
     if (this.out_l > 1) this.out_l = 1;
     if (this.out_l < -1) this.out_l = -1;
@@ -179,7 +182,7 @@ class RandomFX extends Module {
     this.saturn_r.process();
     this.delay_l.process();
     this.delay_r.process();
-    this.reverb.process();
+    //this.reverb.process();
     // Chorus??
   }
 }

@@ -2,16 +2,22 @@
 
 class RandomNoise extends Module {
   constructor() {
-    super({w:hp2x(5)});
+    super({w:hp2x(10)});
 
-    this.add_input(new InputEncoder({x:hp2x(2.5), y:hp2y(0.20), r:hp2x(1), vmin:0, vmax:1, val:1, name:'MOD'}));
-    this.add_input(new InputEncoder({x:hp2x(2.5), y:hp2y(0.33), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P4'}));
-    this.add_input(new InputEncoder({x:hp2x(2.5), y:hp2y(0.46), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P5'}));
-    this.add_input(new InputEncoder({x:hp2x(0.5), y:hp2y(0.20), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P1'}));
-    this.add_input(new InputEncoder({x:hp2x(0.5), y:hp2y(0.33), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P2'}));
-    this.add_input(new InputEncoder({x:hp2x(0.5), y:hp2y(0.46), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P3'}));
+    this.add_input(new InputEncoder({x:hp2x(1), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:1, name:'MOD'}));
+    this.add_input(new InputEncoder({x:hp2x(4), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P4'}));
+    this.add_input(new InputEncoder({x:hp2x(7), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P5'}));
+    this.add_input(new InputEncoder({x:hp2x(1), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P1'}));
+    this.add_input(new InputEncoder({x:hp2x(4), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P2'}));
+    this.add_input(new InputEncoder({x:hp2x(7), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P3'}));
     this.add_output(new Port({x:hp2x(0.7), y:hp2y(0.79), r:hp2x(0.8), name:'O/L'}));
     this.add_output(new Port({x:hp2x(0.7), y:hp2y(0.89), r:hp2x(0.8), name:'O/R'}));
+
+    this.scope = new RawScope({x: this.w * 0.05, y:this.h * 0.05, w:this.w - this.w * 0.1, h:this.h*0.25, size:30, divider:64});
+    this.attach(this.scope);
+    this.delta = Math.PI * 2 / (sample_rate / 2);
+    this.phase_inc = this.delta;
+
     this.max_enc = 5;
     this.p = new Array(5);
     this.gate = 0;
@@ -110,13 +116,13 @@ class RandomNoise extends Module {
     this.p[2] = this.i['P3'].get();
 
 
-    for (this.j = 0; this.j < this.max_enc; this.j++) {
-      //this.params[this.lfo_connect[this.j]] += this.lfos[this.j].out / 2 * this.mod;
-      this.params[this.lfo_connect[this.j]] *= (this.lfos[this.j].out + 1.1) * (this.mod + 0.001);
-      //this.params[this.enc_connect[this.j]] += (this.p[this.j] - 0.5) * 2;
-      this.params[this.enc_connect[this.j]] *= ((this.p[this.j] + 0.1) * 2);
-      //this.params[this.enc_connect[this.j]] *= this.p[this.j];
-    }
+    // for (this.j = 0; this.j < this.max_enc; this.j++) {
+    //   //this.params[this.lfo_connect[this.j]] += this.lfos[this.j].out / 2 * this.mod;
+    //   this.params[this.lfo_connect[this.j]] *= (this.lfos[this.j].out + 1.1) * (this.mod + 0.001);
+    //   //this.params[this.enc_connect[this.j]] += (this.p[this.j] - 0.5) * 2;
+    //   this.params[this.enc_connect[this.j]] *= ((this.p[this.j] + 0.1) * 2);
+    //   //this.params[this.enc_connect[this.j]] *= this.p[this.j];
+    // }
 
     for (this.j = 0; this.j < 4; this.j++) {
       this.params[this.j] = Math.max(this.params[this.j], 1);
@@ -130,16 +136,25 @@ class RandomNoise extends Module {
     this.filter.freq = Math.min(Math.max(this.params[9], 600), 2000);
     this.filter.coeff_res = this.params[10];
 
-    for (this.j = 0; this.j < this.max_enc; this.j++) {
-      this.params[this.enc_connect[this.j]] /= ((this.p[this.j] + 0.1) * 2);
-      this.params[this.lfo_connect[this.j]] /= (this.lfos[this.j].out + 1.1) * (this.mod + 0.001);
-      //this.params[this.lfo_connect[this.j]] -= this.lfos[this.j].out / 2 * this.mod;
-      //this.params[this.enc_connect[this.j]] -= (this.p[this.j] - 0.5) * 2;
-      //this.params[this.enc_connect[this.j]] *= this.p[this.j];
-    }
+    // for (this.j = 0; this.j < this.max_enc; this.j++) {
+    //   this.params[this.enc_connect[this.j]] /= ((this.p[this.j] + 0.1) * 2);
+    //   this.params[this.lfo_connect[this.j]] /= (this.lfos[this.j].out + 1.1) * (this.mod + 0.001);
+    //   //this.params[this.lfo_connect[this.j]] -= this.lfos[this.j].out / 2 * this.mod;
+    //   //this.params[this.enc_connect[this.j]] -= (this.p[this.j] - 0.5) * 2;
+    //   //this.params[this.enc_connect[this.j]] *= this.p[this.j];
+    // }
   }
 
   process() {
+
+    this.scope.divider = Math.PI / this.phase_inc / this.scope.size * 4;
+		this.phase += this.phase_inc;
+    this.scope.process((this.out_l - 0.05) * 40)
+    if (this.phase > Math.PI * 2) {
+      this.phase -= Math.PI * 2;
+      this.scope.trig();
+    }
+
     this.update_params();
 
     this.out_l = 0;
@@ -157,14 +172,15 @@ class RandomNoise extends Module {
 
 
     this.filter.in = (this.value2 + this.value1) / 2;
-    this.reverb.in_l = this.filter.lp;
-    this.reverb.in_r = this.filter.lp;
-    this.chorus.in = this.reverb.out_l;
+    // this.reverb.in_l = this.filter.lp;
+    // this.reverb.in_r = this.filter.lp;
+    //this.chorus.in = this.reverb.out_l;
+    this.chorus.in = this.filter.lp;
     this.out_l = this.chorus.out_l;
     this.out_r = this.chorus.out_r;
 
     this.filter.process();
-    this.reverb.process();
+    // this.reverb.process();
     this.chorus.process();
 
     for (this.j = 0; this.j < this.max_enc; this.j++) {
@@ -180,8 +196,8 @@ class RandomNoise extends Module {
     if (this.out_r > 1) this.out_r = 1;
     if (this.out_r < -1) this.out_r = -1;
 
-    this.o['O/L'].set(this.out_l);
-    this.o['O/R'].set(this.out_r);
+    this.o['O/L'].set(this.out_l * 4);
+    this.o['O/R'].set(this.out_r * 4);
   }
 }
 

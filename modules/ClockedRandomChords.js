@@ -149,11 +149,27 @@ class ClockedRandomChords extends Module {
     this.proc_i = 0;
   }
 
+  randomize() {
+    this.i['SHPR'].set(Math.random() * 4);
+    this.i['ROOT'].set(Math.random() * 11);
+    this.i['SCL'].set(Math.random() * 8);
+    this.i['OFST'].set((Math.random()) * (-2));
+    this.i['WDTH'].set(Math.random() * 2.9 + 0.1);
+
+    this.i['A'].set(Math.random() * 10);
+    this.i['D'].set(Math.random() * 10);
+    this.i['S'].set(Math.random());
+    this.i['R'].set(Math.random() * 50);
+    this.i['P1'].set(Math.random());
+    this.i['P2'].set(Math.random());
+    this.i['P3'].set(Math.random());
+  }
+
   update_params() {
     this.gate = this.i['GATE'].get();
     this.shape = this.i['SHPR'].get();
-    this.root = this.i['ROOT'].get().toFixed(0);
-    this.scale = this.i['SCL'].get().toFixed(0);
+    this.root = Math.round(this.i['ROOT'].get());
+    this.scale = Math.round(this.i['SCL'].get());
     this.offset = this.i['OFST'].get();
     this.width = this.i['WDTH'].get();
 

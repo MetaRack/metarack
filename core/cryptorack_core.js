@@ -690,25 +690,27 @@ class Wire extends GraphicObject {
   }
 
   save() {
-    if (!this.a.isinput) 
+    if (this.a != null) {
+      if (!this.a.isinput) 
+        return {
+          'a': {
+            'mid': this.a.module.id,
+            'pid': this.a.name,
+          },
+          'b': {
+            'mid': this.b.module.id,
+            'pid': this.b.name
+          }
+        }
       return {
-        'a': {
+        'b': {
           'mid': this.a.module.id,
           'pid': this.a.name,
         },
-        'b': {
+        'a': {
           'mid': this.b.module.id,
           'pid': this.b.name
         }
-      }
-    return {
-      'b': {
-        'mid': this.a.module.id,
-        'pid': this.a.name,
-      },
-      'a': {
-        'mid': this.b.module.id,
-        'pid': this.b.name
       }
     }
   }

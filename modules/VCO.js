@@ -12,7 +12,7 @@ class VCO extends Module {
     let cv = 0.0001;
     this.add_input(new InputEncoder({x:hp2x(1), y:42, r:9, val: cv, vmin:-10, name:'CV'}));
     this.add_input(new InputEncoder({x:hp2x(5.5), y:42, r:9, val: 0, name:'FM'}));
-    this.add_input(new InputEncoder({x:hp2x(1), y:70, r:9, vmin:-10, val:10, name:'WAVE'})); //-10 + rackrand() * 20, name:'WAVE'}));
+    this.add_input(new InputEncoder({x:hp2x(1), y:70, r:9, vmin:-10, val:0, name:'WAVE'})); //-10 + rackrand() * 20, name:'WAVE'}));
     this.add_input(new InputEncoder({x:hp2x(5.5), y:70, r:9, vmin:0, vmax:1, val:0.5, name:'PW'}));
     this.add_input(new InputEncoder({x:hp2x(1), y:98, r:9, vmin:0, vmax:1, val:1, name:'AMP'}));
     this.add_output(new Port({x:hp2x(5.5), y:98, r:9, vmin:0, vmax:10, val:1, name:'OUT'}));
@@ -44,7 +44,7 @@ class VCO extends Module {
     this.mod = this._alpha * (this.i['CV'].get() + this.i['FM'].get()) + (1 - this._alpha) * this.mod;
     if (this.mod != this.mod_prev) { this.phase_inc = this.delta * Math.pow(2, this.mod); this.mod_prev = this.mod; }
     this.phase += this.phase_inc;
-    this.scope.process( this.o['OUT'].get() )
+    this.scope.process( this.o['OUT'].get() * 4)
     if (this.phase > Math.PI * 2) {
       this.phase -= Math.PI * 2;
       this.scope.trig();

@@ -1,16 +1,16 @@
 class RandomLead extends Module {
   constructor() {
-    super({w:hp2x(5)});
+    super({w:hp2x(10)});
 
-    this.add_input(new InputEncoder({x:hp2x(2.5), y:hp2y(0.20), r:hp2x(1), vmin:0, vmax:1, val:1, name:'MOD'}));
-    this.add_input(new InputEncoder({x:hp2x(2.5), y:hp2y(0.33), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P4'}));
-    this.add_input(new InputEncoder({x:hp2x(2.5), y:hp2y(0.46), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P5'}));
-    this.add_input(new InputEncoder({x:hp2x(0.5), y:hp2y(0.20), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P1'}));
-    this.add_input(new InputEncoder({x:hp2x(0.5), y:hp2y(0.33), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P2'}));
-    this.add_input(new InputEncoder({x:hp2x(0.5), y:hp2y(0.46), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P3'}));
-    this.add_input(new Port({x:hp2x(0.7), y:hp2y(0.59), r:hp2x(0.8), name:'GATE'}));
-    this.add_input(new Port({x:hp2x(0.7), y:hp2y(0.69), r:hp2x(0.8), name:'PTCH'}));
-    this.add_output(new Port({x:hp2x(0.7), y:hp2y(0.79), r:hp2x(0.8), name:'OUT'}));
+    this.add_input(new InputEncoder({x:hp2x(1), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:1, name:'MOD'}));
+    this.add_input(new InputEncoder({x:hp2x(4), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P4'}));
+    this.add_input(new InputEncoder({x:hp2x(7), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P5'}));
+    this.add_input(new InputEncoder({x:hp2x(1), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P1'}));
+    this.add_input(new InputEncoder({x:hp2x(4), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P2'}));
+    this.add_input(new InputEncoder({x:hp2x(7), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'P3'}));
+    this.add_input(new Port({x:hp2x(3.7), y:hp2y(0.89), r:hp2x(0.8), name:'GATE'}));
+    this.add_input(new Port({x:hp2x(5.7), y:hp2y(0.89), r:hp2x(0.8), name:'PTCH'}));
+    this.add_output(new Port({x:hp2x(7.7), y:hp2y(0.89), r:hp2x(0.8), name:'OUT'}));
     this.max_enc = 5;
     this.p = new Array(5);
     this.gate = 0;
@@ -34,10 +34,10 @@ class RandomLead extends Module {
     this.bg = new Array(3);
     this.filter = new Array(3);
 
-    this.reverb = new DattorroReverbPrim();
-    this.reverb.size = 0.7;
-    this.reverb.decay = 0.7;
-    this.reverb.dw = 0.7;
+    // this.reverb = new DattorroReverbPrim();
+    // this.reverb.size = 0.7;
+    // this.reverb.decay = 0.7;
+    // this.reverb.dw = 0.7;
 
     for (this.j = 0; this.j < 3; this.j++) {
       this.osc[this.j] = new VCOPrim();
@@ -61,6 +61,31 @@ class RandomLead extends Module {
     }
 
     this.update_params();
+  }
+
+  draw_cbf(buf, w, h) {
+    super.draw_cbf(buf, w, h);
+    let sw = 5;
+    let rounding = 5; 
+    buf.stroke(60); buf.strokeWeight(sw); buf.strokeJoin(this._p5.ROUND); buf.fill(255);
+    buf.rect(sw / 2 + w * 0.05, sw / 2 + h * 0.05, w * 0.9 - sw, h * 0.3 - sw, rounding, rounding, rounding, rounding);
+
+    buf.stroke(60);
+    for (var i = 1; i < 20; i ++) {
+      if (i % 5 == 0) buf.strokeWeight(0.5);
+      else buf.strokeWeight(0.05);
+      buf.line(i * w * 0.05, sw + h * 0.05, i * w * 0.05, h * 0.35 - sw);
+      buf.line(sw + w * 0.05, i * h * 0.3 * 0.05 + h * 0.05, w * 0.95 - sw, i * h * 0.3 * 0.05 + h * 0.05);
+    }
+  }
+
+  draw_dbf(buf, x, y, w, h) {
+    buf.noFill();
+    buf.strokeWeight(0.5);
+    buf.stroke(40);
+    buf.circle(x + w/4, y - h/2 * 0.1 * (1 + this.osc[0].cv + 1) + h * 0.25, this.env[0].out / 10 * w/4);
+    buf.circle(x + w/2, y - h/2 * 0.1 * (1 + this.osc[1].cv + 1) + h * 0.25, this.env[1].out / 10 * w/4);
+    buf.circle(x + w/4*3, y - h/2 * 0.1 * (1 + this.osc[2].cv + 1) + h * 0.25, this.env[2].out / 10 * w/4);
   }
 
   pick_lfo() {
@@ -114,12 +139,12 @@ class RandomLead extends Module {
     this.pitch = this.i['PTCH'].get();
 
 
-    for (this.j = 0; this.j < this.max_enc; this.j++) {
-      //this.params[this.lfo_connect[this.j]] += (this.lfos[this.j].out / 2 * this.mod);
-      this.params[this.lfo_connect[this.j]] *= (this.lfos[this.j].out + 1.1) * (this.mod + 0.001);
-      this.params[this.enc_connect[this.j]] *= ((this.p[this.j] + 0.1) * 2);
-      //this.params[this.enc_connect[this.j]] *= this.p[this.j];
-    }
+    // for (this.j = 0; this.j < this.max_enc; this.j++) {
+    //   //this.params[this.lfo_connect[this.j]] += (this.lfos[this.j].out / 2 * this.mod);
+    //   this.params[this.lfo_connect[this.j]] *= (this.lfos[this.j].out + 1.1) * (this.mod + 0.001);
+    //   this.params[this.enc_connect[this.j]] *= ((this.p[this.j] + 0.1) * 2);
+    //   //this.params[this.enc_connect[this.j]] *= this.p[this.j];
+    // }
 
     for (this.j = 0; this.j < 3; this.j++) {
       this.osc[this.j].pw = this.params[0 + 10*this.j];
@@ -139,12 +164,12 @@ class RandomLead extends Module {
       this.filter[this.j].coeff_res = this.params[9 + 10*this.j];
     }
 
-    for (this.j = 0; this.j < this.max_enc; this.j++) {
-      this.params[this.enc_connect[this.j]] /= ((this.p[this.j] + 0.1) * 2);
-      this.params[this.lfo_connect[this.j]] /= (this.lfos[this.j].out + 1.1) * (this.mod + 0.001);
-      //this.params[this.lfo_connect[this.j]] -= (this.lfos[this.j].out / 2 * this.mod);
-      //this.params[this.enc_connect[this.j]] *= this.p[this.j];
-    }
+    // for (this.j = 0; this.j < this.max_enc; this.j++) {
+    //   this.params[this.enc_connect[this.j]] /= ((this.p[this.j] + 0.1) * 2);
+    //   this.params[this.lfo_connect[this.j]] /= (this.lfos[this.j].out + 1.1) * (this.mod + 0.001);
+    //   //this.params[this.lfo_connect[this.j]] -= (this.lfos[this.j].out / 2 * this.mod);
+    //   //this.params[this.enc_connect[this.j]] *= this.p[this.j];
+    // }
   }
 
   process() {
@@ -167,10 +192,10 @@ class RandomLead extends Module {
       this.lfos[this.j].process();
     }
 
-    this.reverb.in_l = this.out / 3;
-    this.reverb.in_r = this.out / 3;
-    this.reverb.process();
-    this.o['OUT'].set(this.reverb.out_l);
+    // this.reverb.in_l = this.out / 3;
+    // this.reverb.in_r = this.out / 3;
+    // this.reverb.process();
+    this.o['OUT'].set(this.out / 3);
   }
 }
 
