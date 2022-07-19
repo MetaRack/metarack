@@ -1,4 +1,4 @@
-class BernoulliGate extends Module {
+class BG extends Module {
   constructor() {
     super({w:hp2x(4)});
     this.gate = 0;

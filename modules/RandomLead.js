@@ -1,16 +1,16 @@
-class RandomLead extends Module {
+class Chords extends Module {
   constructor() {
-    super({w:hp2x(10)});
+    super({w:hp2x(11)});
 
-    this.add_input(new InputEncoder({x:hp2x(1), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:1, name:'MOD'}));
-    this.add_input(new InputEncoder({x:hp2x(4), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'CLR'}));
-    this.add_input(new InputEncoder({x:hp2x(7), y:hp2y(0.6), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'PW'}));
-    this.add_input(new InputEncoder({x:hp2x(1), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'ENV'}));
-    this.add_input(new InputEncoder({x:hp2x(4), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'PROB'}));
-    this.add_input(new InputEncoder({x:hp2x(7), y:hp2y(0.4), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'WAVE'}));
-    this.add_input(new Port({x:hp2x(3.7), y:hp2y(0.89), r:hp2x(0.8), name:'GATE'}));
-    this.add_input(new Port({x:hp2x(5.7), y:hp2y(0.89), r:hp2x(0.8), name:'PTCH'}));
-    this.add_output(new Port({x:hp2x(7.7), y:hp2y(0.89), r:hp2x(0.8), name:'OUT'}));
+    this.add_input(new InputEncoder({x:hp2x(0.8), y:56, r:7, vmin:0, vmax:1, val:1, name:'MOD'}));
+    this.add_input(new InputEncoder({x:hp2x(4.2), y:56, r:7, vmin:0, vmax:1, val:0.5, name:'CLR'}));
+    this.add_input(new InputEncoder({x:hp2x(0.8), y:81, r:7, vmin:0, vmax:1, val:0.5, name:'PW'}));
+    this.add_input(new InputEncoder({x:hp2x(4.2), y:81, r:7, vmin:0, vmax:1, val:0.5, name:'ENV'}));
+    this.add_input(new InputEncoder({x:hp2x(7.6), y:56, r:7, vmin:0, vmax:1, val:0.5, name:'PROB'}));
+    this.add_input(new InputEncoder({x:hp2x(7.6), y:81, r:7, vmin:0, vmax:1, val:0.5, name:'WAVE'}));
+    this.add_input(new Port({x:hp2x(4.2), y:106, r:7, name:'GATE'}));
+    this.add_input(new Port({x:hp2x(0.8), y:106, r:7, name:'PTCH'}));
+    this.add_output(new Port({x:hp2x(7.6), y:106, r:7, name:'OUT'}));
     this.max_enc = 5;
     this.p = new Array(5);
     this.gate = 0;

@@ -29,7 +29,7 @@ function newLead(num) {
   //   clock.i['BPM'].set(Math.random() * 100 + 70);
   //   isClock = true;
   //   if (isBG >= 0.5) {
-  //     bg = new BernoulliGate();
+  //     bg = new BG();
   //     bg.i['P'].set(Math.random() / 2 + 0.4)
   //   }
   // }
@@ -43,8 +43,8 @@ function newLead(num) {
   //   lead.o['OUT'].connect(mixer.i[`${num}L`]);
   // }
 
-  const lead = new RandomLead();
-  const scale = new RandomScale();
+  const lead = new Chords();
+  const scale = new Quantum();
   lead.randomize();
   scale.randomize();
   
@@ -53,7 +53,7 @@ function newLead(num) {
     clock.i['BPM'].set(Math.random() * 100 + 70);
     isClock = true;
     if (isBG >= 0.5) {
-      bg = new BernoulliGate();
+      bg = new BG();
       bg.i['P'].set(Math.random() / 2 + 0.4)
     }
   }
@@ -73,14 +73,14 @@ function newLead(num) {
 }
 
 function newFX(num) {
-  const fx = new RandomFX();
+  const fx = new FX();
   fx.randomize();
   const audio = new VCO();
   audio.i['CV'].set((Math.random() - 0.5) * 2 - 1);
   audio.i['WAVE'].set((Math.random() - 0.5));
   audio.i['AMP'].set(0.25);
 
-  const rand = new RandomGenerator();
+  const rand = new Fluctuations();
   rand.c['FREQ'].set(Math.random() * 2);
 
   if (Math.random() < 1) {
@@ -92,15 +92,15 @@ function newFX(num) {
   audio.o['OUT'].connect(fx.i['I/L']);
   audio.o['OUT'].connect(fx.i['I/R']);
 
-  // const lead = new RandomLead();
-  // const scale = new RandomScale();
+  // const lead = new Chords();
+  // const scale = new Quantum();
   
   // if (!isClock) {
   //   clock = new Clock();
   //   clock.i['BPM'].set(Math.random() * 100 + 70);
   //   isClock = true;
   //   if (isBG >= 0.5) {
-  //     bg = new BernoulliGate();
+  //     bg = new BG();
   //     bg.i['P'].set(Math.random() / 2 + 0.4)
   //   }
   // }
@@ -125,9 +125,9 @@ function newFX(num) {
 }
 
 function newNoise(num) {
-  const noise = new RandomNoise();
+  const noise = new Blackhole();
   noise.randomize();
-  const rand = new RandomGenerator();
+  const rand = new Fluctuations();
   if (Math.random() < 0.5) {
     rand.o['OUT'].connect(noise.i['FX'])
     rand.o['OUT'].connect(noise.i['TYPE'])
@@ -140,13 +140,13 @@ function newNoise(num) {
   noise.o['O/R'].connect(mixer.i[`${num}R`])
 }
 
-// let k = new RandomLead();
-// new RandomScale();
+// let k = new Chords();
+// new Quantum();
 // new Clock();
 //k.randomize()
 
 const mixer = new StereoMixer4();
-const reverb = new DattorroReverb();
+const reverb = new RVR();
 reverb.c['D/W'].set(0.8);
 reverb.c['DEC'].set(0.8);
 reverb.i['SIZE'].set(0.8);
@@ -166,7 +166,7 @@ for (let i = 1; i <=4; i++) {
   }
 }
 
-// state_string = '{"modules":{"1":{"name":"RandomLead","i":{"MOD":{"val":"1.000000","mod":"0.100000"},"P4":{"val":"0.500000","mod":"0.100000"},"P5":{"val":"0.500000","mod":"0.100000"},"P1":{"val":"0.500000","mod":"0.220497"},"P2":{"val":"0.500000","mod":"0.100000"},"P3":{"val":"0.500000","mod":"0.100000"}},"c":{},"pos":[0,0]},"2":{"name":"RandomFX","i":{"LVL":{"val":"1.000000","mod":"0.100000"},"D/W":{"val":"1.000000","mod":"0.100000"},"MOD":{"val":"0.856246","mod":"0.100000"},"P1":{"val":"0.500000","mod":"0.100000"},"P2":{"val":"0.500000","mod":"0.175661"},"P3":{"val":"0.500000","mod":"0.100000"}},"c":{},"pos":[0,1]},"3":{"name":"RandomScale","i":{"MOD":{"val":"1.000000","mod":"0.100000"},"P1":{"val":"0.500000","mod":"0.230304"},"P2":{"val":"0.500000","mod":"0.100000"}},"c":{},"pos":[5,0]},"4":{"name":"Clock","i":{"BPM":{"val":"153.626967","mod":"0.100000"}},"c":{"DIV1":"1.000000","DIV2":"1.000000","DIV3":"1.000000"},"pos":[5,1]},"5":{"name":"StereoMixer4","i":{"PAN1":{"val":"0.500000","mod":"0.100000"},"PAN2":{"val":"0.500000","mod":"0.100000"},"PAN3":{"val":"0.500000","mod":"0.100000"},"PAN4":{"val":"0.500000","mod":"0.100000"}},"c":{"AMP1":"0.505906","AMP2":"0.500000","AMP3":"0.500000","AMP4":"0.500000","AMP":"2.950364"},"pos":[10,0]},"6":{"name":"RandomNoise","i":{"MOD":{"val":"1.000000","mod":"0.100000"},"P4":{"val":"0.500000","mod":"0.100000"},"P5":{"val":"0.500000","mod":"0.100000"},"P1":{"val":"0.500000","mod":"0.313671"},"P2":{"val":"0.500000","mod":"-0.225761"},"P3":{"val":"0.500000","mod":"0.100000"}},"c":{},"pos":[15,1]},"12":{"name":"RandomGenerator","i":{"CV":{"val":"0.000000","mod":"0.100000"},"OFST":{"val":"0.000000","mod":"0.100000"},"SCL":{"val":"1.000000","mod":"0.100000"},"PM":{"val":"0.000000","mod":"0.100000"}},"c":{"FREQ":"1.000000"},"pos":[21,0]},"13":{"name":"RandomGenerator","i":{"CV":{"val":"0.000000","mod":"0.100000"},"OFST":{"val":"0.000000","mod":"0.100000"},"SCL":{"val":"1.000000","mod":"0.100000"},"PM":{"val":"0.000000","mod":"0.100000"}},"c":{"FREQ":"1.000000"},"pos":[20,1]}},"wires":[{"a":{"mid":"6","pid":"O/L"},"b":{"mid":"5","pid":"1L"}},{"a":{"mid":"6","pid":"O/R"},"b":{"mid":"5","pid":"1R"}},{"a":{"mid":"1","pid":"OUT"},"b":{"mid":"5","pid":"2L"}},{"a":{"mid":"2","pid":"O/L"},"b":{"mid":"5","pid":"3L"}},{"a":{"mid":"2","pid":"O/R"},"b":{"mid":"5","pid":"3R"}},{"a":{"mid":"1","pid":"OUT"},"b":{"mid":"2","pid":"I/L"}},{"a":{"mid":"1","pid":"OUT"},"b":{"mid":"2","pid":"I/R"}},{"a":{"mid":"3","pid":"OUT"},"b":{"mid":"1","pid":"PTCH"}},{"a":{"mid":"4","pid":"CLK"},"b":{"mid":"3","pid":"GATE"}},{"a":{"mid":"4","pid":"CLK"},"b":{"mid":"1","pid":"GATE"}},{"a":{"mid":"5","pid":"O/L"},"b":{"mid":0,"pid":"LEFT"}},{"a":{"mid":"5","pid":"O/R"},"b":{"mid":0,"pid":"RIGHT"}},{"a":{"mid":12,"pid":"OUT"},"b":{"mid":"6","pid":"P1"}},{"b":{"mid":"6","pid":"P2"},"a":{"mid":12,"pid":"OUT"}},{"b":{"mid":"3","pid":"P1"},"a":{"mid":12,"pid":"OUT"}},{"b":{"mid":"3","pid":"P2"},"a":{"mid":12,"pid":"OUT"}},{"a":{"mid":13,"pid":"OUT"},"b":{"mid":"2","pid":"P2"}},{"b":{"mid":"1","pid":"P1"},"a":{"mid":13,"pid":"OUT"}}]}'
+// state_string = '{"modules":{"1":{"name":"Chords","i":{"MOD":{"val":"1.000000","mod":"0.100000"},"P4":{"val":"0.500000","mod":"0.100000"},"P5":{"val":"0.500000","mod":"0.100000"},"P1":{"val":"0.500000","mod":"0.220497"},"P2":{"val":"0.500000","mod":"0.100000"},"P3":{"val":"0.500000","mod":"0.100000"}},"c":{},"pos":[0,0]},"2":{"name":"FX","i":{"LVL":{"val":"1.000000","mod":"0.100000"},"D/W":{"val":"1.000000","mod":"0.100000"},"MOD":{"val":"0.856246","mod":"0.100000"},"P1":{"val":"0.500000","mod":"0.100000"},"P2":{"val":"0.500000","mod":"0.175661"},"P3":{"val":"0.500000","mod":"0.100000"}},"c":{},"pos":[0,1]},"3":{"name":"Quantum","i":{"MOD":{"val":"1.000000","mod":"0.100000"},"P1":{"val":"0.500000","mod":"0.230304"},"P2":{"val":"0.500000","mod":"0.100000"}},"c":{},"pos":[5,0]},"4":{"name":"Clock","i":{"BPM":{"val":"153.626967","mod":"0.100000"}},"c":{"DIV1":"1.000000","DIV2":"1.000000","DIV3":"1.000000"},"pos":[5,1]},"5":{"name":"StereoMixer4","i":{"PAN1":{"val":"0.500000","mod":"0.100000"},"PAN2":{"val":"0.500000","mod":"0.100000"},"PAN3":{"val":"0.500000","mod":"0.100000"},"PAN4":{"val":"0.500000","mod":"0.100000"}},"c":{"AMP1":"0.505906","AMP2":"0.500000","AMP3":"0.500000","AMP4":"0.500000","AMP":"2.950364"},"pos":[10,0]},"6":{"name":"Blackhole","i":{"MOD":{"val":"1.000000","mod":"0.100000"},"P4":{"val":"0.500000","mod":"0.100000"},"P5":{"val":"0.500000","mod":"0.100000"},"P1":{"val":"0.500000","mod":"0.313671"},"P2":{"val":"0.500000","mod":"-0.225761"},"P3":{"val":"0.500000","mod":"0.100000"}},"c":{},"pos":[15,1]},"12":{"name":"Fluctuations","i":{"CV":{"val":"0.000000","mod":"0.100000"},"OFST":{"val":"0.000000","mod":"0.100000"},"SCL":{"val":"1.000000","mod":"0.100000"},"PM":{"val":"0.000000","mod":"0.100000"}},"c":{"FREQ":"1.000000"},"pos":[21,0]},"13":{"name":"Fluctuations","i":{"CV":{"val":"0.000000","mod":"0.100000"},"OFST":{"val":"0.000000","mod":"0.100000"},"SCL":{"val":"1.000000","mod":"0.100000"},"PM":{"val":"0.000000","mod":"0.100000"}},"c":{"FREQ":"1.000000"},"pos":[20,1]}},"wires":[{"a":{"mid":"6","pid":"O/L"},"b":{"mid":"5","pid":"1L"}},{"a":{"mid":"6","pid":"O/R"},"b":{"mid":"5","pid":"1R"}},{"a":{"mid":"1","pid":"OUT"},"b":{"mid":"5","pid":"2L"}},{"a":{"mid":"2","pid":"O/L"},"b":{"mid":"5","pid":"3L"}},{"a":{"mid":"2","pid":"O/R"},"b":{"mid":"5","pid":"3R"}},{"a":{"mid":"1","pid":"OUT"},"b":{"mid":"2","pid":"I/L"}},{"a":{"mid":"1","pid":"OUT"},"b":{"mid":"2","pid":"I/R"}},{"a":{"mid":"3","pid":"OUT"},"b":{"mid":"1","pid":"PTCH"}},{"a":{"mid":"4","pid":"CLK"},"b":{"mid":"3","pid":"GATE"}},{"a":{"mid":"4","pid":"CLK"},"b":{"mid":"1","pid":"GATE"}},{"a":{"mid":"5","pid":"O/L"},"b":{"mid":0,"pid":"LEFT"}},{"a":{"mid":"5","pid":"O/R"},"b":{"mid":0,"pid":"RIGHT"}},{"a":{"mid":12,"pid":"OUT"},"b":{"mid":"6","pid":"P1"}},{"b":{"mid":"6","pid":"P2"},"a":{"mid":12,"pid":"OUT"}},{"b":{"mid":"3","pid":"P1"},"a":{"mid":12,"pid":"OUT"}},{"b":{"mid":"3","pid":"P2"},"a":{"mid":12,"pid":"OUT"}},{"a":{"mid":13,"pid":"OUT"},"b":{"mid":"2","pid":"P2"}},{"b":{"mid":"1","pid":"P1"},"a":{"mid":13,"pid":"OUT"}}]}'
 // state = JSON.parse(state_string)
 // engine.load_state(state);
 

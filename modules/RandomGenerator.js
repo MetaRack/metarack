@@ -1,21 +1,21 @@
-class RandomGenerator extends Module {
+class Fluctuations extends Module {
 	constructor() {
 		super({w:hp2x(10)});
 		this.offset = 0;
 		this.scale = 0;
 		this.pm = 0;
-		this.add_output(new Port({x:hp2x(7.3), y:hp2y(0.85), r:hp2x(1), name:'OUT'}));
-		this.add_control(new Encoder({x:hp2x(0.6), y:46, r:7, vmin:0.01, vmax:10, val:1, name:'FREQ'}));
-		this.add_input(new InputEncoder({x:hp2x(3.6), y:46, r:7, vmin:-5, vmax:5, val:0, name:'CV'}));
-		this.add_input(new InputEncoder({x:hp2x(6.6), y:46, r:7, vmin:-5, vmax:5, val:0, name:'OFST'}));
-		this.add_input(new InputEncoder({x:hp2x(1.9), y:70, r:7, vmin:0.01, vmax:5, val:1, name:'SCL'}));
-		this.add_input(new InputEncoder({x:hp2x(4.9), y:70, r:7, vmin:0, vmax:1, val:0, name:'PM'}));
+		this.add_output(new Port({x:hp2x(5.5), y:98, r:9, name:'OUT'}));
+		this.add_control(new Encoder({x:hp2x(1), y:42, r:9,  vmin:0.01, vmax:10, val:1, name:'FREQ'}));
+		this.add_input(new InputEncoder({x:hp2x(5.5), y:42, r:9, vmin:-5, vmax:5, val:0, name:'CV'}));
+		this.add_input(new InputEncoder({x:hp2x(1), y:70, r:9, vmin:-5, vmax:5, val:0, name:'OFST'}));
+		this.add_input(new InputEncoder({x:hp2x(5.5), y:70, r:9, vmin:0.01, vmax:5, val:1, name:'SCL'}));
+		this.add_input(new InputEncoder({x:hp2x(1), y:98, r:9, vmin:0, vmax:1, val:0, name:'PM'}));
 
 		this.OSC = new VCOPrim();
 		this.prev_out = -1;
 		this.out = 0;
 
-		this.scope = new RawScope({x: this.w * 0.05, y:this.h * 0.05, w:this.w - this.w * 0.1, h:this.h*0.25, size:30, divider:64});
+		this.scope = new RawScope({x:hp2x(0.5), y:hp2y(0.07), w:hp2x(9), h:hp2y(0.25), size:30, divider:64});
 		this.attach(this.scope);
 		this.delta = Math.PI * 2 / (sample_rate / 2);
 		this.phase_inc = this.delta;

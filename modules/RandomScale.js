@@ -1,6 +1,6 @@
 
 
-class RandomScale extends Module {
+class Quantum extends Module {
   constructor() {
     super({w:hp2x(8)});
 

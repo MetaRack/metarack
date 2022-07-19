@@ -1438,14 +1438,14 @@ function keyReleased() {
   }
 }
 
-function windowResized() {
-  engine.stop = true;
-  rackwidth = document.documentElement.clientWidth;
-  rackheight = document.documentElement.clientHeight;
-  resizeCanvas(rackwidth, rackheight);
-  engine.set_size(rackwidth * 0.8, rackheight * 0.8);
-  engine.stop = false;
-}
+// function windowResized() {
+//   engine.stop = true;
+//   rackwidth = document.documentElement.clientWidth;
+//   rackheight = document.documentElement.clientHeight;
+//   resizeCanvas(rackwidth, rackheight);
+//   engine.set_size(rackwidth * 0.8, rackheight * 0.8);
+//   engine.stop = false;
+// }
 
 function engine_run() {
   audioContext = new AudioContext();

@@ -1,4 +1,4 @@
-class RandomFX extends Module {
+class FX extends Module {
   constructor() {
     super({w:hp2x(7)});
 

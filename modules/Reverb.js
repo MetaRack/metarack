@@ -1,14 +1,14 @@
-class DattorroReverb extends Module {
+class RVR extends Module {
   constructor() {
-    super({w:hp2x(3)});
+    super({w:hp2x(4)});
 
-    this.add_input(new InputEncoder({x:hp2x(0.5), y:hp2y(0.20), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'SIZE'}));
-    this.add_control(new Encoder({x:hp2x(0.5), y:hp2y(0.33), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'DEC'}));
-    this.add_control(new Encoder({x:hp2x(0.5), y:hp2y(0.46), r:hp2x(1), vmin:0, vmax:1, val:0.5, name:'D/W'}));
-    this.add_input(new Port({x:hp2x(0.7), y:hp2y(0.59), r:hp2x(0.8), name:'I/L'}));
-    this.add_input(new Port({x:hp2x(0.7), y:hp2y(0.69), r:hp2x(0.8), name:'I/R'}));
-    this.add_output(new Port({x:hp2x(0.7), y:hp2y(0.79), r:hp2x(0.8), name:'O/L'}));
-    this.add_output(new Port({x:hp2x(0.7), y:hp2y(0.89), r:hp2x(0.8), name:'O/R'}));
+    this.add_input(new InputEncoder({x:hp2x(0.75), y:hp2y(0.07), r:hp2x(1.3), vmin:0, vmax:1, val:0.5, name:'SIZE'}));
+    this.add_control(new Encoder({x:hp2x(0.75), y:hp2y(0.25), r:hp2x(1.3), vmin:0, vmax:1, val:0.5, name:'DEC'}));
+    this.add_control(new Encoder({x:hp2x(0.75), y:hp2y(0.43), r:hp2x(1.3), vmin:0, vmax:1, val:0.5, name:'D/W'}));
+    this.add_input(new Port({x:hp2x(1.25), y:hp2y(0.59), r:hp2x(0.8), name:'I/L'}));
+    this.add_input(new Port({x:hp2x(1.25), y:hp2y(0.69), r:hp2x(0.8), name:'I/R'}));
+    this.add_output(new Port({x:hp2x(1.25), y:hp2y(0.79), r:hp2x(0.8), name:'O/L'}));
+    this.add_output(new Port({x:hp2x(1.25), y:hp2y(0.89), r:hp2x(0.8), name:'O/R'}));
 
     this.dw = 0;
     this.size = 0;
@@ -31,13 +31,13 @@ class DattorroReverb extends Module {
     this.oy;
   }
 
-  draw_cbf(buf, w, h) {
-    super.draw_cbf(buf, w, h);
-    let sw = 2;
-    let rounding = 5;
-    buf.stroke(60); buf.strokeWeight(sw); buf.fill(255);
-    buf.rect(sw + w * 0.05, sw + 30, w * 0.9 - 2 * sw, h * 0.14 - 2 * sw, rounding, rounding, rounding, rounding);
-  }
+  // draw_cbf(buf, w, h) {
+  //   super.draw_cbf(buf, w, h);
+  //   let sw = 2;
+  //   let rounding = 5;
+  //   buf.stroke(60); buf.strokeWeight(sw); buf.fill(255);
+  //   buf.rect(sw + w * 0.05, sw + 30, w * 0.9 - 2 * sw, h * 0.14 - 2 * sw, rounding, rounding, rounding, rounding);
+  // }
 
   // draw_sbf(buf, x, y, w, h) {
   //   let sw = 0.1;
