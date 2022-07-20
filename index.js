@@ -178,5 +178,7 @@ function setup() {
 
 function draw() { 
   background(0,0,0,0);
+  pw = document.documentElement.clientWidth;
+  ph = document.documentElement.clientHeight;
   engine.draw(pw * 0.1, ph * 0.1); 
 }
