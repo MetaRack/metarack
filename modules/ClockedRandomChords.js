@@ -96,6 +96,7 @@ class ClockedRandomChords extends Module {
   constructor(_p5=rackp5) {
     super({w:hp2x(10)});
     buf = _p5;
+    console.log('ke')
     this.add_input(new InputEncoder({x:hp2x(0.7), y:hp2y(0.55), r:hp2x(1), vmin:0, vmax:10, val:1, name:'A'}));
     this.add_input(new InputEncoder({x:hp2x(2.9), y:hp2y(0.55), r:hp2x(1), vmin:0, vmax:10, val:1, name:'D'}));
     this.add_input(new InputEncoder({x:hp2x(5.1), y:hp2y(0.55), r:hp2x(1), vmin:0, vmax:1, val:0.1, name:'S'}));

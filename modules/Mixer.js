@@ -132,8 +132,8 @@ class StereoMixer extends Module {
       this.add_input(this.pans[i]);
       // this.add_control(this.mutes[i]);
     }
-    this.add_output(new Port({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.60), r:4, name:'O/L'}));
-    this.add_output(new Port({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.70), r:4, name:'O/R'}));
+    this.add_output(new Port({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.60), r:4, name:'O/L', type:'output'}));
+    this.add_output(new Port({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.70), r:4, name:'O/R', type:'output'}));
     this.gains[chan_num] = new Encoder({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.80), r:hp2x(0.8), vmin:0, vmax:chan_num, val:1, name:`AMP`});
     this.add_control(this.gains[chan_num]);
     this.lvalue = 0;
@@ -150,17 +150,19 @@ class StereoMixer extends Module {
   draw_cbf(buf, w, h) {
     super.draw_cbf(buf, w, h);
     buf.noFill();
-    for (this.dit = 0; this.dit < this.chan_num + 1; this.dit ++) {
+    for (this.dit = 0; this.dit < this.chan_num + 1; this.dit ++) {        
       buf.rect(w / (this.chan_num + 1.25) * (this.dit + 0.35), h * 0.07, w / (this.chan_num + 1.25) * 0.6, h * 0.5);
     }
   }
 
   draw_dbf(buf, x, y, w, h) {
     buf.stroke(60);
+    buf.strokeWeight(0.1)
     for (this.dit = 0; this.dit < this.chan_num; this.dit ++) {
       this.damp = this.gains[this.dit].get();
+      buf.fill([131, 183, 153])
       this.dampL = Math.abs(this.channels[this.dit][0].get()) / 1 * this.damp;
-
+      
       if (this.channels[this.dit][1].port.wires.length > 0)
         this.dampR = Math.abs(this.channels[this.dit][1].get()) / 1 * this.damp;
       else
@@ -170,6 +172,8 @@ class StereoMixer extends Module {
                y + h * 0.07 + h * 0.5 * (1 - this.dampL), 
                w / (this.chan_num + 1.25) * 0.25, 
                h * 0.5 * this.dampL);
+
+      buf.fill([232, 111, 104])
 
       buf.rect(x + w / (this.chan_num + 1.25) * (this.dit + 0.675), 
                y + h * 0.07 + h * 0.5 * (1 - this.dampR), 

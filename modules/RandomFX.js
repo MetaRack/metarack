@@ -11,8 +11,8 @@ class FX extends Module {
     this.add_input(new InputEncoder({x:hp2x(0.5), y:hp2y(0.2), r:hp2x(1.4), vmin:0, vmax:1, val:0.5, name:'CLR'}));
     this.add_input(new Port({x:hp2x(0.7), y:hp2y(0.79), r:hp2x(0.8), name:'I/L'}));
     this.add_input(new Port({x:hp2x(0.7), y:hp2y(0.89), r:hp2x(0.8), name:'I/R'}));
-    this.add_output(new Port({x:hp2x(4.7), y:hp2y(0.79), r:hp2x(0.8), name:'O/L'}));
-    this.add_output(new Port({x:hp2x(4.7), y:hp2y(0.89), r:hp2x(0.8), name:'O/R'}));
+    this.add_output(new Port({x:hp2x(4.7), y:hp2y(0.79), r:hp2x(0.8), name:'O/L', type:'output'}));
+    this.add_output(new Port({x:hp2x(4.7), y:hp2y(0.89), r:hp2x(0.8), name:'O/R', type:'output'}));
 
     this.p = new Array(3);
     this.j = 0;
@@ -84,11 +84,11 @@ class FX extends Module {
 
   randomize() {
     this.i['LVL'].set(Math.random());
-    this.i['D/W'].set(Math.random());
+    this.i['D/W'].set(0.8 + Math.random() / 5);
     this.i['MOD'].set(Math.random());
     this.i['FB/L'].set(Math.random());
     this.i['FB/R'].set(Math.random());
-    this.i['CLR'].set(Math.random());
+    this.i['CLR'].set(0.5 + Math.random() / 2);
   }
 
   pick_lfo() {
@@ -194,8 +194,8 @@ class FX extends Module {
 
     
 
-    this.o['O/L'].set(this.out_l);
-    this.o['O/R'].set(this.out_r);
+    this.o['O/L'].set(this.out_l * 2);
+    this.o['O/R'].set(this.out_r * 2);
 
     
     for (this.j = 0; this.j < 3; this.j++) {
@@ -212,4 +212,4 @@ class FX extends Module {
   }
 }
 
-engine.add_module_class(RandomFX);
+engine.add_module_class(FX);

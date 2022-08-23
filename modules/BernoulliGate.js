@@ -23,6 +23,8 @@ class BG extends Module {
   process() {
     this.p = this.i['P'].get();
     this.gate = this.i['IN'].get();
+    this.gate += 10;
+    this.gate /= 2;
     this.rand = rackrand();
     if (this.last_gate < this.gate) {
       if (this.rand < (this.p))
@@ -47,4 +49,4 @@ class BG extends Module {
   }
 }
 
-engine.add_module_class(BernoulliGate);
+engine.add_module_class(BG);

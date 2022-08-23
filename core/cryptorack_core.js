@@ -1,7 +1,7 @@
 document.addEventListener('contextmenu', event => event.preventDefault());
 var rackrand = Math.random;
 
-let fps = 20;
+let fps = 60;
 let sample_rate = 44100;
 let background_color = 255;
 let rackp5;
@@ -45,7 +45,7 @@ class WireStyle {
 
 class ModuleStyle {
   // constructor(panel=[140, 80, 100, 255], frame=10, shadow=70, name=40, lining=180, label=255, background=255) {
-  constructor(panel=255, frame=60, shadow=70, name=40, lining=100, label=255, background=255) {
+  constructor(panel=230, frame=60, shadow=70, name=40, lining=100, label=255, background=255) {
     this.panel = panel;
     this.frame = frame;
     this.shadow = shadow;
@@ -146,7 +146,7 @@ class ProtoPort extends GraphicObject {
     let sw = 1.5;
     buf.background(0,0,0,0);
 
-    buf.stroke(this.style.ring); buf.strokeWeight(sw); buf.fill(this.style.hole);
+    buf.stroke(this.style.ring); buf.strokeWeight(sw); buf.fill(30);
     buf.circle(w / 2, h / 2, w - 2 * sw);
     buf.circle(w / 2, h / 2, w - 6 * sw);
   }
@@ -254,22 +254,41 @@ class Button extends GraphicObject {
 }
 
 class Port extends GraphicObject {
-  constructor({x=0, y=0, r=10, name='', style=new PortStyle(), default_value=0, visible=true, isinput=false}={}) {
+  constructor({x=0, y=0, r=10, name='', style=new PortStyle(), default_value=0, visible=true, isinput=false, type='input'}={}) {
     super({x:x, y:y, w:2*r, h:r*3, name:name, visible:visible});
     let pr = r * Math.pow(7 / this.w, 0.8);
     let px = this.w / 2 - pr;
     let py = this.h / 1.5 / 2 - pr;
     this.port = new ProtoPort({x:px, y:py, r:pr, name:name, default_value: default_value});
     this.attach(this.port);
+    this.type = type;
   }
 
   draw_cbf(buf, w, h) {
     let sw = 1;
+
+    if (this.type == 'output') {
+      buf.fill(10)
+      buf.rect(w/15, h/15, w - w/8, h - h/8, 5);
+    } else {
+      buf.fill(255)
+      buf.rect(w/15, h/15, w - w/8, h - h/8, 5);
+    }
+
     buf.stroke(60); buf.strokeWeight(sw); buf.fill(255);
-    buf.rect(sw + w * 0.05, h / 1.5 + sw + h * 0.05, w - 2 * sw - w * 0.1, h / 3 - 2 * sw - h * 0.1);
+    //buf.rect(sw + w * 0.05, h / 1.5 + sw + h * 0.05, w - 2 * sw - w * 0.1, h / 3 - 2 * sw - h * 0.1);
 
     buf.textSize(w / 4);
-    buf.fill(60);
+
+    if (this.type == 'output') {
+      buf.fill(230)
+      //buf.rect(w/15, h/15, w - w/8, h - h/8, 5);
+    } else {
+      buf.fill(60)
+      //buf.rect(w/15, h/15, w - w/8, h - h/8, 5);
+    }
+
+    //buf.fill(60);
     buf.textAlign(buf.CENTER, buf.CENTER);
     buf.strokeWeight(sw / 10);
     buf.text(this.name.substring(0,5), w / 2, h * 5 / 6 + 1);
@@ -283,6 +302,8 @@ class Port extends GraphicObject {
     engine.add_wire(w);
   }
 }
+
+
 
 class Encoder extends GraphicObject {
   constructor({x=0, y=0, r=10, name='?', val=5, vmin=-10, vmax=10, precision=6, mod=0.1}={}) {
@@ -319,10 +340,15 @@ class Encoder extends GraphicObject {
   draw_cbf(buf, w, h) {
     let sw = 1;
     this.r = w / 2 * this.rc;
-    buf.noStroke(); buf.fill(255);
-    buf.circle(w / 2, w / 2, this.r * 2 + sw * 8);
-    buf.stroke(60); buf.strokeWeight(sw); buf.fill(255);
+    buf.noStroke(); buf.fill(190);
+    //buf.circle(w / 2, w / 2, this.r * 2 + sw * 8);
+    //buf.stroke(60); buf.strokeWeight(this.r/3); buf.fill(127);
+    buf.stroke(0); buf.strokeWeight(1.5*sw); buf.fill(60);
     buf.circle(w / 2, w / 2, this.r * 2 - 2 * sw);
+    buf.stroke(60); buf.strokeWeight(sw); buf.fill(190);
+    buf.circle(w / 2, w / 2, (this.r * 2 - 2 * sw) / 1.4);
+    buf.stroke(190); buf.strokeWeight(sw); buf.fill(190);
+    buf.circle(w / 2, w / 2, (this.r * 2 - 2 * sw) / 2);
   }
 
   draw_sbf(buf, w, h) {
@@ -331,25 +357,27 @@ class Encoder extends GraphicObject {
     sw = 4;
     buf.stroke(60); buf.strokeWeight(sw); buf.noFill();
     this.ang_high = this.val2ang(this.base_val.toFixed(this.precision)) + buf.HALF_PI;
-    if (this.ang_high - buf.HALF_PI > 0.05) 
-      buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, buf.HALF_PI, this.ang_high - 0.05);
-    else 
-      buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, this.ang_high - 0.05, buf.HALF_PI);
+    // if (this.ang_high - buf.HALF_PI > 0.05) 
+    //   buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, buf.HALF_PI, this.ang_high - 0.05);
+    // else 
+    //   buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, this.ang_high - 0.05, buf.HALF_PI);
     sw = 2;
-    buf.strokeWeight(sw);
-    buf.line(w / 2 + Math.cos(this.ang_high) * (this.r - 5), w / 2 + Math.sin(this.ang_high) * (this.r - 5), 
-             w / 2 + Math.cos(this.ang_high) * (this.r + 1), w / 2 + Math.sin(this.ang_high) * (this.r + 1));
+    buf.strokeWeight(sw*3);
+    buf.stroke(190);
+    buf.line(w / 2 + Math.cos(this.ang_high) * (this.r - 2.8), w / 2 + Math.sin(this.ang_high) * (this.r - 2.8), 
+             w / 2 + Math.cos(this.ang_high) * (this.r + 1)/2, w / 2 + Math.sin(this.ang_high) * (this.r + 1)/2);
 
     sw = 1;
-    buf.stroke(60); buf.strokeWeight(sw); buf.fill(255);
-    buf.rect(sw + w * 0.1, h / 1.5 + sw + h * 0.05, w - 2 * sw - w * 0.2, h / 3 - 2 * sw - h * 0.1);
+    buf.stroke(60); buf.strokeWeight(0); buf.fill(255);
+    //buf.rect(sw + w * 0.1, h / 1.5 + sw + h * 0.05, w - 2 * sw - w * 0.2, h / 3 - 2 * sw - h * 0.1, 5);
 
     sw = 0.1;
     buf.textSize(w / 4);
-    buf.fill(60);
+    buf.fill(0);
     buf.textAlign(buf.CENTER, buf.CENTER);
     buf.strokeWeight(sw);
-    buf.text(this.base_val.toFixed(this.precision), w / 2, h / 3);
+    //buf.text(this.base_val.toFixed(this.precision), w / 2, h / 3);
+    buf.textSize(w / 4);
     buf.text(this.name.substring(0,4), w / 2, h * 5 / 6 + 1);
   }
 
@@ -436,36 +464,36 @@ class StepEncoder extends Encoder {
     this.changed=true;
   }
 
-  draw_sbf(buf, w, h) {
-    this.r = w / 2 * this.rc;
-    let sw = 3;
-    sw = 4;
-    buf.stroke(60); buf.strokeWeight(sw); buf.noFill();
-    this.ang_high = this.val2ang(this.base_val) + buf.HALF_PI;
-    if (this.ang_high - buf.HALF_PI > 0.05) 
-      buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, buf.HALF_PI, this.ang_high - 0.05);
-    else 
-      buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, this.ang_high - 0.05, buf.HALF_PI);
-    sw = 2;
-    buf.strokeWeight(sw);
-    buf.line(w / 2 + Math.cos(this.ang_high) * (this.r - 5), w / 2 + Math.sin(this.ang_high) * (this.r - 5), 
-             w / 2 + Math.cos(this.ang_high) * (this.r + 1), w / 2 + Math.sin(this.ang_high) * (this.r + 1));
+  // draw_sbf(buf, w, h) {
+  //   this.r = w / 2 * this.rc;
+  //   let sw = 3;
+  //   sw = 4;
+  //   buf.stroke(60); buf.strokeWeight(sw); buf.noFill();
+  //   this.ang_high = this.val2ang(this.base_val) + buf.HALF_PI;
+  //   if (this.ang_high - buf.HALF_PI > 0.05) 
+  //     buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, buf.HALF_PI, this.ang_high - 0.05);
+  //   else 
+  //     buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, this.ang_high - 0.05, buf.HALF_PI);
+  //   sw = 2;
+  //   buf.strokeWeight(sw);
+  //   buf.line(w / 2 + Math.cos(this.ang_high) * (this.r - 5), w / 2 + Math.sin(this.ang_high) * (this.r - 5), 
+  //            w / 2 + Math.cos(this.ang_high) * (this.r + 1), w / 2 + Math.sin(this.ang_high) * (this.r + 1));
 
-    sw = 1;
-    buf.stroke(60); buf.strokeWeight(sw); buf.fill(255);
-    buf.rect(sw + w * 0.1, h / 1.5 + sw + h * 0.05, w - 2 * sw - w * 0.2, h / 3 - 2 * sw - h * 0.1);
+  //   sw = 1;
+  //   buf.stroke(60); buf.strokeWeight(sw); buf.fill(255);
+  //   buf.rect(sw + w * 0.1, h / 1.5 + sw + h * 0.05, w - 2 * sw - w * 0.2, h / 3 - 2 * sw - h * 0.1);
 
-    sw = 0.1;
-    buf.textSize(w / 4);
-    buf.fill(60);
-    buf.textAlign(buf.CENTER, buf.CENTER);
-    buf.strokeWeight(sw);
-    if ((this.base_val <= 0) && (this.nonzero)) 
-      buf.text((this.base_val - this.step).toFixed(this.precision), w / 2, h / 3);
-    else
-      buf.text(this.base_val.toFixed(this.precision), w / 2, h / 3);
-    buf.text(this.name.substring(0,4), w / 2, h * 5 / 6 + 1);
-  }
+  //   sw = 0.1;
+  //   buf.textSize(w / 4);
+  //   buf.fill(60);
+  //   buf.textAlign(buf.CENTER, buf.CENTER);
+  //   buf.strokeWeight(sw);
+  //   // if ((this.base_val <= 0) && (this.nonzero)) 
+  //   //   //buf.text((this.base_val - this.step).toFixed(this.precision), w / 2, h / 3);
+  //   // else
+  //   //   buf.text(this.base_val.toFixed(this.precision), w / 2, h / 3);
+  //   buf.text(this.name.substring(0,4), w / 2, h * 5 / 6 + 1);
+  // }
 
   get(){ 
     if ((this.base_val <= 0) && (this.nonzero)) {
@@ -486,6 +514,8 @@ class StepEncoder extends Encoder {
   }
 }
 
+
+
 class InputEncoder extends Encoder {
   constructor(...args) {
     super(...args);
@@ -494,6 +524,15 @@ class InputEncoder extends Encoder {
     this.mod_coef = 0.1 * this.mod * (this.vmax - this.vmin);
     this.val = this.base_val;
     this.port.isinput = true;
+
+    this.flag = true;    
+  }
+
+  preload() {
+    if (this.flag) {
+      this.img = loadImage('./knob.png');
+      this.flag = false;
+    }
   }
 
   draw_sbf(buf, w, h) {
@@ -503,18 +542,20 @@ class InputEncoder extends Encoder {
       let sw = 1.5;
       let dv = this.mod * (this.vmax - this.vmin);
       this.ang_low = this.val2ang(this.base_val - dv) + buf.HALF_PI;
-      buf.stroke(60); buf.strokeWeight(sw); buf.noFill();
+      buf.stroke(0); buf.strokeWeight(2*sw); buf.noFill();
       this.ang_high = this.val2ang(this.base_val + dv) + buf.HALF_PI;
       buf.line(w / 2 + Math.cos(this.ang_high) * (this.r - 1), w / 2 + Math.sin(this.ang_high) * (this.r - 1), 
            w / 2 + Math.cos(this.ang_high) * (this.r + 3), w / 2 + Math.sin(this.ang_high) * (this.r + 3));
 
       if (this.ang_low < this.ang_high) {
         if (Math.abs(this.ang_low - this.ang_high) > 0.001) 
-          buf.arc(w / 2, w / 2, this.r * 2 + 2 * sw, this.r * 2 + 2 * sw, this.ang_low, this.ang_high); buf.fill(255);
+          buf.arc(w / 2, w / 2, this.r * 2 + 4 * sw, this.r * 2 + 4 * sw, this.ang_low, this.ang_high); buf.fill(255);
+        buf.strokeWeight(sw)
         buf.circle(w / 2 + Math.cos(this.ang_low) * (this.r + 2), w / 2 + Math.sin(this.ang_low) * (this.r + 2), 6);
       } else {
         if (Math.abs(this.ang_low - this.ang_high) > 0.001) 
-          buf.arc(w / 2, w / 2, this.r * 2 + 2 * sw, this.r * 2 + 2 * sw, this.ang_high, this.ang_low); buf.fill(255);
+          buf.arc(w / 2, w / 2, this.r * 2 + 4 * sw, this.r * 2 + 4 * sw, this.ang_high, this.ang_low); buf.fill(255);
+        buf.strokeWeight(sw)
         buf.circle(w / 2 + Math.cos(this.ang_low) * (this.r + 2), w / 2 + Math.sin(this.ang_low) * (this.r + 2), 6);
       }
     }
@@ -621,15 +662,44 @@ class Wire extends GraphicObject {
 
     buf.stroke(this.style.edge);
     buf.fill(this.style.core);
+
+    // buf.strokeWeight(0);
+    // buf.fill(60)
+    // if (this.a) buf.circle(p1[0], p1[1], this.a.w * 0.7 / 1);
+    // else buf.circle(p1[0], p1[1], 3.5);
+
+    // if (!this.b || this.b.visible) {
+    //   if (this.b) buf.circle(p2[0], p2[1], this.b.w * 0.7 / 1);
+    //   else buf.circle(p2[0], p2[1], 3.5);
+    // }
+
+    if ((this.a != null) && (this.b != null)) {
+      this.dest = null;
+      if (this.a.isinput) {
+        this.dest = this.a;
+      } else {
+        this.dest = this.b;
+      }
+      if (this.dest.value[0] === undefined) {
+        if (this.dest.value > 0) {
+          buf.fill([0, 255 * this.dest.value, 0]);
+        } else {
+          buf.fill([255 * Math.abs(this.dest.value), 0, 0]);
+        } 
+      } else buf.fill(this.style.core[0], this.style.core[1], this.style.core[2]);
+    } else
+      buf.fill(this.style.core[0], this.style.core[1], this.style.core[2]);
+
     buf.strokeWeight(0.5);
-    if (this.a) buf.circle(p1[0], p1[1], this.a.w * 0.7);
+    buf.stroke(0);
+    if (this.a) buf.circle(p1[0], p1[1], this.a.w * 0.7 / 1.4);
     else buf.circle(p1[0], p1[1], 3.5);
 
     if (!this.b || this.b.visible) {
-      if (this.b) buf.circle(p2[0], p2[1], this.b.w * 0.7);
+      if (this.b) buf.circle(p2[0], p2[1], this.b.w * 0.7 / 1.4);
       else buf.circle(p2[0], p2[1], 3.5);
       
-      buf.stroke(this.style.edge);
+      buf.stroke(0);
       buf.strokeWeight(2);
       buf.noFill();
       buf.bezier(p1[0], p1[1], midx1, midy1, midx2, midy2, p2[0], p2[1]);
@@ -704,6 +774,7 @@ class Module extends GraphicObject {
     this.o = {};
     this.c = {};
     this.style = style;
+
     this.id = 0;
     if (engine) engine.add_module(this);
   }
@@ -713,18 +784,18 @@ class Module extends GraphicObject {
     let rounding = 5;
     buf.background(0,0,0,0);
 
-    buf.stroke(this.style.shadow); buf.strokeWeight(sw); buf.strokeJoin(buf.ROUND); buf.fill(this.style.panel);
+    buf.stroke(this.style.shadow); buf.strokeWeight(sw * 3); buf.strokeJoin(buf.ROUND); buf.fill(this.style.panel);
     buf.rect(sw / 2, sw / 2, w - sw, h - sw, rounding, rounding, rounding, rounding);
 
-    buf.stroke(this.style.lining); buf.strokeWeight(sw / 3);
-    let line_step = 5;// + rackrand() * 3;
-    let x1 = 0;
-    while (x1 < w + h) {
-      x1 += line_step;
-      buf.line(x1, 0, 0, x1);
-    }
-    buf.stroke(255); buf.strokeWeight(10 * buf.scale); buf.noFill();
-    buf.arc(rounding, h - rounding, rounding*2.5, rounding*2.5, buf.HALF_PI - 0.01, buf.PI + 0.01);
+    // buf.stroke(this.style.lining); buf.strokeWeight(sw / 3);
+    // let line_step = 5;// + rackrand() * 3;
+    // let x1 = 0;
+    // while (x1 < w + h) {
+    //   x1 += line_step;
+    //   buf.line(x1, 0, 0, x1);
+    // }
+    // buf.stroke(255); buf.strokeWeight(10 * buf.scale); buf.noFill();
+    // buf.arc(rounding, h - rounding, rounding*2.5, rounding*2.5, buf.HALF_PI - 0.01, buf.PI + 0.01);
 
     buf.fill(50);
     let displ = 0.5;
@@ -757,8 +828,8 @@ class Module extends GraphicObject {
 
     if (this.name.length > 0) {
       sw = 1;
-      buf.stroke(30); buf.strokeWeight(sw); buf.fill(255);
-      buf.rect(w / 6, 5, w - w / 3, 20);
+      buf.stroke(30); buf.strokeWeight(sw); buf.noFill();
+      //buf.rect(w / 6, 5, w - w / 3, 20, 10);
 
       sw = 0.1;
       buf.textSize(15);
@@ -1027,7 +1098,7 @@ class Engine extends GraphicObject {
     image(this.wbf, x, y, this.w, this.h);
     const sw = 3; stroke(60); strokeWeight(sw); noFill(); rect(x + sw / 2, y + sw / 2, this.w - sw, this.h - sw);
     this.changed = false;
-    this.wbf_changed = false;
+    //this.wbf_changed = false;
   }
 
   update_width() {
@@ -1051,6 +1122,7 @@ class Engine extends GraphicObject {
   }
 
   add_wire(w) { 
+    w.style.core=[198, 70, 15, 255];
     this.wires.push(w); 
     this.wbf_changed = true;
   }

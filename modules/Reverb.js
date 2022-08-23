@@ -7,8 +7,8 @@ class RVR extends Module {
     this.add_control(new Encoder({x:hp2x(0.75), y:hp2y(0.43), r:hp2x(1.3), vmin:0, vmax:1, val:0.5, name:'D/W'}));
     this.add_input(new Port({x:hp2x(1.25), y:hp2y(0.59), r:hp2x(0.8), name:'I/L'}));
     this.add_input(new Port({x:hp2x(1.25), y:hp2y(0.69), r:hp2x(0.8), name:'I/R'}));
-    this.add_output(new Port({x:hp2x(1.25), y:hp2y(0.79), r:hp2x(0.8), name:'O/L'}));
-    this.add_output(new Port({x:hp2x(1.25), y:hp2y(0.89), r:hp2x(0.8), name:'O/R'}));
+    this.add_output(new Port({x:hp2x(1.25), y:hp2y(0.79), r:hp2x(0.8), name:'O/L', type:'output'}));
+    this.add_output(new Port({x:hp2x(1.25), y:hp2y(0.89), r:hp2x(0.8), name:'O/R', type:'output'}));
 
     this.dw = 0;
     this.size = 0;
@@ -86,4 +86,4 @@ class RVR extends Module {
   }
 }
 
-engine.add_module_class(DattorroReverb);
+engine.add_module_class(RVR);

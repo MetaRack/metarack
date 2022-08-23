@@ -1,17 +1,17 @@
 
 
-class Blackhole extends Module {
+class Particles extends Module {
   constructor() {
-    super({w:hp2x(10)});
+    super({w:hp2x(8)});
 
-    this.add_input(new InputEncoder({x:hp2x(1), y:42, r:9, vmin:1, vmax:5, val:1, precision: 0, name:'TYPE'}));
-    this.add_input(new InputEncoder({x:hp2x(5.5), y:42, r:9, vmin:0, vmax:1, val:0.5, name:'CLR'}));
-    this.add_input(new InputEncoder({x:hp2x(1), y:70, r:9, vmin:0, vmax:1, val:0.5, name:'FX'}));
-    this.add_input(new InputEncoder({x:hp2x(5.5), y:70, r:9,  vmin:0, vmax:1, val:0.5, name:'PAN'}));
-    this.add_output(new Port({x:hp2x(1), y:98, r:9, name:'O/L'}));
-    this.add_output(new Port({x:hp2x(5.5), y:98, r:9, name:'O/R'}));
+    this.add_input(new InputEncoder({x:hp2x(0.9), y:56, r:7, vmin:1, vmax:5, val:1, precision: 0, name:'TYPE'}));
+    this.add_input(new InputEncoder({x:hp2x(4.3), y:56, r:7, vmin:0, vmax:1, val:0.5, name:'CLR'}));
+    this.add_input(new InputEncoder({x:hp2x(0.9), y:81, r:7, vmin:0, vmax:1, val:0.5, name:'FX'}));
+    this.add_input(new InputEncoder({x:hp2x(4.3), y:81, r:7,  vmin:0, vmax:1, val:0.5, name:'PAN'}));
+    this.add_output(new Port({x:hp2x(4.3), y:106, r:7, name:'O/R', type:'output'}));
+    this.add_output(new Port({x:hp2x(0.9), y:106, r:7, name:'O/L', type:'output'}));
 
-    this.scope = new RawScope({x:hp2x(0.5), y:hp2y(0.07), w:hp2x(9), h:hp2y(0.25), size:30, divider:64});
+    this.scope = new RawScopeDouble({x:hp2x(0.5), y:hp2y(0.07), w:hp2x(7), h:hp2y(0.35), size:30, divider:64});
     this.attach(this.scope);
     this.delta = Math.PI * 2 / (sample_rate / 2);
     this.phase_inc = this.delta;
@@ -28,28 +28,8 @@ class Blackhole extends Module {
     this.lfos = new Array(this.max_enc);
     this.lfo_connect = new Array(this.max_enc);
     this.enc_connect = new Array(this.max_enc);
-    // this.pick_lfo();
-    // this.pick_enc();
-    // for (this.j = 0; this.j < this.max_enc; this.j++) {
-    //   this.lfos[this.j] = new VCOPrim();
-    //   this.lfos[this.j].set_frequency(Math.random() / 6);
-    // }
-
-    // this.params[0] = Math.random() * 10;
-    // this.params[1] = Math.random() * 10;
-    // this.params[2] = Math.random() * 10;
-    // this.params[3] = Math.random() * 10;    
-
-    // this.reverb = new DattorroReverbPrim();
-    // this.params[4] = 0.7 + Math.random() / 3;
-    // this.params[5] = 0.7 + Math.random() / 3;
-    // this.params[6] = 0.6 + Math.random() / 5;
     this.chorus = new ChorusPrim();
-    // this.params[7] = 0.2 + Math.random() / 3; //level
-    // this.params[8] = Math.random() * 2; //rate
     this.filter = new ExponentialFilterPrim();
-    // this.params[9] = (Math.random() * 1400) + 600; //freq;
-    // this.params[10] = Math.random() / 2;//res
 
     this.expr = function (t, c, p1, p2, p3, p4) {
       return (((t / c) / 2 % (p1)) + 3) * 2 + (((t / c) / 4 % (p2)) >> (p3) + 1)  | (((t / c) ^ (p4)))
@@ -117,38 +97,13 @@ class Blackhole extends Module {
     this.chorus.rate = this.i['PAN'].get(); 
     this.chorus.level = this.chorus.rate * 2; 
     this.filter.freq = (this.i['CLR'].get() * 1400) + 600;
-
-    // for (this.j = 0; this.j < this.max_enc; this.j++) {
-    //   //this.params[this.lfo_connect[this.j]] += this.lfos[this.j].out / 2 * this.mod;
-    //   this.params[this.lfo_connect[this.j]] *= (this.lfos[this.j].out + 1.1) * (this.mod + 0.001);
-    //   //this.params[this.enc_connect[this.j]] += (this.p[this.j] - 0.5) * 2;
-    //   this.params[this.enc_connect[this.j]] *= ((this.p[this.j] + 0.1) * 2);
-    //   //this.params[this.enc_connect[this.j]] *= this.p[this.j];
-    // }
-
-    // for (this.j = 0; this.j < 4; this.j++) {
-    //   this.params[this.j] = Math.max(this.params[this.j], 1);
-    // }
-
-    // this.chorus.level = this.params[7];
-    // this.chorus.rate = this.params[8];
-    // this.filter.freq = Math.min(Math.max(this.params[9], 600), 2000);
-    // this.filter.coeff_res = this.params[10];
-
-    // for (this.j = 0; this.j < this.max_enc; this.j++) {
-    //   this.params[this.enc_connect[this.j]] /= ((this.p[this.j] + 0.1) * 2);
-    //   this.params[this.lfo_connect[this.j]] /= (this.lfos[this.j].out + 1.1) * (this.mod + 0.001);
-    //   //this.params[this.lfo_connect[this.j]] -= this.lfos[this.j].out / 2 * this.mod;
-    //   //this.params[this.enc_connect[this.j]] -= (this.p[this.j] - 0.5) * 2;
-    //   //this.params[this.enc_connect[this.j]] *= this.p[this.j];
-    // }
   }
 
   process() {
 
     this.scope.divider = Math.PI / this.phase_inc / this.scope.size * 4;
 		this.phase += this.phase_inc;
-    this.scope.process((this.out_l - 0.05) * 40)
+    this.scope.process([(this.out_l - 0.05) * 40, (this.out_r - 0.05) * 40])
     if (this.phase > Math.PI * 2) {
       this.phase -= Math.PI * 2;
       this.scope.trig();
@@ -202,4 +157,4 @@ class Blackhole extends Module {
   }
 }
 
-engine.add_module_class(RandomNoise);
+engine.add_module_class(Particles);

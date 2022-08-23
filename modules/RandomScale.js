@@ -18,18 +18,18 @@ class Quantum extends Module {
       'Hungarian\nMinor'
     ]
 
-    this.add_input(new InputEncoder({x:hp2x(0.9), y:56, r:7, vmin:0, vmax:1, val:1, name:'MOD'}));
-    this.add_input(new InputEncoder({x:hp2x(4.3), y:56, r:7, vmin:0, vmax:1, val:0.5, name:'OFST'}));
-    this.add_input(new InputEncoder({x:hp2x(0.9), y:81, r:7, vmin:0, vmax:1, val:0.5, name:'WDTH'}));
-    this.add_input(new InputEncoder({x:hp2x(4.3), y:81, r:7, vmin:0, vmax:1, val:0.5, name:'DIV'}));
-    this.add_input(new Port({x:hp2x(4.3), y:106, r:7, name:'GATE'}));
-    this.add_output(new Port({x:hp2x(0.9), y:106, r:7, name:'OUT'}));
+    this.add_control(new Encoder({x:hp2x(0.9), y:56, r:7, vmin:0, vmax:1, val:1, name:'MOD'}));
+    this.add_control(new Encoder({x:hp2x(4.3), y:56, r:7, vmin:0, vmax:1, val:0.5, name:'OFST'}));
+    this.add_control(new Encoder({x:hp2x(0.9), y:81, r:7, vmin:0, vmax:1, val:0.5, name:'WDTH'}));
+    this.add_control(new Encoder({x:hp2x(4.3), y:81, r:7, vmin:0, vmax:1, val:0.5, name:'DIV'}));
+    this.add_input(new Port({x:hp2x(0.8), y:106, r:7, name:'GATE'}));
+    this.add_output(new Port({x:hp2x(4.3), y:106, r:7, name:'OUT', type:'output'}));
     this.max_enc = 2;
     this.p = new Array(2);
     this.gate = 0;
     this.pitch = 0;
     this.j = 0;
-    this.out = 0;
+    this.out = [0, 0, 0];
     this.div = 0;
     this.div_counter = 0;
     this.prev_gate = 0;
@@ -47,11 +47,11 @@ class Quantum extends Module {
       this.lfos[this.j].set_frequency(Math.random());
     }
 
-    this.scale = new ScalePrim();
+    this.scale = [new ScalePrim(), new ScalePrim(), new ScalePrim()];
     this.params[0] = Math.floor(Math.random() * 9); //scale
     this.params[1] = Math.floor(Math.random() * 12); //root
 
-    this.sh = new SampleAndHoldPrim();
+    this.sh = [new SampleAndHoldPrim(), new SampleAndHoldPrim(), new SampleAndHoldPrim()];
 
     this.params[2] = (Math.random() * 3) - 1.5; //offset
     this.params[3] = Math.random() * 2; //scale
@@ -62,23 +62,24 @@ class Quantum extends Module {
   }
 
   randomize() {
-    this.i['DIV'].set(Math.random());
-    this.i['WDTH'].set(Math.random());
-    this.i['MOD'].set(Math.random());
-    this.i['OFST'].set(Math.random());
+    this.c['DIV'].set(Math.random());
+    this.c['WDTH'].set(Math.random());
+    this.c['MOD'].set(Math.random());
+    this.c['OFST'].set(Math.random());
   }
 
 
   draw_cbf(buf, w, h) {
     super.draw_cbf(buf, w, h);
     let sw = 1;
-    buf.stroke(60); buf.strokeWeight(sw); buf.fill(230);
-    buf.rect(sw + w * 0.05, sw + h / 3 * 0.05 + 40, w - 2 * sw - w * 0.1, h/ 3 - 2 * sw - h / 3 * 0.1);
+    buf.stroke(60); buf.strokeWeight(sw*3); buf.fill(30);
+    buf.rect(sw + w * 0.05, sw + h / 3 * 0.05 + 40, w - 2 * sw - w * 0.1, h/ 3 - 2 * sw - h / 3 * 0.1, 5);
 
     let text = "Root: " + this.note_names[this.params[1]] + "\nScale: " + this.scales[this.params[0]];
 
     buf.textSize(h / 30);
-    buf.fill(60);
+    buf.stroke(240)
+    buf.fill(240);
     buf.textAlign(buf.LEFT, buf.TOP);
     buf.strokeWeight(sw / 10);
     buf.text(text, sw + w * 0.07, sw + h / 3 * 0.1 + 40);
@@ -102,9 +103,9 @@ class Quantum extends Module {
 
   update_params() {
 
-    this.mod = this.i['MOD'].get();
-    this.p[0] = this.i['OFST'].get();
-    this.p[1] = this.i['WDTH'].get();
+    this.mod = this.c['MOD'].get();
+    this.p[0] = this.c['OFST'].get();
+    this.p[1] = this.c['WDTH'].get();
     this.gate = this.i['GATE'].get();
 
 
@@ -119,8 +120,10 @@ class Quantum extends Module {
       this.params[this.j] = Math.max(this.params[this.j], 0);
     }
 
-    this.scale.scale = Math.floor(this.params[0]);
-    this.scale.root = Math.floor(this.params[1]);
+    for (this.j = 0; this.j < 3; this.j++) {
+      this.scale[this.j].scale = Math.floor(this.params[0]);
+      this.scale[this.j].root = Math.floor(this.params[1]);
+    }
 
     if (this.params[2] < -1.5) this.params[2] = -1.5;
     if (this.params[2] > 1.5) this.params[2] = 1.5;
@@ -131,7 +134,7 @@ class Quantum extends Module {
     if (this.params[4] < 0) this.params[4] = 0;
     if (this.params[4] > 3) this.params[4] = 3;
 
-    this.div = (Math.floor(this.params[4] * this.i['DIV'].get()) + 1);
+    this.div = (Math.floor(this.params[4] * this.c['DIV'].get()) + 1);
 
     for (this.j = 0; this.j < this.max_enc; this.j++) {
       //this.params[this.enc_connect[this.j]] /= ((this.p[this.j] + 0.1) * 2);
@@ -145,30 +148,47 @@ class Quantum extends Module {
   process() {
     this.update_params();
 
-    this.out = 0;
+    this.out = [0, 0, 0];
 
     if (this.prev_gate < this.gate) {
       this.div_counter++;
       if (this.div_counter >= this.div) {
         this.div_counter = 0;
-        this.sh.gate = 10;
+        for (this.j = 0; this.j < 3; this.j++) {
+          this.sh[this.j].gate = 10;
+        }
+        
       } 
-      else
-        this.sh.gate = 0;
+      else {
+        for (this.j = 0; this.j < 3; this.j++) {
+          this.sh[this.j].gate = 0;
+        }
+      }
     }
     else {
-      this.sh.gate = 0;
+      for (this.j = 0; this.j < 3; this.j++) {
+        this.sh[this.j].gate = 0;
+      }
     }
     //this.sh.gate = this.gate;
-    this.sh.in = (Math.random() - 0.5) * (this.params[3] * this.p[1] * 1) + (this.params[2] * (this.p[0] - 0.5) * 2);
-
-    this.scale.in = this.sh.out;
-    this.out = this.scale.out;
+    for (this.j = 0; this.j < 3; this.j++) {
+      this.sh[this.j].in = (Math.random() - 0.5) * (this.params[3] * this.p[1] * 1) + (this.params[2] * (this.p[0] - 0.5) * 2);
+    }
     
-    this.o['OUT'].set(this.out);
+    for (this.j = 0; this.j < 3; this.j++) {
+      this.scale[this.j].in = this.sh[this.j].out;
+      
+    }
+   
+  
+    this.out = [this.scale[0].out, this.scale[1].out, this.scale[2].out];
+    this.o['OUT'].set(this.out[0]);
 
-    this.scale.process();
-    this.sh.process();
+    for (this.j = 0; this.j < 3; this.j++) {
+      this.scale[this.j].process();
+      this.sh[this.j].process();
+    }
+    
 
     for (this.j = 0; this.j < this.max_enc; this.j++) {
       this.lfos[this.j].process();
@@ -178,4 +198,4 @@ class Quantum extends Module {
   }
 }
 
-engine.add_module_class(RandomScale);
+engine.add_module_class(Quantum);

@@ -15,7 +15,7 @@ class Clock extends Module {
 
     this.run_led = new Led({x:hp2x(4.6), y:9, r:2});
     this.attach(this.run_led);
-    this.run_led.set(0);
+    this.run_led.set(-10);
     this.run_button = new Button({x:hp2x(4.4), y:8, r:3, state:true});
     this.attach(this.run_button);
 
@@ -23,7 +23,7 @@ class Clock extends Module {
     this.attach(this.clock_led);
     this.clock_led.set(255);
 
-    this.add_output(new Port({x:hp2x(0.6), y:36, r:7, name:'CLK'}));
+    this.add_output(new Port({x:hp2x(0.6), y:36, r:7, name:'CLK', type:'output'}));
     this.sample_counter = 0;
     this.value = 0;
 
@@ -40,14 +40,14 @@ class Clock extends Module {
     this.curr_rst_gate = 0;
 
     for (var i = 1; i < 4; i++) {
-      this.add_output(new Port({x:hp2x(0.8 + (i-1)*3), y:88, r:6, name:'CLK ' + i.toString()}));
+      this.add_output(new Port({x:hp2x(0.8 + (i-1)*3), y:88, r:6, name:'CLK ' + i.toString(), type:'output'}));
       this.add_control(new StepEncoder({x:hp2x(0.8 + (i-1)*3), y:68, r:6, vmin:-4, vmax:4, val:1, step:1, precision:0, nonzero:true, name:'DIV' + i.toString()}));
       //this.sample_counter_row[i-1] = 0;
       //this.value_row[i-1] = 0;
     }
 
-    this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'Reset'}));
-    this.add_output(new Port({x:hp2x(3.8), y:108, r:6, name:'Run'}));
+    this.add_output(new Port({x:hp2x(0.8), y:108, r:6, name:'Reset', type:'output'}));
+    this.add_output(new Port({x:hp2x(3.8), y:108, r:6, name:'Run', type:'output'}));
 
     this.bpm = Math.max(1, Math.round(this.i['BPM'].get()));
     this.set_bpm();
@@ -100,7 +100,7 @@ class Clock extends Module {
 
     if (this.sample_counter > this.sample_threshold) {
       this.o['CLK'].set(10);
-      this.clock_led.set(0);
+      this.clock_led.set(-10);
     }
 
     if (this.sample_counter_row[0] > this.sample_threshold_row[0]) {
@@ -131,7 +131,7 @@ class Clock extends Module {
     }
 
     if (this.reset_counter > 0) {
-      this.reset_led.set(0);
+      this.reset_led.set(-10);
       this.reset_button.set(false);
     }
     
@@ -146,15 +146,15 @@ class Clock extends Module {
       this.sample_counter = 0;
       for (var i = 0; i < 3; i++)
         this.sample_counter_row[i] = 0;
-      this.clock_led.set(0);
-      this.reset_led.set(0);
+      this.clock_led.set(-10);
+      this.reset_led.set(-10);
     }
 
     this.curr_rst_gate = this.i['Reset'].get();
     if (this.prev_rst_gate < this.curr_rst_gate) {
       this.is_reset = true;
       this.sample_counter = 0;
-      this.clock_led.set(0);
+      this.clock_led.set(-10);
     }
     this.prev_rst_gate = this.curr_rst_gate;
     this.o['Reset'].set(this.is_reset*10);
@@ -166,20 +166,20 @@ class Clock extends Module {
 
       if (this.sample_counter > this.sample_threshold * 2) {
         this.sample_counter -= this.sample_threshold * 2;
-        this.o['CLK'].set(0);
+        this.o['CLK'].set(-10);
         this.clock_led.set(255);
       }
 
       if (this.sample_counter_row[0] > this.sample_threshold_row[0] * 2) {
-        this.o['CLK 1'].set(0);
+        this.o['CLK 1'].set(-10);
         this.sample_counter_row[0] -= this.sample_threshold_row[0] * 2;
       }
       if (this.sample_counter_row[1] > this.sample_threshold_row[1] * 2) {
-        this.o['CLK 2'].set(0);
+        this.o['CLK 2'].set(-10);
         this.sample_counter_row[1] -= this.sample_threshold_row[1] * 2;
       }
       if (this.sample_counter_row[2] > this.sample_threshold_row[2] * 2) {
-        this.o['CLK 3'].set(0);
+        this.o['CLK 3'].set(-10);
         this.sample_counter_row[2] -= this.sample_threshold_row[2] * 2;
       }
     }

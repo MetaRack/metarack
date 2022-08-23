@@ -20,10 +20,10 @@ class RawScope extends GraphicObject {
     draw_cbf(buf, w, h) {
       let sw = 5;
       let rounding = 5; 
-      buf.stroke(60); buf.strokeWeight(sw); buf.strokeJoin(buf.ROUND); buf.fill(255);
+      buf.stroke(60); buf.strokeWeight(sw); buf.strokeJoin(buf.ROUND); buf.fill(30);
       buf.rect(sw / 2, sw / 2, w - sw, h - sw, rounding, rounding, rounding, rounding);
 
-      buf.stroke(60);
+      buf.stroke(230);
       for (var i = 1; i < 20; i ++) {
         if (i % 5 == 0) buf.strokeWeight(0.5);
         else buf.strokeWeight(0.05);
@@ -33,7 +33,7 @@ class RawScope extends GraphicObject {
     }
 
     draw_dbf(buf, x, y, w, h) {
-      buf.stroke(60); buf.strokeWeight(0.5); buf.noFill();
+      buf.stroke(240); buf.strokeWeight(0.5); buf.noFill();
 
       this.delta = (w - this.offset * 2) / this.size;
       for (var j = 0; j < this.size - 1; j++) { 

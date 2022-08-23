@@ -10,11 +10,11 @@ class Chords extends Module {
     this.add_input(new InputEncoder({x:hp2x(7.6), y:81, r:7, vmin:0, vmax:1, val:0.5, name:'WAVE'}));
     this.add_input(new Port({x:hp2x(4.2), y:106, r:7, name:'GATE'}));
     this.add_input(new Port({x:hp2x(0.8), y:106, r:7, name:'PTCH'}));
-    this.add_output(new Port({x:hp2x(7.6), y:106, r:7, name:'OUT'}));
+    this.add_output(new Port({x:hp2x(7.6), y:106, r:7, name:'OUT', type:'output'}));
     this.max_enc = 5;
     this.p = new Array(5);
     this.gate = 0;
-    this.pitch = 0;
+    this.pitch = 0;//[0, 0, 0];
     this.j = 0;
     this.out = 0;
     this.max_param = 30;
@@ -76,25 +76,28 @@ class Chords extends Module {
     super.draw_cbf(buf, w, h);
     let sw = 5;
     let rounding = 5; 
-    buf.stroke(60); buf.strokeWeight(sw); buf.strokeJoin(buf.ROUND); buf.fill(255);
-    buf.rect(sw / 2 + w * 0.05, sw / 2 + h * 0.05, w * 0.9 - sw, h * 0.3 - sw, rounding, rounding, rounding, rounding);
+    buf.stroke(60); buf.strokeWeight(sw); buf.strokeJoin(buf.ROUND); buf.fill(30);
+    buf.rect(sw / 2 + w * 0.05, sw / 2 + h * 0.07, w * 0.9 - sw, h * 0.3 - sw, rounding, rounding, rounding, rounding);
 
     buf.stroke(60);
     for (var i = 1; i < 20; i ++) {
       if (i % 5 == 0) buf.strokeWeight(0.5);
       else buf.strokeWeight(0.05);
-      buf.line(i * w * 0.05, sw + h * 0.05, i * w * 0.05, h * 0.35 - sw);
-      buf.line(sw + w * 0.05, i * h * 0.3 * 0.05 + h * 0.05, w * 0.95 - sw, i * h * 0.3 * 0.05 + h * 0.05);
+      // buf.line(i * w * 0.05, sw + h * 0.07, i * w * 0.05, h * 0.37 - sw);
+      // buf.line(sw + w * 0.05, i * h * 0.3 * 0.05 + h * 0.07, w * 0.95 - sw, i * h * 0.3 * 0.05 + h * 0.07);
     }
   }
 
   draw_dbf(buf, x, y, w, h) {
-    buf.noFill();
+    buf.fill(240);
     buf.strokeWeight(0.5);
-    buf.stroke(40);
-    buf.circle(x + w/4, y - h/2 * 0.1 * (1 + this.osc[0].cv + 1) + h * 0.25, this.env[0].out / 10 * w/4);
-    buf.circle(x + w/2, y - h/2 * 0.1 * (1 + this.osc[1].cv + 1) + h * 0.25, this.env[1].out / 10 * w/4);
-    buf.circle(x + w/4*3, y - h/2 * 0.1 * (1 + this.osc[2].cv + 1) + h * 0.25, this.env[2].out / 10 * w/4);
+    buf.stroke(0);
+    if (this.env[0].out > 0.5)
+      buf.circle(x + w/4, y - h/2 * 0.1 * (1 + this.osc[0].cv + 1) + h * 0.32, this.env[0].out / 15 * w/4);
+    if (this.env[1].out > 0.5)
+      buf.circle(x + w/2, y - h/2 * 0.1 * (1 + this.osc[1].cv + 1) + h * 0.32, this.env[1].out / 15 * w/4);
+    if (this.env[2].out > 0.5) 
+      buf.circle(x + w/4*3, y - h/2 * 0.1 * (1 + this.osc[2].cv + 1) + h * 0.32, this.env[2].out / 15 * w/4);
   }
 
   pick_lfo() {
@@ -147,6 +150,8 @@ class Chords extends Module {
     this.gate = this.i['GATE'].get();
     this.pitch = this.i['PTCH'].get();
 
+    
+
 
     for (this.j = 0; this.j < this.max_enc; this.j++) {
       //this.params[this.lfo_connect[this.j]] += (this.lfos[this.j].out / 2 * this.mod);
@@ -160,6 +165,8 @@ class Chords extends Module {
       this.osc[this.j].wave = this.params[1 + 10*this.j] * (this.p[2]) * 1.7;
       this.osc[this.j].amp = Math.max(this.params[2 + 10*this.j], 0.7);
       this.osc[this.j].cv = this.pitch;
+      // if (this.pitch[this.j] != undefined)
+      //   this.osc[this.j].cv = this.pitch[this.j];
 
       this.env[this.j].A = this.params[3 + 10*this.j] * (this.p[0] + 0.3) * 1.7;
       this.env[this.j].D = this.params[4 + 10*this.j] * (this.p[0] + 0.3) * 1.7;
@@ -204,8 +211,9 @@ class Chords extends Module {
     // this.reverb.in_l = this.out / 3;
     // this.reverb.in_r = this.out / 3;
     // this.reverb.process();
+    
     this.o['OUT'].set(this.out / 3);
   }
 }
 
-engine.add_module_class(RandomLead);
+engine.add_module_class(Chords);
