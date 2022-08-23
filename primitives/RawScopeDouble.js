@@ -46,7 +46,7 @@ class RawScopeDouble extends GraphicObject {
       this.y2 = -this.buffer_r[(this.i + j + 2) % this.size] * h / 1 / 10 + h / 2;
       //buf.line(x + this.offset + j * this.delta, y + this.y1, x + this.offset + (j + 1) * this.delta, y + this.y2);
       //buf.point(x + this.y1 + h/4 * 1.5, y + this.y2 * 1.5);
-      buf.strokeWeight(2);
+      buf.strokeWeight(1.2);
       buf.point(x + this.y1, y + this.y2);
       //buf.strokeWeight(1);
       //buf.point(x + this.y1 + h/4 * 1.5, y + this.y2 * 1.5);

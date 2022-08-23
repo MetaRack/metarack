@@ -35,10 +35,14 @@ class PortStyle {
   }
 }
 
+let wire_color = [198, 70, 15, 255];
+if (Math.random() < 0.5)
+      wire_color = [254, 197, 46, 255];
+
 class WireStyle {
   // constructor(core=[100, 100, 180, 255], edge=40) {
   constructor(core=255, edge=80) {
-    this.core = core;
+    this.core = wire_color;
     this.edge = edge;
   }
 }
@@ -303,6 +307,14 @@ class Port extends GraphicObject {
   }
 }
 
+let knob_color;
+if (Math.random() < 0.25) {
+  knob_color = [232, 111, 104];
+} else  if (Math.random() < 0.5) {
+  knob_color = [131, 183, 153]
+} else if (Math.random() < 0.75) {
+  knob_color = [228, 216, 180];
+} else knob_color = 190;
 
 
 class Encoder extends GraphicObject {
@@ -320,7 +332,8 @@ class Encoder extends GraphicObject {
 
     this.rc = 0.8;
     this.r = 0;
-
+    
+    //knob_color = [131, 183, 153];//190
     this.precision = Math.min(precision, Math.min(2, 2 - Math.floor(Math.log10(Math.abs(vmax - vmin) / 20))));
     this.prev_base_val = this.base_val;
     this.sample_counter = 0;
@@ -345,9 +358,13 @@ class Encoder extends GraphicObject {
     //buf.stroke(60); buf.strokeWeight(this.r/3); buf.fill(127);
     buf.stroke(0); buf.strokeWeight(1.5*sw); buf.fill(60);
     buf.circle(w / 2, w / 2, this.r * 2 - 2 * sw);
-    buf.stroke(60); buf.strokeWeight(sw); buf.fill(190);
+    buf.stroke(60); buf.strokeWeight(sw); 
+    
+    buf.fill(knob_color);
     buf.circle(w / 2, w / 2, (this.r * 2 - 2 * sw) / 1.4);
-    buf.stroke(190); buf.strokeWeight(sw); buf.fill(190);
+    buf.stroke(knob_color); 
+    buf.strokeWeight(sw); 
+    buf.fill(knob_color);
     buf.circle(w / 2, w / 2, (this.r * 2 - 2 * sw) / 2);
   }
 
@@ -363,7 +380,8 @@ class Encoder extends GraphicObject {
     //   buf.arc(w / 2, w / 2, this.r * 2 - 2 * sw, this.r * 2 - 2 * sw, this.ang_high - 0.05, buf.HALF_PI);
     sw = 2;
     buf.strokeWeight(sw*3);
-    buf.stroke(190);
+    buf.stroke(knob_color);
+    //buf.stroke([131, 183, 153])
     buf.line(w / 2 + Math.cos(this.ang_high) * (this.r - 2.8), w / 2 + Math.sin(this.ang_high) * (this.r - 2.8), 
              w / 2 + Math.cos(this.ang_high) * (this.r + 1)/2, w / 2 + Math.sin(this.ang_high) * (this.r + 1)/2);
 
@@ -1121,8 +1139,9 @@ class Engine extends GraphicObject {
     this.undo_checkpoint();
   }
 
+
   add_wire(w) { 
-    w.style.core=[198, 70, 15, 255];
+    //w.style.core=[198, 70, 15, 255];
     this.wires.push(w); 
     this.wbf_changed = true;
   }
