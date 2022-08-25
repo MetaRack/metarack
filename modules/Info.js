@@ -11,7 +11,7 @@ class Info extends Module {
     buf.stroke(60); buf.strokeWeight(sw*3); buf.fill(255);
     //buf.rect(sw + w * 0.05, sw + h * 0.05, (w - 2 * sw - w * 0.1), (h - 2 * sw - h * 0.1) / 1.8, 5);
 
-    let text = "F - fullscreen\nU - undo\n\nmodulation level - \nhold cmd \nwhile rotating a knob\n\nclick on screen to start\n\ntested in chrome"
+    let text = "F - fullscreen\n\nU - undo\n\nS - save\n\nL - load\n\n\nmodulation level - \nhold cmd \nwhile rotating a knob\n\nclick on screen to start\n"
 
     buf.textSize(h / 30);
     buf.fill(0);
