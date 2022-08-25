@@ -19,6 +19,9 @@ let clock = null;
 let isBG = Math.random();
 let bg = null;
 
+let lead_fx = null;
+let noise_fx = null;
+
 function newLead(num) {
 
   // const lead = new ClockedRandomChords();
@@ -44,6 +47,9 @@ function newLead(num) {
   // }
 
   const lead = new Chords();
+  if (lead_fx == null) {
+    lead_fx = lead;
+  }
   const scale = new Quantum();
   lead.randomize();
   scale.randomize();
@@ -96,12 +102,28 @@ function newLead(num) {
 function newFX(num) {
   const fx = new FX();
   fx.randomize();
-  const audio = new VCO();
-  
-  audio.backup = (Math.random() - 0.5) * 2 - 0.2;
-  audio.i['CV'].set(audio.backup);
-  audio.i['WAVE'].set((Math.random() - 0.5));
-  audio.i['AMP'].set(0.25);
+
+  if ((Math.random() < 0.5) && (lead_fx != null)) {
+    const audio = lead_fx;
+    
+    audio.o['OUT'].connect(fx.i['I/L']);
+    audio.o['OUT'].connect(fx.i['I/R']);
+  } else  if ((Math.random() < 1) && (noise_fx != null)) {
+    const audio = noise_fx;
+    
+    audio.o['O/L'].connect(fx.i['I/L']);
+    audio.o['O/R'].connect(fx.i['I/R']);
+  } else {
+    const audio = new VCO();
+
+    audio.o['OUT'].connect(fx.i['I/L']);
+    audio.o['OUT'].connect(fx.i['I/R']);
+    
+    audio.backup = (Math.random() - 1.5) * 2 - 0.2;
+    audio.i['CV'].set(audio.backup);
+    audio.i['WAVE'].set((Math.random() - 0.5));
+    audio.i['AMP'].set(0.25);
+  }
 
   const rand = new Alteration();
   rand.c['FREQ'].set(Math.random() * 2);
@@ -112,37 +134,6 @@ function newFX(num) {
     rand.o['OUT'].connect(fx.i['LVL']);
   }
 
-  audio.o['OUT'].connect(fx.i['I/L']);
-  audio.o['OUT'].connect(fx.i['I/R']);
-
-  // const lead = new Chords();
-  // const scale = new Quantum();
-  
-  // if (!isClock) {
-  //   clock = new Clock();
-  //   clock.i['BPM'].set(Math.random() * 100 + 70);
-  //   isClock = true;
-  //   if (isBG >= 0.5) {
-  //     bg = new BG();
-  //     bg.i['P'].set(Math.random() / 2 + 0.4)
-  //   }
-  // }
-
-  // if (isBG < 0.5) {
-  //   lead.i['GATE'].connect(clock.o['CLK']);
-  //   lead.i['PTCH'].connect(scale.o['OUT']);
-  //   scale.i['GATE'].connect(clock.o['CLK']);
-  //   lead.o['OUT'].connect(fx.i['I/L']);
-  //   lead.o['OUT'].connect(fx.i['I/R']);
-  // } else {
-  //   bg.i['IN'].connect(clock.o['CLK']);
-  //   lead.i['GATE'].connect(bg.o['OUTL']);
-  //   lead.i['PTCH'].connect(scale.o['OUT']);
-  //   scale.i['GATE'].connect(bg.o['OUTL']);
-  //   lead.o['OUT'].connect(fx.i['I/L']);
-  //   lead.o['OUT'].connect(fx.i['I/R']);
-  // }
-
   fx.o['O/L'].connect(mixer.i[`${num}L`])
   fx.o['O/R'].connect(mixer.i[`${num}R`])
 }
@@ -150,6 +141,11 @@ function newFX(num) {
 function newNoise(num) {
   const noise = new Particles();
   noise.randomize();
+
+  if (noise_fx == null) {
+    noise_fx = noise;
+  }
+
   const rand = new Alteration();
   if (Math.random() < 0.5) {
     rand.o['OUT'].connect(noise.i['FX'])
@@ -180,7 +176,7 @@ mixer.o['O/R'].connect(reverb.i['I/R']);
 reverb.o['O/L'].connect(engine.module0.i['LEFT']);
 reverb.o['O/R'].connect(engine.module0.i['RIGHT']);
 
-for (let i = 1; i <=Math.round(Math.random() * 3 + 1); i++) {
+for (let i = 1; i <=Math.round(Math.random() * 2 + 2); i++) {
   let choise = Math.random();
   if (choise < 0.33) {
     newLead(i);
