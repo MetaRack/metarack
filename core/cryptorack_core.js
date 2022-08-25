@@ -1523,6 +1523,30 @@ function keyPressed() {
   }
 }
 
+document.addEventListener('fullscreenchange', (event) => { 
+
+  setTimeout(function () {
+    rackwidth = document.documentElement.clientWidth;
+    rackheight = document.documentElement.clientHeight;
+    resizeCanvas(rackwidth, rackheight);
+    engine.set_size(rackwidth, rackheight);
+
+    let max = 0;
+
+    engine.gchildren.forEach(element => {
+      if (element.name.length > 0) {
+        if ((element.x + element.w) > max) {
+          max = element.x + element.w;
+        }
+      }
+    });
+
+    engine.gchildren[0].set_size(max - 1, engine.gchildren[0].h)
+    engine.w = (max + 1) * engine.scale;
+  }, 50);
+  
+});
+
 function keyReleased() {
   if (keyCode === 91) {
     engine.cmdpressed = false;
@@ -1534,7 +1558,8 @@ function keyReleased() {
 //   rackwidth = document.documentElement.clientWidth;
 //   rackheight = document.documentElement.clientHeight;
 //   resizeCanvas(rackwidth, rackheight);
-//   engine.set_size(rackwidth * 0.8, rackheight * 0.8);
+//   //engine.set_size(rackwidth * 0.8, rackheight * 0.8);
+//   engine.set_size((pw - engine.w)/2, ph);
 //   engine.stop = false;
 // }
 

@@ -6,8 +6,8 @@ ws = new WireStyle(core=255, edge=80);
 let pw = document.documentElement.clientWidth;
 let ph = document.documentElement.clientHeight;
 
-let rackwidth = pw * 0.8;
-let rackheight = ph * 0.8;
+let rackwidth = pw//pw * 0.8;
+let rackheight = ph//ph * 0.8;
 engine.set_size(rackwidth, rackheight);
 engine.set_module_style(ms);
 engine.set_port_style(ps);
@@ -166,7 +166,7 @@ function newNoise(num) {
 
 new Info();
 
-const mixer = new StereoMixer4();
+const mixer = new StereoMixer(6);
 const reverb = new RVR();
 reverb.c['D/W'].set(0.8);
 reverb.c['DEC'].set(0.8);
@@ -176,7 +176,7 @@ mixer.o['O/R'].connect(reverb.i['I/R']);
 reverb.o['O/L'].connect(engine.module0.i['LEFT']);
 reverb.o['O/R'].connect(engine.module0.i['RIGHT']);
 
-for (let i = 1; i <=Math.round(Math.random() * 2 + 2); i++) {
+for (let i = 1; i <=Math.round(Math.random() * 2 + 4); i++) {
   let choise = Math.random();
   if (choise < 0.33) {
     newLead(i);
@@ -210,9 +210,10 @@ engine.w = (max + 1) * engine.scale;
 function setup() {
   createCanvas(pw, ph);
   frameRate(fps);
+  //engine.scale = 3.2;
 }
 
 function draw() { 
-  background(0,0,0,0);
-  engine.draw((pw - engine.w)/2, ph * 0.1); 
+  background(0);
+  engine.draw((pw - engine.w)/2, 0); 
 }

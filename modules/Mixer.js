@@ -121,20 +121,20 @@ class StereoMixer extends Module {
     this.solos = new Array(chan_num);
     for (let i = 0; i < chan_num; i ++) {
       this.channels[i] = new Array(2);
-      this.channels[i][0] = new Port({x:hp2x(i * 2 + 0.75), y:hp2y(0.60), r:4, name:`${i+1}L`});
-      this.channels[i][1] = new Port({x:hp2x(i * 2 + 0.75), y:hp2y(0.70), r:4, name:`${i+1}R`});
-      this.gains[i] = new Encoder({x:hp2x(i * 2 + 0.75), y:hp2y(0.80), r:hp2x(0.8), vmin:0, vmax:1, val:0.5, name:`AMP${i+1}`});
-      this.pans[i] = new InputEncoder({x:hp2x(i * 2 + 0.75), y:hp2y(0.90), r:hp2x(0.8), vmin:0, vmax:1, val:0.5, name:`PAN${i+1}`});
+      this.channels[i][0] = new Port({x:hp2x(i * 2 + 0.75), y:hp2y(0.80), r:4, name:`${i+1}L`});
+      this.channels[i][1] = new Port({x:hp2x(i * 2 + 0.75), y:hp2y(0.90), r:4, name:`${i+1}R`});
+      this.gains[i] = new Encoder({x:hp2x(i * 2 + 0.75), y:hp2y(0.70), r:hp2x(0.8), vmin:0, vmax:1, val:0.5, name:`AMP${i+1}`});
+      //this.pans[i] = new InputEncoder({x:hp2x(i * 2 + 0.75), y:hp2y(0.90), r:hp2x(0.8), vmin:0, vmax:1, val:0.5, name:`PAN${i+1}`});
       // this.mutes[i] = new Button({x:hp2x(i * 2 + 0.5), y:hp2y(0.95), r:hp2x(0.8), name:`MUT${i+1}`});
       this.add_input(this.channels[i][0]);
       this.add_input(this.channels[i][1]);
       this.add_control(this.gains[i]);
-      this.add_input(this.pans[i]);
+      //this.add_input(this.pans[i]);
       // this.add_control(this.mutes[i]);
     }
-    this.add_output(new Port({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.60), r:4, name:'O/L', type:'output'}));
-    this.add_output(new Port({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.70), r:4, name:'O/R', type:'output'}));
-    this.gains[chan_num] = new Encoder({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.80), r:hp2x(0.8), vmin:0, vmax:chan_num, val:1, name:`AMP`});
+    this.add_output(new Port({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.80), r:4, name:'O/L', type:'output'}));
+    this.add_output(new Port({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.90), r:4, name:'O/R', type:'output'}));
+    this.gains[chan_num] = new Encoder({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.70), r:hp2x(0.8), vmin:0, vmax:chan_num, val:1, name:`AMP`});
     this.add_control(this.gains[chan_num]);
     this.lvalue = 0;
     this.L = 0;
@@ -151,14 +151,14 @@ class StereoMixer extends Module {
     super.draw_cbf(buf, w, h);
     buf.noFill();
     for (this.dit = 0; this.dit < this.chan_num + 1; this.dit ++) {        
-      buf.rect(w / (this.chan_num + 1.25) * (this.dit + 0.35), h * 0.07, w / (this.chan_num + 1.25) * 0.6, h * 0.5);
+      buf.rect(w / (this.chan_num + 1.25) * (this.dit + 0.35), h * 0.07, w / (this.chan_num + 1.25) * 0.6, h * 0.6);
     }
   }
 
   draw_dbf(buf, x, y, w, h) {
     buf.stroke(60);
     buf.strokeWeight(0.1)
-    for (this.dit = 0; this.dit < this.chan_num; this.dit ++) {
+    for (this.dit = 0; this.dit < (this.chan_num); this.dit ++) {
       this.damp = this.gains[this.dit].get();
       buf.fill([131, 183, 153])
       this.dampL = Math.abs(this.channels[this.dit][0].get()) / 1 * this.damp;
@@ -169,16 +169,16 @@ class StereoMixer extends Module {
         this.dampR = this.dampL;
 
       buf.rect(x + w / (this.chan_num + 1.25) * (this.dit + 0.375), 
-               y + h * 0.07 + h * 0.5 * (1 - this.dampL), 
+               y + h * 0.07 + h * 0.6 * (1 - this.dampL), 
                w / (this.chan_num + 1.25) * 0.25, 
-               h * 0.5 * this.dampL);
+               h * 0.6 * this.dampL);
 
       buf.fill([232, 111, 104])
 
       buf.rect(x + w / (this.chan_num + 1.25) * (this.dit + 0.675), 
-               y + h * 0.07 + h * 0.5 * (1 - this.dampR), 
+               y + h * 0.07 + h * 0.6 * (1 - this.dampR), 
                w / (this.chan_num + 1.25) * 0.25, 
-               h * 0.5 * this.dampR);
+               h * 0.6 * this.dampR);
       // this.channels[this.it][0].get()
     }
   }
