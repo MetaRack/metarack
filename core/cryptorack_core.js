@@ -417,7 +417,7 @@ class Encoder extends GraphicObject {
     else {
       this.sample_counter = 0;
       if (!this.nochange_flag) this.nochange_counter++;
-      if (this.nochange_counter > sample_rate * 10) {
+      if (this.nochange_counter > sample_rate * 30) {
         this.nochange_counter = 0;
         this.nochange_flag = true;
       }
@@ -607,7 +607,7 @@ class InputEncoder extends Encoder {
     else {
       this.sample_counter = 0;
       if (!this.nochange_flag) this.nochange_counter++;
-      if (this.nochange_counter > sample_rate * 10) { //here (* 2)
+      if (this.nochange_counter > sample_rate * 30) { //here (* 2)
         this.nochange_counter = 0;
         this.nochange_flag = true;
       }
@@ -707,9 +707,9 @@ class Wire extends GraphicObject {
       }
       if (this.dest.value[0] === undefined) {
         if (this.dest.value > 0) {
-          buf.fill([0, 255 * this.dest.value, 0]);
+          buf.fill([0, 255 * this.dest.value * 2, 0]);
         } else {
-          buf.fill([255 * Math.abs(this.dest.value), 0, 0]);
+          buf.fill([255 * Math.abs(this.dest.value * 2), 0, 0]);
         } 
       } else buf.fill(this.style.core[0], this.style.core[1], this.style.core[2]);
     } else

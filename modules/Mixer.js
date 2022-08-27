@@ -134,7 +134,7 @@ class StereoMixer extends Module {
     }
     this.add_output(new Port({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.80), r:4, name:'O/L', type:'output'}));
     this.add_output(new Port({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.90), r:4, name:'O/R', type:'output'}));
-    this.gains[chan_num] = new Encoder({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.70), r:hp2x(0.8), vmin:0, vmax:chan_num, val:1, name:`AMP`});
+    this.gains[chan_num] = new Encoder({x:hp2x(chan_num * 2 + 0.75), y:hp2y(0.70), r:hp2x(0.8), vmin:0, vmax:chan_num, val:chan_num/2, name:`AMP`});
     this.add_control(this.gains[chan_num]);
     this.lvalue = 0;
     this.L = 0;
