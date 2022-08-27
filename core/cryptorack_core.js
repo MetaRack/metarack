@@ -403,7 +403,7 @@ class Encoder extends GraphicObject {
     if (this.changed) {
       this.nochange_counter = 0;
       this.nochange_flag = false;
-      this.c = this.sample_counter / (sample_rate / fps);
+      this.c = this.sample_counter / (sample_rate / 0.1);
       this.sample_counter++;
       if (this.c <= 1)
         this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
@@ -417,7 +417,7 @@ class Encoder extends GraphicObject {
     else {
       this.sample_counter = 0;
       if (!this.nochange_flag) this.nochange_counter++;
-      if (this.nochange_counter > sample_rate / 2) {
+      if (this.nochange_counter > sample_rate * 10) {
         this.nochange_counter = 0;
         this.nochange_flag = true;
       }
@@ -585,22 +585,29 @@ class InputEncoder extends Encoder {
     if (this.changed) {
       this.nochange_counter = 0;
       this.nochange_flag = false;
-      this.c = this.sample_counter / (sample_rate / fps);
+      this.c = this.sample_counter / (sample_rate / fps); //here
       this.sample_counter++;
       if (this.c <= 1) {
+        //this.filter.in = ((Math.sin((this.c - 0.5) * Math.PI) / 2) + 0.5) * (this.base_val - this.prev_base_val) + this.prev_base_val;
         this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
+
+        //return ((Math.sin((this.c - 0.5) * Math.PI) / 2) + 0.5) * (this.base_val - this.prev_base_val) + this.prev_base_val + this.mod_coef * this.port.get();
       }
       else {
         this.filter.in = this.base_val;
+        //this.filter2.in = this.filter.lp;
+        //return this.base_val + this.mod_coef * this.port.get(); 
       }
+      //this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
       this.filter.process();
+      //this.filter2.process();
       return this.filter.lp + this.mod_coef * this.port.get();
       
     }
     else {
       this.sample_counter = 0;
       if (!this.nochange_flag) this.nochange_counter++;
-      if (this.nochange_counter > sample_rate * 2) {
+      if (this.nochange_counter > sample_rate * 10) { //here (* 2)
         this.nochange_counter = 0;
         this.nochange_flag = true;
       }
