@@ -35,9 +35,16 @@ class PortStyle {
   }
 }
 
+
+let wire_diff = [(Math.random() - 0.5) * 180, (Math.random() - 0.5) * 180, (Math.random() - 0.5) * 180];
+
 let wire_color = [198, 70, 15, 255];
 if (Math.random() < 0.5)
-      wire_color = [254, 197, 46, 255];
+      wire_color = [254, 197, 46];
+
+wire_color = [wire_color[0], wire_color[1] + wire_diff[1], wire_color[2] + wire_diff[2]]
+
+console.log(wire_diff)
 
 class WireStyle {
   // constructor(core=[100, 100, 180, 255], edge=40) {
@@ -47,9 +54,16 @@ class WireStyle {
   }
 }
 
+
+let white_text = false;
+
+let diff = [(Math.random() - 0.5) * 30, (Math.random() - 0.5) * 30, (Math.random() - 0.5) * 30];
+let base = Math.random() * 30 + 200
+let module_color = [base + diff[0], base + diff[1], base + diff[2]];
+
 class ModuleStyle {
   // constructor(panel=[140, 80, 100, 255], frame=10, shadow=70, name=40, lining=180, label=255, background=255) {
-  constructor(panel=230, frame=60, shadow=70, name=40, lining=100, label=255, background=255) {
+  constructor(panel=module_color, frame=60, shadow=70, name=40, lining=100, label=255, background=255) {
     this.panel = panel;
     this.frame = frame;
     this.shadow = shadow;
@@ -314,7 +328,10 @@ if (Math.random() < 0.25) {
   knob_color = [131, 183, 153]
 } else if (Math.random() < 0.75) {
   knob_color = [228, 216, 180];
-} else knob_color = 190;
+} else knob_color = [190, 190, 190];
+
+let knob_diff = [(Math.random() - 0.5) * 80, (Math.random() - 0.5) * 80, (Math.random() - 0.5) * 80];
+knob_color = [knob_color[0] + knob_diff[0], knob_color[1] + knob_diff[1], knob_color[2] + knob_diff[2]]
 
 
 class Encoder extends GraphicObject {
@@ -391,7 +408,11 @@ class Encoder extends GraphicObject {
 
     sw = 0.1;
     buf.textSize(w / 4);
-    buf.fill(0);
+
+    if (white_text)
+      buf.fill(245);
+    else
+      buf.fill(0);
     buf.textAlign(buf.CENTER, buf.CENTER);
     buf.strokeWeight(sw);
     //buf.text(this.base_val.toFixed(this.precision), w / 2, h / 3);
