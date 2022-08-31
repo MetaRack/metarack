@@ -44,8 +44,6 @@ if (rackrand() < 0.5)
 
 wire_color = [wire_color[0], wire_color[1] + wire_diff[1], wire_color[2] + wire_diff[2]]
 
-console.log(wire_diff)
-
 class WireStyle {
   // constructor(core=[100, 100, 180, 255], edge=40) {
   constructor(core=255, edge=80) {
@@ -349,6 +347,9 @@ class Encoder extends GraphicObject {
 
     this.rc = 0.8;
     this.r = 0;
+
+    this.value_changed = false;
+    this.first_time = true;
     
     //knob_color = [131, 183, 153];//190
     this.precision = Math.min(precision, Math.min(2, 2 - Math.floor(Math.log10(Math.abs(vmax - vmin) / 20))));
@@ -421,41 +422,52 @@ class Encoder extends GraphicObject {
   }
 
   get() { 
-    if (this.changed) {
-      this.nochange_counter = 0;
-      this.nochange_flag = false;
-      this.c = this.sample_counter / (sample_rate / 0.1);
-      this.sample_counter++;
-      if (this.c <= 1)
-        this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
-      else {
-        this.filter.in = this.base_val;
-      }
-      this.filter.process();
-      return this.filter.lp;
-      
-    }
-    else {
-      this.sample_counter = 0;
-      if (!this.nochange_flag) this.nochange_counter++;
-      if (this.nochange_counter > sample_rate * 30) {
+    if (this.value_changed) {
+      if ((this.changed)) {
         this.nochange_counter = 0;
-        this.nochange_flag = true;
-      }
-      this.prev_base_val = this.base_val;
-      if (!this.nochange_flag) {
-        this.filter.in = this.base_val;
+        this.nochange_flag = false;
+        this.c = this.sample_counter / (sample_rate / 0.1);
+        this.sample_counter++;
+        if (this.c <= 1)
+          this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
+        else {
+          this.filter.in = this.base_val;
+
+        }
         this.filter.process();
         return this.filter.lp;
+        
       }
       else {
-        return this.base_val;
+        this.sample_counter = 0;
+        if (!this.nochange_flag) this.nochange_counter++;
+        if (this.nochange_counter > sample_rate * 30) {
+          this.nochange_counter = 0;
+          this.nochange_flag = true;
+        }
+        this.prev_base_val = this.base_val;
+        if (!this.nochange_flag) {
+          this.filter.in = this.base_val;
+          this.filter.process();
+          return this.filter.lp;
+        }
+        else {
+          return this.base_val;
+        }
       }
+    } 
+    else {
+      return this.base_val;
     }
-    
   }
 
-  set(v) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = v; this.changed = true; }
+  set(v) { 
+    if (this.first_time) 
+      this.first_time = false; 
+    else
+      this.value_changed = true;
+    this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = v; this.changed = true; 
+  }
 
   mouse_pressed(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.changed = true; }
   mouse_dragged(x, y, dx, dy) { 
@@ -465,9 +477,10 @@ class Encoder extends GraphicObject {
     if (this.base_val > this.vmax) this.base_val = this.vmax;
     if (this.base_val < this.vmin) this.base_val = this.vmin + 0.0001;
     this.changed=true;
+    this.value_changed = true;
   }
   mouse_released(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.changed = true; engine.undo_checkpoint();}
-  double_clicked(x, y, dx, dy) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = this.def_val; this.mod = this.def_mod; this.changed = true; engine.undo_checkpoint();}
+  double_clicked(x, y, dx, dy) { this.value_changed = true; this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = this.def_val; this.mod = this.def_mod; this.changed = true; engine.undo_checkpoint();}
 
   save() { return this.base_val.toFixed(6); }
   load(s) { 
@@ -603,48 +616,61 @@ class InputEncoder extends Encoder {
   draw_dbf(buf, x, y, w, h) { this.mod_coef = (this.port.wires.length > 0) * 0.1 * this.mod * (this.vmax - this.vmin); }
   
   get() { 
-    if (this.changed) {
-      this.nochange_counter = 0;
-      this.nochange_flag = false;
-      this.c = this.sample_counter / (sample_rate / fps); //here
-      this.sample_counter++;
-      if (this.c <= 1) {
-        //this.filter.in = ((Math.sin((this.c - 0.5) * Math.PI) / 2) + 0.5) * (this.base_val - this.prev_base_val) + this.prev_base_val;
-        this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
+    if ((this.value_changed)) {
+      if ((this.changed)) {
+        this.nochange_counter = 0;
+        this.nochange_flag = false;
+        this.c = this.sample_counter / (sample_rate / fps); //here
+        this.sample_counter++;
+        if (this.c <= 1) {
+          //this.filter.in = ((Math.sin((this.c - 0.5) * Math.PI) / 2) + 0.5) * (this.base_val - this.prev_base_val) + this.prev_base_val;
+          this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
 
-        //return ((Math.sin((this.c - 0.5) * Math.PI) / 2) + 0.5) * (this.base_val - this.prev_base_val) + this.prev_base_val + this.mod_coef * this.port.get();
+          //return ((Math.sin((this.c - 0.5) * Math.PI) / 2) + 0.5) * (this.base_val - this.prev_base_val) + this.prev_base_val + this.mod_coef * this.port.get();
+        }
+        else {
+          this.filter.in = this.base_val;
+
+          //this.filter2.in = this.filter.lp;
+          //return this.base_val + this.mod_coef * this.port.get(); 
+        }
+        //this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
+        this.filter.process();
+        //this.filter2.process();
+        return this.filter.lp + this.mod_coef * this.port.get();
+        
       }
       else {
-        this.filter.in = this.base_val;
-        //this.filter2.in = this.filter.lp;
+        this.sample_counter = 0;
+        if (!this.nochange_flag) this.nochange_counter++;
+        if (this.nochange_counter > sample_rate * 30) { //here (* 2)
+          this.nochange_counter = 0;
+          this.nochange_flag = true;
+        }
+        this.prev_base_val = this.base_val;
+        if (!this.nochange_flag) {
+          this.filter.in = this.base_val;
+          this.filter.process();
+          return this.filter.lp + this.mod_coef * this.port.get();
+        }
+        else {
+          return this.base_val + this.mod_coef * this.port.get();
+        }
         //return this.base_val + this.mod_coef * this.port.get(); 
       }
-      //this.filter.in = (this.base_val * this.c + this.prev_base_val * (1 - this.c));
-      this.filter.process();
-      //this.filter2.process();
-      return this.filter.lp + this.mod_coef * this.port.get();
-      
     }
     else {
-      this.sample_counter = 0;
-      if (!this.nochange_flag) this.nochange_counter++;
-      if (this.nochange_counter > sample_rate * 30) { //here (* 2)
-        this.nochange_counter = 0;
-        this.nochange_flag = true;
-      }
-      this.prev_base_val = this.base_val;
-      if (!this.nochange_flag) {
-        this.filter.in = this.base_val;
-        this.filter.process();
-        return this.filter.lp + this.mod_coef * this.port.get();
-      }
-      else {
-        return this.base_val + this.mod_coef * this.port.get();
-      }
-      //return this.base_val + this.mod_coef * this.port.get(); 
+      return this.base_val + this.mod_coef * this.port.get();
     }
   }
-  set(v) { this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = v; this.changed = true;}
+  set(v) { 
+    if (this.first_time) 
+      this.first_time = false; 
+    else {
+      this.value_changed = true;
+    }
+    this.prev_base_val = this.base_val; this.sample_counter = 0; this.base_val = v; this.changed = true;
+  }
   connect(c) {
     let w = new Wire();
     w.connect(this.port, c.port);
@@ -664,6 +690,7 @@ class InputEncoder extends Encoder {
       if (this.mod < -1) this.mod = -1;
     }
     this.changed=true;
+    this.value_changed = true;
   }
 
   save() { return { 'val': this.base_val.toFixed(6), 'mod': this.mod.toFixed(6) } }
@@ -1559,33 +1586,31 @@ document.addEventListener('fullscreenchange', (event) => {
     rackwidth = document.documentElement.clientWidth;
     rackheight = document.documentElement.clientHeight;
     resizeCanvas(rackwidth, rackheight);
-    canvas.position(0, 0)
-    //engine.w = rackwidth;
-    //engine.h = rackheight;
+    // canvas.position(0, 0)
     engine.set_size(rackwidth, rackheight);
-    //engine.replace_modules();
+    // //engine.replace_modules();
 
-    let max = 0;
+    // let max = 0;
 
-    engine.gchildren.forEach(element => {
-      if (element.name.length > 0) {
-        if ((element.x + element.w) > max) {
-          max = element.x + element.w;
-        }
-      }
-    });
+    // engine.gchildren.forEach(element => {
+    //   if (element.name.length > 0) {
+    //     if ((element.x + element.w) > max) {
+    //       max = element.x + element.w;
+    //     }
+    //   }
+    // });
 
-    engine.gchildren[0].set_size(max - 1, engine.gchildren[0].h)
-    engine.w = (max + 1) * engine.scale;
+    // engine.gchildren[0].set_size(max - 1, engine.gchildren[0].h)
+    // engine.w = (max + 1) * engine.scale;
 
-    // console.log(engine.gchildren[0].x, engine.gchildren[0].y)
+    // // console.log(engine.gchildren[0].x, engine.gchildren[0].y)
 
-    aspect = engine.w / rackwidth;
+    // aspect = engine.w / rackwidth;
 
-    if (aspect > 1) {
-      engine.set_size(pw, engine.h / aspect);
-      engine.replace_modules();
-    }
+    // if (aspect > 1) {
+    //   engine.set_size(pw, engine.h / aspect);
+    //   engine.replace_modules();
+    // }
   }, 50);
   
 });
