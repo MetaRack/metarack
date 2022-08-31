@@ -1,5 +1,5 @@
 document.addEventListener('contextmenu', event => event.preventDefault());
-var rackrand = Math.random;
+var rackrand = Math.random;//fxrand; //rackrand;
 
 let fps = 60;
 let sample_rate = 44100;
@@ -36,10 +36,10 @@ class PortStyle {
 }
 
 
-let wire_diff = [(Math.random() - 0.5) * 180, (Math.random() - 0.5) * 180, (Math.random() - 0.5) * 180];
+let wire_diff = [(rackrand() - 0.5) * 180, (rackrand() - 0.5) * 180, (rackrand() - 0.5) * 180];
 
 let wire_color = [198, 70, 15, 255];
-if (Math.random() < 0.5)
+if (rackrand() < 0.5)
       wire_color = [254, 197, 46];
 
 wire_color = [wire_color[0], wire_color[1] + wire_diff[1], wire_color[2] + wire_diff[2]]
@@ -57,8 +57,8 @@ class WireStyle {
 
 let white_text = false;
 
-let diff = [(Math.random() - 0.5) * 30, (Math.random() - 0.5) * 30, (Math.random() - 0.5) * 30];
-let base = Math.random() * 30 + 200
+let diff = [(rackrand() - 0.5) * 30, (rackrand() - 0.5) * 30, (rackrand() - 0.5) * 30];
+let base = rackrand() * 30 + 200
 let module_color = [base + diff[0], base + diff[1], base + diff[2]];
 
 class ModuleStyle {
@@ -322,15 +322,15 @@ class Port extends GraphicObject {
 }
 
 let knob_color;
-if (Math.random() < 0.25) {
+if (rackrand() < 0.25) {
   knob_color = [232, 111, 104];
-} else  if (Math.random() < 0.5) {
+} else  if (rackrand() < 0.5) {
   knob_color = [131, 183, 153]
-} else if (Math.random() < 0.75) {
+} else if (rackrand() < 0.75) {
   knob_color = [228, 216, 180];
 } else knob_color = [190, 190, 190];
 
-let knob_diff = [(Math.random() - 0.5) * 80, (Math.random() - 0.5) * 80, (Math.random() - 0.5) * 80];
+let knob_diff = [(rackrand() - 0.5) * 80, (rackrand() - 0.5) * 80, (rackrand() - 0.5) * 80];
 knob_color = [knob_color[0] + knob_diff[0], knob_color[1] + knob_diff[1], knob_color[2] + knob_diff[2]]
 
 
@@ -878,7 +878,7 @@ class Module extends GraphicObject {
       //buf.rect(w / 6, 5, w - w / 3, 20, 10);
 
       sw = 0.1;
-      buf.textSize(15);
+      buf.textSize(15 * engine.scale / 2.922569722890493);
       buf.fill(60);
       buf.textAlign(buf.CENTER, buf.CENTER);
       buf.strokeWeight(sw);
@@ -970,6 +970,8 @@ class Module0 extends Module {
 
     this.L = 0;
     this.R = 0;
+
+    this.hash = ''
   }
 
   draw_cbf(buf, w, h) {
@@ -978,12 +980,12 @@ class Module0 extends Module {
     // buf.stroke(60); buf.strokeWeight(sw); buf.fill(255);
     // buf.rect(sw + w * 0.2, sw + h * 0.63, w * 0.6 - 2 * sw, h * 0.038 - 2 * sw);
 
-    // sw = 0.1;
-    // buf.textSize(w * 0.18);
-    // buf.fill(60);
-    // buf.textAlign(buf.CENTER, buf.CENTER);
-    // buf.strokeWeight(sw);
-    // buf.text('LVLS', w / 2, sw*2 + h * 0.63 + h * 0.04 / 2);
+    let sw = 0.1;
+    buf.textSize(h / 2);
+    buf.fill(60);
+    buf.textAlign(buf.LEFT, buf.CENTER);
+    buf.strokeWeight(sw);
+    buf.text('MetaRack Genesis', w * 0.015, h / 2);
   }
 
   draw_dbf(buf, x, y, w, h) {
@@ -1003,7 +1005,7 @@ class Module0 extends Module {
     super.set_size(w, h);
     if (this.i) {
       this.i['LEFT'].set_position(this.w - 30, this.h / 12);
-      this.i['RIGHT'].set_position(this.w - 15, this.h / 12);
+      this.i['RIGHT'].set_position(this.w - 17.5, this.h / 12);
     }
   }
 
@@ -1499,7 +1501,7 @@ function mouseWheel() {
 }
 
 function keyPressed() {
-  if (keyCode === 91) {
+  if (keyCode === 16) {
     engine.cmdpressed = true;
   }
   if (keyCode === 83) {
@@ -1557,7 +1559,11 @@ document.addEventListener('fullscreenchange', (event) => {
     rackwidth = document.documentElement.clientWidth;
     rackheight = document.documentElement.clientHeight;
     resizeCanvas(rackwidth, rackheight);
+    canvas.position(0, 0)
+    //engine.w = rackwidth;
+    //engine.h = rackheight;
     engine.set_size(rackwidth, rackheight);
+    //engine.replace_modules();
 
     let max = 0;
 
@@ -1571,6 +1577,15 @@ document.addEventListener('fullscreenchange', (event) => {
 
     engine.gchildren[0].set_size(max - 1, engine.gchildren[0].h)
     engine.w = (max + 1) * engine.scale;
+
+    // console.log(engine.gchildren[0].x, engine.gchildren[0].y)
+
+    aspect = engine.w / rackwidth;
+
+    if (aspect > 1) {
+      engine.set_size(pw, engine.h / aspect);
+      engine.replace_modules();
+    }
   }, 50);
   
 });
