@@ -1014,9 +1014,9 @@ class Module0 extends Module {
     let sw = 0.1;
     buf.textSize(h / 2);
     buf.fill(60);
-    buf.textAlign(buf.LEFT, buf.CENTER);
+    buf.textAlign(buf.CENTER, buf.CENTER);
     buf.strokeWeight(sw);
-    buf.text('MetaRack Genesis', w * 0.015, h / 2);
+    buf.text('MetaRack Genesis', w / 2, h / 2);
   }
 
   draw_dbf(buf, x, y, w, h) {
