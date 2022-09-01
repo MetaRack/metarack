@@ -1,5 +1,5 @@
 document.addEventListener('contextmenu', event => event.preventDefault());
-var rackrand = Math.random;//fxrand; //rackrand;
+var rackrand = fxrand; //rackrand;
 
 let fps = 60;
 let sample_rate = 44100;

@@ -176,17 +176,29 @@ mixer.o['O/R'].connect(reverb.i['I/R']);
 reverb.o['O/L'].connect(engine.module0.i['LEFT']);
 reverb.o['O/R'].connect(engine.module0.i['RIGHT']);
 
+rarityLeadNum = 0
+rarityNoiseNum = 0
+rarityFXNum = 0
 
 for (let i = 1; i <=Math.round(rackrand() * 4 + 2); i++) {
   let choise = rackrand();
   if (choise < 0.33) {
     newLead(i);
+    rarityLeadNum += 1
   } else if (choise < 0.66) {
     newNoise(i);
+    rarityNoiseNum += 1
   } else {
     newFX(i);
+    rarityFXNum += 1
   }
 }
+
+// window.$fxhashFeatures = {
+//   "Leads": rarityLeadNum,
+//   "Noises": rarityNoiseNum,
+//   "Effects": rarityFXNum,
+// }
 
 let max = 0;
 
