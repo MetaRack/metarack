@@ -26,7 +26,7 @@ class Chords extends Module {
     this.pick_enc();
     for (this.j = 0; this.j < this.max_enc; this.j++) {
       this.lfos[this.j] = new VCOPrim();
-      this.lfos[this.j].set_frequency(Math.random() / 3);
+      this.lfos[this.j].set_frequency(rackrand() / 3);
     }
 
     this.osc = new Array(3);
@@ -41,35 +41,35 @@ class Chords extends Module {
 
     for (this.j = 0; this.j < 3; this.j++) {
       this.osc[this.j] = new VCOPrim();
-      this.osc[this.j].set_frequency(261.63 * Math.pow(2, Math.round((Math.random() - 0.7) * 2)));
-      this.params[0 + 10*this.j] = Math.random() / 2; //pw
-      this.params[1 + 10*this.j] = (Math.random() - 0.5) * 6; //wave
-      this.params[2 + 10*this.j] = Math.random(); //amp
+      this.osc[this.j].set_frequency(261.63 * Math.pow(2, Math.round((rackrand() - 0.7) * 2)));
+      this.params[0 + 10*this.j] = rackrand() / 2; //pw
+      this.params[1 + 10*this.j] = (rackrand() - 0.5) * 6; //wave
+      this.params[2 + 10*this.j] = rackrand(); //amp
 
       this.env[this.j] = new ADSRPrim();
-      this.params[3 + 10*this.j] = Math.random() * 10; //A
-      this.params[4 + 10*this.j] = Math.random() * 10; //D
-      this.params[5 + 10*this.j] = Math.random(); //S
-      this.params[6 + 10*this.j] = Math.random() * 50; //R
+      this.params[3 + 10*this.j] = rackrand() * 10; //A
+      this.params[4 + 10*this.j] = rackrand() * 10; //D
+      this.params[5 + 10*this.j] = rackrand(); //S
+      this.params[6 + 10*this.j] = rackrand() * 50; //R
 
       this.bg[this.j] = new BernoulliGatePrim();
-      this.params[7 + 10*this.j] = Math.random(); //p
+      this.params[7 + 10*this.j] = rackrand(); //p
 
       this.filter[this.j] = new ExponentialFilterPrim();
-      this.params[8 + 10*this.j] = Math.random() * 8000; //freq;
-      this.params[9 + 10*this.j] = Math.random() / 2;//res
+      this.params[8 + 10*this.j] = rackrand() * 8000; //freq;
+      this.params[9 + 10*this.j] = rackrand() / 2;//res
     }
 
     this.update_params();
   }
 
   randomize() {
-    this.i['PROB'].set(Math.random());
-    this.i['WAVE'].set(Math.random());
-    this.i['MOD'].set(Math.random());
-    this.i['ENV'].set(Math.random());
-    this.i['PW'].set(Math.random());
-    this.i['CLR'].set(Math.random());
+    this.i['PROB'].set(rackrand());
+    this.i['WAVE'].set(rackrand());
+    this.i['MOD'].set(rackrand());
+    this.i['ENV'].set(rackrand());
+    this.i['PW'].set(rackrand());
+    this.i['CLR'].set(rackrand());
   }
 
   draw_cbf(buf, w, h) {
@@ -101,43 +101,43 @@ class Chords extends Module {
   }
 
   pick_lfo() {
-    this.lfo_connect[0] = Math.floor(Math.random() * (this.max_param));
+    this.lfo_connect[0] = Math.floor(rackrand() * (this.max_param));
 
-    this.lfo_connect[1] = Math.floor(Math.random() * (this.max_param));
+    this.lfo_connect[1] = Math.floor(rackrand() * (this.max_param));
     while (this.lfo_connect[1] == this.lfo_connect[0])
-       this.lfo_connect[1] = Math.floor(Math.random() * (this.max_param));
+       this.lfo_connect[1] = Math.floor(rackrand() * (this.max_param));
 
-    this.lfo_connect[2] = Math.floor(Math.random() * (this.max_param));
+    this.lfo_connect[2] = Math.floor(rackrand() * (this.max_param));
     while ((this.lfo_connect[2] == this.lfo_connect[0]) || (this.lfo_connect[2] == this.lfo_connect[1]))
-       this.lfo_connect[2] = Math.floor(Math.random() * (this.max_param));
+       this.lfo_connect[2] = Math.floor(rackrand() * (this.max_param));
 
-    this.lfo_connect[3] = Math.floor(Math.random() * (this.max_param));
+    this.lfo_connect[3] = Math.floor(rackrand() * (this.max_param));
     while ((this.lfo_connect[3] == this.lfo_connect[0]) || (this.lfo_connect[3] == this.lfo_connect[1]) || (this.lfo_connect[3] == this.lfo_connect[2]))
-       this.lfo_connect[3] = Math.floor(Math.random() * (this.max_param));
+       this.lfo_connect[3] = Math.floor(rackrand() * (this.max_param));
 
-    this.lfo_connect[4] = Math.floor(Math.random() * (this.max_param));
+    this.lfo_connect[4] = Math.floor(rackrand() * (this.max_param));
     while ((this.lfo_connect[4] == this.lfo_connect[0]) || (this.lfo_connect[4] == this.lfo_connect[1]) || (this.lfo_connect[4] == this.lfo_connect[2]) || (this.lfo_connect[4] == this.lfo_connect[3]))
-       this.lfo_connect[4] = Math.floor(Math.random() * (this.max_param));
+       this.lfo_connect[4] = Math.floor(rackrand() * (this.max_param));
   }
 
   pick_enc() {
-    this.enc_connect[0] = Math.floor(Math.random() * this.max_param);
+    this.enc_connect[0] = Math.floor(rackrand() * this.max_param);
 
-    this.enc_connect[1] = Math.floor(Math.random() * this.max_param);
+    this.enc_connect[1] = Math.floor(rackrand() * this.max_param);
     while (this.enc_connect[1] == this.enc_connect[0])
-       this.enc_connect[1] = Math.floor(Math.random() * this.max_param);
+       this.enc_connect[1] = Math.floor(rackrand() * this.max_param);
 
-    this.enc_connect[2] = Math.floor(Math.random() * this.max_param);
+    this.enc_connect[2] = Math.floor(rackrand() * this.max_param);
     while ((this.enc_connect[2] == this.enc_connect[0]) || (this.enc_connect[2] == this.enc_connect[1]))
-       this.enc_connect[2] = Math.floor(Math.random() * this.max_param);
+       this.enc_connect[2] = Math.floor(rackrand() * this.max_param);
 
-    this.enc_connect[3] = Math.floor(Math.random() * this.max_param);
+    this.enc_connect[3] = Math.floor(rackrand() * this.max_param);
     while ((this.enc_connect[3] == this.enc_connect[0]) || (this.enc_connect[3] == this.enc_connect[1]) || (this.enc_connect[3] == this.enc_connect[2]))
-       this.enc_connect[3] = Math.floor(Math.random() * this.max_param);
+       this.enc_connect[3] = Math.floor(rackrand() * this.max_param);
 
-    this.enc_connect[4] = Math.floor(Math.random() * this.max_param);
+    this.enc_connect[4] = Math.floor(rackrand() * this.max_param);
     while ((this.enc_connect[4] == this.enc_connect[0]) || (this.enc_connect[4] == this.enc_connect[1]) || (this.enc_connect[4] == this.enc_connect[2]) || (this.enc_connect[4] == this.enc_connect[3]))
-       this.enc_connect[4] = Math.floor(Math.random() * this.max_param);
+       this.enc_connect[4] = Math.floor(rackrand() * this.max_param);
   }
 
   update_params() {

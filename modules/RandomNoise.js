@@ -43,50 +43,50 @@ class Particles extends Module {
   }
 
   randomize() {
-    this.i['PAN'].set(Math.random());
-    this.i['FX'].set(Math.random());
-    this.i['TYPE'].set(Math.round(Math.random() * 5));
-    this.i['CLR'].set(Math.random());
+    this.i['PAN'].set(rackrand());
+    this.i['FX'].set(rackrand());
+    this.i['TYPE'].set(Math.round(rackrand() * 5));
+    this.i['CLR'].set(rackrand());
   }
 
   pick_lfo() {
-    this.lfo_connect[0] = Math.floor(Math.random() * (this.max_param));
+    this.lfo_connect[0] = Math.floor(rackrand() * (this.max_param));
 
-    this.lfo_connect[1] = Math.floor(Math.random() * (this.max_param));
+    this.lfo_connect[1] = Math.floor(rackrand() * (this.max_param));
     while (this.lfo_connect[1] == this.lfo_connect[0])
-       this.lfo_connect[1] = Math.floor(Math.random() * (this.max_param));
+       this.lfo_connect[1] = Math.floor(rackrand() * (this.max_param));
 
-    this.lfo_connect[2] = Math.floor(Math.random() * (this.max_param));
+    this.lfo_connect[2] = Math.floor(rackrand() * (this.max_param));
     while ((this.lfo_connect[2] == this.lfo_connect[0]) || (this.lfo_connect[2] == this.lfo_connect[1]))
-       this.lfo_connect[2] = Math.floor(Math.random() * (this.max_param));
+       this.lfo_connect[2] = Math.floor(rackrand() * (this.max_param));
 
-    this.lfo_connect[3] = Math.floor(Math.random() * (this.max_param));
+    this.lfo_connect[3] = Math.floor(rackrand() * (this.max_param));
     while ((this.lfo_connect[3] == this.lfo_connect[0]) || (this.lfo_connect[3] == this.lfo_connect[1]) || (this.lfo_connect[3] == this.lfo_connect[2]))
-       this.lfo_connect[3] = Math.floor(Math.random() * (this.max_param));
+       this.lfo_connect[3] = Math.floor(rackrand() * (this.max_param));
 
-    this.lfo_connect[4] = Math.floor(Math.random() * (this.max_param));
+    this.lfo_connect[4] = Math.floor(rackrand() * (this.max_param));
     while ((this.lfo_connect[4] == this.lfo_connect[0]) || (this.lfo_connect[4] == this.lfo_connect[1]) || (this.lfo_connect[4] == this.lfo_connect[2]) || (this.lfo_connect[4] == this.lfo_connect[3]))
-       this.lfo_connect[4] = Math.floor(Math.random() * (this.max_param));
+       this.lfo_connect[4] = Math.floor(rackrand() * (this.max_param));
   }
 
   pick_enc() {
-    this.enc_connect[0] = Math.floor(Math.random() * this.max_param);
+    this.enc_connect[0] = Math.floor(rackrand() * this.max_param);
 
-    this.enc_connect[1] = Math.floor(Math.random() * this.max_param);
+    this.enc_connect[1] = Math.floor(rackrand() * this.max_param);
     while (this.enc_connect[1] == this.enc_connect[0])
-       this.enc_connect[1] = Math.floor(Math.random() * this.max_param);
+       this.enc_connect[1] = Math.floor(rackrand() * this.max_param);
 
-    this.enc_connect[2] = Math.floor(Math.random() * this.max_param);
+    this.enc_connect[2] = Math.floor(rackrand() * this.max_param);
     while ((this.enc_connect[2] == this.enc_connect[0]) || (this.enc_connect[2] == this.enc_connect[1]))
-       this.enc_connect[2] = Math.floor(Math.random() * this.max_param);
+       this.enc_connect[2] = Math.floor(rackrand() * this.max_param);
 
-    this.enc_connect[3] = Math.floor(Math.random() * this.max_param);
+    this.enc_connect[3] = Math.floor(rackrand() * this.max_param);
     while ((this.enc_connect[3] == this.enc_connect[0]) || (this.enc_connect[3] == this.enc_connect[1]) || (this.enc_connect[3] == this.enc_connect[2]))
-       this.enc_connect[3] = Math.floor(Math.random() * this.max_param);
+       this.enc_connect[3] = Math.floor(rackrand() * this.max_param);
 
-    this.enc_connect[4] = Math.floor(Math.random() * this.max_param);
+    this.enc_connect[4] = Math.floor(rackrand() * this.max_param);
     while ((this.enc_connect[4] == this.enc_connect[0]) || (this.enc_connect[4] == this.enc_connect[1]) || (this.enc_connect[4] == this.enc_connect[2]) || (this.enc_connect[4] == this.enc_connect[3]))
-       this.enc_connect[4] = Math.floor(Math.random() * this.max_param);
+       this.enc_connect[4] = Math.floor(rackrand() * this.max_param);
   }
 
   update_params() {
@@ -118,8 +118,8 @@ class Particles extends Module {
 
     //console.log([this.counter, this.vldv, Math.round(this.p), Math.round(this.p * 8), Math.round(this.p * 4), Math.round(this.p)])
     if (this.vldv == 0) this.vldv = 1;
-    this.value1 = this.expr(this.counter, this.vldv, Math.round(this.p * Math.random() * 15) + 1, Math.round(this.p * Math.random() * 19) + 1, Math.round(this.p * Math.random() * 5) + 1, Math.round(this.p * Math.random() * 12) + 1);
-    this.value2 = this.expr2(this.counter, this.vldv, Math.round(this.p * Math.random() * 2) + 1, Math.round(this.p * Math.random() * 10) + 1, Math.round(this.p * Math.random() * 5) + 1, Math.round(this.p) + 1);
+    this.value1 = this.expr(this.counter, this.vldv, Math.round(this.p * rackrand() * 15) + 1, Math.round(this.p * rackrand() * 19) + 1, Math.round(this.p * rackrand() * 5) + 1, Math.round(this.p * rackrand() * 12) + 1);
+    this.value2 = this.expr2(this.counter, this.vldv, Math.round(this.p * rackrand() * 2) + 1, Math.round(this.p * rackrand() * 10) + 1, Math.round(this.p * rackrand() * 5) + 1, Math.round(this.p) + 1);
 
     if (isNaN(this.value1) || isNaN(this.value2))
       return

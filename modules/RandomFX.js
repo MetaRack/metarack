@@ -27,13 +27,13 @@ class FX extends Module {
     //this.pick_enc();
     for (this.j = 0; this.j < 4; this.j++) {
       this.lfos[this.j] = new VCOPrim();
-      this.lfos[this.j].set_frequency(Math.random() / 4);
+      this.lfos[this.j].set_frequency(rackrand() / 4);
     }
 
     // this.saturn_l = new SaturnPrim();
-    // this.params[0] = Math.random() + 1;
+    // this.params[0] = rackrand() + 1;
     // this.saturn_r = new SaturnPrim();
-    // this.params[1] = Math.random() + 1;
+    // this.params[1] = rackrand() + 1;
 
     // this.chorus_l = new DelayPrim();
     // this.chorus_l.time = 0.03;
@@ -48,32 +48,32 @@ class FX extends Module {
     // this.chorus_lfo = new VCOPrim(0.2);
 
     this.delay_l = new DelayPrim();
-    // this.params[2] = (0.5 + Math.random() / 3) * 10;
-    // this.params[3] = 0.5 + Math.random() / 3;
-    // this.params[4] = 0.5 + Math.random() / 3;
-    // this.params[2] = Math.random() * 4 + 4;
-    // this.params[3] = Math.random() / 3 + 0.3;
-    // this.params[4] = Math.random() / 3 + 0.5;
-    this.params[0] = Math.random() * 10;
-    this.params[1] = Math.random();
-    // this.params[4] = Math.random();
+    // this.params[2] = (0.5 + rackrand() / 3) * 10;
+    // this.params[3] = 0.5 + rackrand() / 3;
+    // this.params[4] = 0.5 + rackrand() / 3;
+    // this.params[2] = rackrand() * 4 + 4;
+    // this.params[3] = rackrand() / 3 + 0.3;
+    // this.params[4] = rackrand() / 3 + 0.5;
+    this.params[0] = rackrand() * 10;
+    this.params[1] = rackrand();
+    // this.params[4] = rackrand();
     this.delay_r = new DelayPrim();
-    // this.params[5] = (0.5 + Math.random() / 3) * 10;
-    // this.params[6] = 0.5 + Math.random() / 3;
-    // this.params[7] = 0.5 + Math.random() / 3;
-    // this.params[5] = (Math.random()) * 4 + 4;
-    // this.params[6] = Math.random() / 3 + 0.3;
-    // this.params[7] = Math.random() / 3 + 0.5;
-    this.params[2] = (Math.random()) * 10;
-    this.params[3] = Math.random();
-    // this.params[7] = Math.random() / 1;
+    // this.params[5] = (0.5 + rackrand() / 3) * 10;
+    // this.params[6] = 0.5 + rackrand() / 3;
+    // this.params[7] = 0.5 + rackrand() / 3;
+    // this.params[5] = (rackrand()) * 4 + 4;
+    // this.params[6] = rackrand() / 3 + 0.3;
+    // this.params[7] = rackrand() / 3 + 0.5;
+    this.params[2] = (rackrand()) * 10;
+    this.params[3] = rackrand();
+    // this.params[7] = rackrand() / 1;
     // this.reverb = new DattorroReverbPrim();
-    // this.params[8] = Math.random() / 1;
-    // this.params[9] = Math.random() / 1;
-    // this.params[10] = Math.random() / 1;
-    // this.params[8] = 0.7 + Math.random() / 3;
-    // this.params[9] = 0.7 + Math.random() / 3;
-    // this.params[10] = 0.3 + Math.random() / 5;
+    // this.params[8] = rackrand() / 1;
+    // this.params[9] = rackrand() / 1;
+    // this.params[10] = rackrand() / 1;
+    // this.params[8] = 0.7 + rackrand() / 3;
+    // this.params[9] = 0.7 + rackrand() / 3;
+    // this.params[10] = 0.3 + rackrand() / 5;
 
     this.filter_l = new ExponentialFilterPrim();
     this.filter_l.freq = (this.i['CLR'].get() * 5000) + 600;
@@ -83,36 +83,36 @@ class FX extends Module {
   }
 
   randomize() {
-    this.i['LVL'].set(Math.random());
-    this.i['D/W'].set(0.8 + Math.random() / 5);
-    this.i['MOD'].set(Math.random());
-    this.i['FB/L'].set(Math.random());
-    this.i['FB/R'].set(Math.random());
-    this.i['CLR'].set(0.5 + Math.random() / 2);
+    this.i['LVL'].set(rackrand());
+    this.i['D/W'].set(0.8 + rackrand() / 5);
+    this.i['MOD'].set(rackrand());
+    this.i['FB/L'].set(rackrand());
+    this.i['FB/R'].set(rackrand());
+    this.i['CLR'].set(0.5 + rackrand() / 2);
   }
 
   pick_lfo() {
-    this.lfo_connect[0] = Math.floor(Math.random() * (this.max_param - 5)) + 2;
+    this.lfo_connect[0] = Math.floor(rackrand() * (this.max_param - 5)) + 2;
 
-    this.lfo_connect[1] = Math.floor(Math.random() * (this.max_param - 5)) + 2;
+    this.lfo_connect[1] = Math.floor(rackrand() * (this.max_param - 5)) + 2;
     while (this.lfo_connect[1] == this.lfo_connect[0])
-       this.lfo_connect[1] = Math.floor(Math.random() * (this.max_param - 5)) + 2;
+       this.lfo_connect[1] = Math.floor(rackrand() * (this.max_param - 5)) + 2;
 
-    this.lfo_connect[2] = Math.floor(Math.random() * (this.max_param - 5)) + 2;
+    this.lfo_connect[2] = Math.floor(rackrand() * (this.max_param - 5)) + 2;
     while ((this.lfo_connect[2] == this.lfo_connect[0]) || (this.lfo_connect[2] == this.lfo_connect[1]))
-       this.lfo_connect[2] = Math.floor(Math.random() * (this.max_param - 5)) + 2;
+       this.lfo_connect[2] = Math.floor(rackrand() * (this.max_param - 5)) + 2;
   }
 
   pick_enc() {
-    this.enc_connect[0] = Math.floor(Math.random() * this.max_param);
+    this.enc_connect[0] = Math.floor(rackrand() * this.max_param);
 
-    this.enc_connect[1] = Math.floor(Math.random() * this.max_param);
+    this.enc_connect[1] = Math.floor(rackrand() * this.max_param);
     while (this.enc_connect[1] == this.enc_connect[0])
-       this.enc_connect[1] = Math.floor(Math.random() * this.max_param);
+       this.enc_connect[1] = Math.floor(rackrand() * this.max_param);
 
-    this.enc_connect[2] = Math.floor(Math.random() * this.max_param);
+    this.enc_connect[2] = Math.floor(rackrand() * this.max_param);
     while ((this.enc_connect[2] == this.enc_connect[0]) || (this.enc_connect[2] == this.enc_connect[1]))
-       this.enc_connect[2] = Math.floor(Math.random() * this.max_param);
+       this.enc_connect[2] = Math.floor(rackrand() * this.max_param);
   }
 
   update_params() {

@@ -44,19 +44,19 @@ class Quantum extends Module {
     this.pick_enc();
     for (this.j = 0; this.j < this.max_enc; this.j++) {
       this.lfos[this.j] = new VCOPrim();
-      this.lfos[this.j].set_frequency(Math.random());
+      this.lfos[this.j].set_frequency(rackrand());
     }
 
     this.scale = [new ScalePrim(), new ScalePrim(), new ScalePrim()];
-    this.params[0] = Math.floor(Math.random() * 9); //scale
-    this.params[1] = Math.floor(Math.random() * 12); //root
+    this.params[0] = Math.floor(rackrand() * 9); //scale
+    this.params[1] = Math.floor(rackrand() * 12); //root
 
     this.sh = [new SampleAndHoldPrim(), new SampleAndHoldPrim(), new SampleAndHoldPrim()];
 
-    this.params[2] = (Math.random() * 3) - 1.5; //offset
-    this.params[3] = Math.random() * 2; //scale
+    this.params[2] = (rackrand() * 3) - 1.5; //offset
+    this.params[3] = rackrand() * 2; //scale
 
-    this.params[4] = Math.floor(Math.random() * 4) + 1;
+    this.params[4] = Math.floor(rackrand() * 4) + 1;
 
     this.update_params();
 
@@ -64,10 +64,10 @@ class Quantum extends Module {
   }
 
   randomize() {
-    this.c['DIV'].set(Math.random());
-    this.c['WDTH'].set(Math.random());
-    this.c['MOD'].set(Math.random());
-    this.c['OFST'].set(Math.random());
+    this.c['DIV'].set(rackrand());
+    this.c['WDTH'].set(rackrand());
+    this.c['MOD'].set(rackrand());
+    this.c['OFST'].set(rackrand());
   }
 
 
@@ -88,19 +88,19 @@ class Quantum extends Module {
   }
 
   pick_lfo() {
-    this.lfo_connect[0] = Math.floor(Math.random() * (this.max_param));
+    this.lfo_connect[0] = Math.floor(rackrand() * (this.max_param));
 
-    this.lfo_connect[1] = Math.floor(Math.random() * (this.max_param));
+    this.lfo_connect[1] = Math.floor(rackrand() * (this.max_param));
     while (this.lfo_connect[1] == this.lfo_connect[0])
-       this.lfo_connect[1] = Math.floor(Math.random() * (this.max_param));
+       this.lfo_connect[1] = Math.floor(rackrand() * (this.max_param));
   }
 
   pick_enc() {
-    this.enc_connect[0] = Math.floor(Math.random() * this.max_param);
+    this.enc_connect[0] = Math.floor(rackrand() * this.max_param);
 
-    this.enc_connect[1] = Math.floor(Math.random() * this.max_param);
+    this.enc_connect[1] = Math.floor(rackrand() * this.max_param);
     while (this.enc_connect[1] == this.enc_connect[0])
-       this.enc_connect[1] = Math.floor(Math.random() * this.max_param);
+       this.enc_connect[1] = Math.floor(rackrand() * this.max_param);
   }
 
   update_params() {
@@ -174,7 +174,7 @@ class Quantum extends Module {
     }
     //this.sh.gate = this.gate;
     for (this.j = 0; this.j < 3; this.j++) {
-      this.sh[this.j].in = (Math.random() - 0.5) * (this.params[3] * this.p[1] * 1) + (this.params[2] * (this.p[0] - 0.5) * 2);
+      this.sh[this.j].in = (rackrand() - 0.5) * (this.params[3] * this.p[1] * 1) + (this.params[2] * (this.p[0] - 0.5) * 2);
     }
     
     for (this.j = 0; this.j < 3; this.j++) {
