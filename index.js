@@ -194,11 +194,11 @@ for (let i = 1; i <=Math.round(rackrand() * 4 + 2); i++) {
   }
 }
 
-// window.$fxhashFeatures = {
-//   "Leads": rarityLeadNum,
-//   "Noises": rarityNoiseNum,
-//   "Effects": rarityFXNum,
-// }
+window.$fxhashFeatures = {
+  "Leads": rarityLeadNum,
+  "Noises": rarityNoiseNum,
+  "Effects": rarityFXNum,
+}
 
 let max = 0;
 
