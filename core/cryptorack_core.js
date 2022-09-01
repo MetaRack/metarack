@@ -951,18 +951,18 @@ class Module extends GraphicObject {
   }
 
   mouse_dragged(x, y, dx, dy) {
-    this._x = Math.floor((x - engine.x / engine.scale - engine.spacing - this._xd) / 5.08);
-    this._x = this._x * 5.08 + engine.x / engine.scale + engine.spacing;
-    this._y = Math.floor((y - engine.y / engine.scale - engine.module0.h - 2*engine.spacing) / engine.row_height);
-    this._y = this._y * engine.row_height + engine.y / engine.scale + engine.module0.h + 2*engine.spacing;
+    // this._x = Math.floor((x - engine.x / engine.scale - engine.spacing - this._xd) / 5.08);
+    // this._x = this._x * 5.08 + engine.x / engine.scale + engine.spacing;
+    // this._y = Math.floor((y - engine.y / engine.scale - engine.module0.h - 2*engine.spacing) / engine.row_height);
+    // this._y = this._y * engine.row_height + engine.y / engine.scale + engine.module0.h + 2*engine.spacing;
 
-    this._xy = engine.closest_place(this, this._x, this._y, engine.modules);
-    if (this._xy != null) {
-      this.x = this._xy[0];
-      this.y = this._xy[1];
-      engine.update_width();
-      engine.changed=true;
-    }
+    // this._xy = engine.closest_place(this, this._x, this._y, engine.modules);
+    // if (this._xy != null) {
+    //   this.x = this._xy[0];
+    //   this.y = this._xy[1];
+    //   engine.update_width();
+    //   engine.changed=true;
+    // }
   }
 
   mouse_released(x, y, dx, dy) { 
@@ -1590,13 +1590,18 @@ document.addEventListener('fullscreenchange', (event) => {
     rackwidth = document.documentElement.clientWidth;
     rackheight = document.documentElement.clientHeight;
     resizeCanvas(rackwidth, rackheight);
-    engine.replace_modules();
-    engine.set_position(0, 50)
+
+    // engine.gchildren.forEach(element => {
+    //   element.y += 2;
+    // });
+
+    //engine.y += hp2y(2);
+    //engine.replace_modules();
     engine.set_size(rackwidth, rackheight);
 
     engine.changed = true;
 
-    //engine.replace_modules();
+    engine.replace_modules();
 
     let max = 0;
 
@@ -1618,7 +1623,20 @@ document.addEventListener('fullscreenchange', (event) => {
     if (aspect > 1) {
       engine.set_size(pw, engine.h / aspect);
       engine.replace_modules();
-    }
+
+      max = 0;
+
+      engine.gchildren.forEach(element => {
+        if (element.name.length > 0) {
+          if ((element.x + element.w) > max) {
+            max = element.x + element.w;
+          }
+        }
+      });
+
+      engine.gchildren[0].set_size(max - 1, engine.gchildren[0].h)
+    } 
+    
   }, 50);
   
 });

@@ -236,12 +236,12 @@ if (aspect > 1) {
 let canvas;
 
 function setup() {
-  canvas = createCanvas(pw, ph);
+  createCanvas(pw, ph);
   frameRate(fps);
   //engine.scale = 3.2;
 }
 
 function draw() { 
   background(0);
-  engine.draw((pw - engine.w)/2, (ph - engine.h)/2); 
+  engine.draw((pw - engine.w)/2, 0); 
 }
