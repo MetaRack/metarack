@@ -164,7 +164,12 @@ class Chords extends Module {
       this.osc[this.j].pw = this.params[0 + 10*this.j] * (this.p[4]) * 1.7;
       this.osc[this.j].wave = this.params[1 + 10*this.j] * (this.p[2]) * 1.7;
       this.osc[this.j].amp = Math.max(this.params[2 + 10*this.j], 0.7);
-      this.osc[this.j].cv = this.pitch;
+
+      if (this.i['PTCH'].gchildren[0].pitch != null) {
+        this.osc[this.j].cv = this.i['PTCH'].gchildren[0].pitch[this.j];
+      } else this.osc[this.j].cv = this.pitch;
+
+      
       // if (this.pitch[this.j] != undefined)
       //   this.osc[this.j].cv = this.pitch[this.j];
 

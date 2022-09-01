@@ -59,6 +59,8 @@ class Quantum extends Module {
     this.params[4] = Math.floor(Math.random() * 4) + 1;
 
     this.update_params();
+
+    this.flag = true;
   }
 
   randomize() {
@@ -183,6 +185,8 @@ class Quantum extends Module {
   
     this.out = [this.scale[0].out, this.scale[1].out, this.scale[2].out];
     this.o['OUT'].set(this.out[0]);
+    this.o['OUT'].gchildren[0].pitch = this.out;
+    this.o['OUT'].pitch = this.out;
 
     for (this.j = 0; this.j < 3; this.j++) {
       this.scale[this.j].process();

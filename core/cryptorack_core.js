@@ -156,6 +156,7 @@ class ProtoPort extends GraphicObject {
     this.value = this.default_value;
     this.style = style;
     this.port = this;
+    this.pitch = null;
   }
 
   draw_cbf(buf, w, h) {
@@ -278,6 +279,7 @@ class Port extends GraphicObject {
     this.port = new ProtoPort({x:px, y:py, r:pr, name:name, default_value: default_value});
     this.attach(this.port);
     this.type = type;
+    this.pitch = null;
   }
 
   draw_cbf(buf, w, h) {
@@ -715,8 +717,10 @@ class Wire extends GraphicObject {
 
   process() {
     if (!this.a || !this.b) return;
-    if (this.b.isinput) this.b.value = this.a.value;
-    if (this.a.isinput) this.a.value = this.b.value;
+
+    if (this.b.isinput) {this.b.value = this.a.value; this.b.pitch = this.a.pitch;}
+    if (this.a.isinput) {this.a.value = this.b.value; this.a.pitch = this.b.pitch;}
+    
   }
 
   draw_wire(buf, p1, p2) {
@@ -1586,31 +1590,35 @@ document.addEventListener('fullscreenchange', (event) => {
     rackwidth = document.documentElement.clientWidth;
     rackheight = document.documentElement.clientHeight;
     resizeCanvas(rackwidth, rackheight);
-    // canvas.position(0, 0)
+    engine.replace_modules();
+    engine.set_position(0, 50)
     engine.set_size(rackwidth, rackheight);
-    // //engine.replace_modules();
 
-    // let max = 0;
+    engine.changed = true;
 
-    // engine.gchildren.forEach(element => {
-    //   if (element.name.length > 0) {
-    //     if ((element.x + element.w) > max) {
-    //       max = element.x + element.w;
-    //     }
-    //   }
-    // });
+    //engine.replace_modules();
 
-    // engine.gchildren[0].set_size(max - 1, engine.gchildren[0].h)
-    // engine.w = (max + 1) * engine.scale;
+    let max = 0;
 
-    // // console.log(engine.gchildren[0].x, engine.gchildren[0].y)
+    engine.gchildren.forEach(element => {
+      if (element.name.length > 0) {
+        if ((element.x + element.w) > max) {
+          max = element.x + element.w;
+        }
+      }
+    });
 
-    // aspect = engine.w / rackwidth;
+    engine.gchildren[0].set_size(max - 1, engine.gchildren[0].h)
+    engine.w = (max + 1) * engine.scale;
 
-    // if (aspect > 1) {
-    //   engine.set_size(pw, engine.h / aspect);
-    //   engine.replace_modules();
-    // }
+    // console.log(engine.gchildren[0].x, engine.gchildren[0].y)
+
+    aspect = engine.w / rackwidth;
+
+    if (aspect > 1) {
+      engine.set_size(pw, engine.h / aspect);
+      engine.replace_modules();
+    }
   }, 50);
   
 });
