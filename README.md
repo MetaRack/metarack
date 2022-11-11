@@ -13,10 +13,10 @@ To implement some new audio module simply create a new file in modules directory
 Visual modules are very similar to audio ones, they also implement draw() and process() methods, but their inputs and outputs should be of type InvisiblePort instead of Port.
 
 # licensing
-By default commercial use (incl. NFTs and all this crypto shit) is not allowed. For commercial use please contact ilya.belikov@phystech.edu and I will ask you to share some very small percentage of your revenue.
+By default commercial use (incl. NFTs and all this crypto shit) is not allowed. For commercial use please contact contact [info@metarack.art](info@metarack.art)
 
 # acknowledgements
 All the graphics are made using [p5js](https://p5js.org) and the project itself was inspired by [fxhash.xyz](https://fxhash.xyz) platform
 
 # social
-[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/ferluht) [![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://instagram.com/neurussia)
+[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/ferluht)
