@@ -5,7 +5,7 @@
 # metarack
 Javascript modular synthesizer with NFT in mind 🤦
 
-### [Try online](https://metarack.github.io)
+### [Try online](https://metarack.github.io/metarack)
 
 # development
 To implement some new audio module simply create a new file in modules directory using VCO module as a template. Module class must implement methods draw() and process() called every frame and every sample respectively. Everything else is up to you.
