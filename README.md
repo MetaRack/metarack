@@ -5,7 +5,8 @@
 # metarack
 Javascript modular synthesizer with NFT in mind 🤦
 
-### [Try online](https://metarack.github.io/metarack)
+### [Try online](https://metarack.github.io/metarack) 
+Note about this demo: each time "space" is pressed a new drone/noise/ambient patch is generated. The demo is based on "code_art_exhibition" branch of the repo.
 
 # development
 To implement some new audio module simply create a new file in modules directory using VCO module as a template. Module class must implement methods draw() and process() called every frame and every sample respectively. Everything else is up to you.
