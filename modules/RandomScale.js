@@ -61,6 +61,8 @@ class Quantum extends Module {
     this.update_params();
 
     this.flag = true;
+
+    this.randomize();
   }
 
   randomize() {

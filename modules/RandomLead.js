@@ -61,6 +61,8 @@ class Chords extends Module {
     }
 
     this.update_params();
+
+    this.randomize();
   }
 
   randomize() {

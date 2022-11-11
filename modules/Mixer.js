@@ -111,7 +111,7 @@ class Mixer extends Module {
 
 
 class StereoMixer extends Module {
-  constructor(chan_num) {
+  constructor(chan_num=6) {
     super({w:hp2x(chan_num * 2 + 3)});
     this.chan_num = chan_num;
     this.channels = new Array(chan_num);
@@ -207,6 +207,7 @@ class StereoMixer16 extends StereoMixer { constructor() { super(16); } }
 
 engine.add_module_class(Bus);
 engine.add_module_class(Mixer);
+engine.add_module_class(StereoMixer);
 engine.add_module_class(StereoMixer4);
 engine.add_module_class(StereoMixer8);
 engine.add_module_class(StereoMixer16);

@@ -80,6 +80,8 @@ class FX extends Module {
     this.filter_r = new ExponentialFilterPrim();
     this.filter_r.freq = (this.i['CLR'].get() * 5000) + 600;
     this.update_params();
+
+    this.randomize();
   }
 
   randomize() {

@@ -40,6 +40,8 @@ class Particles extends Module {
     }
 
     this.update_params();
+
+    this.randomize();
   }
 
   randomize() {

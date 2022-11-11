@@ -25,6 +25,51 @@ function pow2(x, xr=0, y=1, c=1) {
 
 // STYLES
 
+let wire_diff;
+let wire_color = [198, 70, 15, 255];
+let white_text = false;
+
+let diff;
+let base;
+let module_color;
+
+let knob_color;
+let knob_diff;
+
+function choose_colors() {
+
+  wire_diff = [(rackrand() - 0.5) * 180, (rackrand() - 0.5) * 180, (rackrand() - 0.5) * 180];
+
+  if (rackrand() < 0.5)
+    wire_color = [254, 197, 46];
+  wire_color = [wire_color[0], wire_color[1] + wire_diff[1], wire_color[2] + wire_diff[2]];
+
+  diff = [(rackrand() - 0.5) * 30, (rackrand() - 0.5) * 30, (rackrand() - 0.5) * 30];
+  base = rackrand() * 30 + 200;
+  module_color = [base + diff[0], base + diff[1], base + diff[2]];
+
+  if (rackrand() < 0.25) {
+    knob_color = [232, 111, 104];
+  } else  if (rackrand() < 0.5) {
+    knob_color = [131, 183, 153]
+  } else if (rackrand() < 0.75) {
+    knob_color = [228, 216, 180];
+  } else knob_color = [190, 190, 190];
+
+  knob_diff = [(rackrand() - 0.5) * 80, (rackrand() - 0.5) * 80, (rackrand() - 0.5) * 80];
+  knob_color = [knob_color[0] + knob_diff[0], knob_color[1] + knob_diff[1], knob_color[2] + knob_diff[2]]
+}
+
+choose_colors();
+
+class WireStyle {
+  // constructor(core=[100, 100, 180, 255], edge=40) {
+  constructor(core=wire_color, edge=80) {
+    this.core = core;
+    this.edge = edge;
+  }
+}
+
 class PortStyle {
   // constructor(hole=45, ring=120, text=60, hastext=true){
   constructor(hole=255, ring=80, text=100, hastext=true){
@@ -35,40 +80,16 @@ class PortStyle {
   }
 }
 
-
-let wire_diff = [(rackrand() - 0.5) * 180, (rackrand() - 0.5) * 180, (rackrand() - 0.5) * 180];
-
-let wire_color = [198, 70, 15, 255];
-if (rackrand() < 0.5)
-      wire_color = [254, 197, 46];
-
-wire_color = [wire_color[0], wire_color[1] + wire_diff[1], wire_color[2] + wire_diff[2]]
-
-class WireStyle {
-  // constructor(core=[100, 100, 180, 255], edge=40) {
-  constructor(core=255, edge=80) {
-    this.core = wire_color;
-    this.edge = edge;
-  }
-}
-
-
-let white_text = false;
-
-let diff = [(rackrand() - 0.5) * 30, (rackrand() - 0.5) * 30, (rackrand() - 0.5) * 30];
-let base = rackrand() * 30 + 200
-let module_color = [base + diff[0], base + diff[1], base + diff[2]];
-
 class ModuleStyle {
   // constructor(panel=[140, 80, 100, 255], frame=10, shadow=70, name=40, lining=180, label=255, background=255) {
-  constructor(panel=module_color, frame=60, shadow=70, name=40, lining=100, label=255, background=255) {
+  constructor(panel=module_color, frame=60, shadow=70, name=40, lining=100, label=255, background_clr=255) {
     this.panel = panel;
     this.frame = frame;
     this.shadow = shadow;
     this.name = name;
     this.label = label;
     this.lining = lining;
-    this.background = background;
+    this.background = background_clr;
   }
 }
 
@@ -182,8 +203,9 @@ class ProtoPort extends GraphicObject {
 
   connect(port) {
     let w = new Wire();
-    w.connect(this, port);
-    engine.add_wire(w);
+    let r = w.connect(this, port);
+    if (r == true) engine.add_wire(w);
+    else w = null;
   }
 
   mouse_pressed(x, y, dx, dy) { engine.start_wire(x, y, this.spawn_or_get_wire()); }
@@ -316,23 +338,11 @@ class Port extends GraphicObject {
   get() { return this.port.value; }
   connect(c) {
     let w = new Wire();
-    w.connect(this.port, c.port);
-    engine.add_wire(w);
+    let r = w.connect(this.port, c.port);
+    if (r == true) engine.add_wire(w);
+    else w = null;
   }
 }
-
-let knob_color;
-if (rackrand() < 0.25) {
-  knob_color = [232, 111, 104];
-} else  if (rackrand() < 0.5) {
-  knob_color = [131, 183, 153]
-} else if (rackrand() < 0.75) {
-  knob_color = [228, 216, 180];
-} else knob_color = [190, 190, 190];
-
-let knob_diff = [(rackrand() - 0.5) * 80, (rackrand() - 0.5) * 80, (rackrand() - 0.5) * 80];
-knob_color = [knob_color[0] + knob_diff[0], knob_color[1] + knob_diff[1], knob_color[2] + knob_diff[2]]
-
 
 class Encoder extends GraphicObject {
   constructor({x=0, y=0, r=10, name='?', val=5, vmin=-10, vmax=10, precision=6, mod=0.1}={}) {
@@ -675,8 +685,9 @@ class InputEncoder extends Encoder {
   }
   connect(c) {
     let w = new Wire();
-    w.connect(this.port, c.port);
-    engine.add_wire(w);
+    let r = w.connect(this.port, c.port);
+    if (r == true) engine.add_wire(w);
+    else w = null;
   }
 
   mouse_dragged(x, y, dx, dy) {
@@ -837,6 +848,10 @@ class Wire extends GraphicObject {
           'pid': this.b.name
         }
       }
+    }
+    else {
+      console.log('null wire')
+      console.log(this)
     }
   }
 }
@@ -1002,6 +1017,8 @@ class Module0 extends Module {
     this.L = 0;
     this.R = 0;
 
+    this.style = new ModuleStyle();
+
     this.hash = ''
   }
 
@@ -1016,7 +1033,7 @@ class Module0 extends Module {
     buf.fill(60);
     buf.textAlign(buf.CENTER, buf.CENTER);
     buf.strokeWeight(sw);
-    buf.text('MetaRack Genesis', w / 2, h / 2);
+    buf.text('MetaRack', w / 2, h / 2);
   }
 
   draw_dbf(buf, x, y, w, h) {
@@ -1092,11 +1109,14 @@ class Engine extends GraphicObject {
     this.reinit_patch();
     this.reinit_view();
     this.reinit_iterators();
+    this.time = 0;
   }
 
   reinit_patch() {
     this.modules = [];
+    this.gchildren = [];
     this.module_index = {0: this.module0};
+    this.attach(this.module0);
     this.wires = [];
     this.rows = 2;
     this.rack_max_width = 0;
@@ -1276,6 +1296,7 @@ class Engine extends GraphicObject {
   find_wire(w, wires=this.wires) {
     let i = 0;
     while (i < wires.length) {
+      // console.log(wires[i])
       if (wires[i].a.mid === w.a.mid && wires[i].b.mid === w.b.mid && 
           wires[i].a.pid === w.a.pid && wires[i].b.pid === w.b.pid){
         return wires[i];
@@ -1468,6 +1489,11 @@ class Engine extends GraphicObject {
   }
 
   load_state(s) {
+    this.stop = true;
+    this.clear_state();
+
+    rackrand = sfc32(...hashes);
+
     let module_index = {'0': this.module0};
 
     for (const m in s['modules']) {
@@ -1479,6 +1505,7 @@ class Engine extends GraphicObject {
         console.error(error);
       }
     } 
+    // console.log(s['wires']);
     for (const w of s['wires']) { 
       try {
         module_index[w.a.mid].o[w.a.pid].connect(module_index[w.b.mid].i[w.b.pid]); 
@@ -1488,6 +1515,7 @@ class Engine extends GraphicObject {
       }
     }
     this.undo_checkpoint();
+    this.stop = false;
   }
 
   set_save_endpoint(url) {
@@ -1567,82 +1595,83 @@ function keyPressed() {
     input.click();
   }
 
-  if (keyCode === 67) {
-    engine.clear_state();
-  }
+  // if (keyCode === 67) {
+  //   engine.clear_state();
+  // }
 
-  if (keyCode === 85) {
-    engine.undo_last_action();
-  }
+  // if (keyCode === 85) {
+  //   engine.undo_last_action();
+  // }
 
-  if (keyCode === 8) {
-    engine.delete_last_module();
-  }
+  // if (keyCode === 8) {
+  //   engine.delete_last_module();
+  // }
 
   if (keyCode === 70) {
     document.body.requestFullscreen();
   }
 }
 
-document.addEventListener('fullscreenchange', (event) => { 
+// document.addEventListener('fullscreenchange', (event) => { 
 
-  setTimeout(function () {
-    rackwidth = document.documentElement.clientWidth;
-    rackheight = document.documentElement.clientHeight;
-    resizeCanvas(rackwidth, rackheight);
+//   setTimeout(function () {
+//     rackwidth = document.documentElement.clientWidth;
+//     rackheight = document.documentElement.clientHeight;
+//     console.log(rackwidth, rackheight)
+//     resizeCanvas(rackwidth, rackheight);
+//     // cnv.position(50, 100);
+//     // engine.gchildren.forEach(element => {
+//     //   element.y += 2;
+//     // });
 
-    // engine.gchildren.forEach(element => {
-    //   element.y += 2;
-    // });
+//     //engine.y += hp2y(2);
+//     //engine.replace_modules();
+//     // engine.set_size(rackwidth, rackheight);
 
-    //engine.y += hp2y(2);
-    //engine.replace_modules();
-    engine.set_size(rackwidth, rackheight);
+//     engine.changed = true;
 
-    engine.changed = true;
+//     engine.replace_modules();
 
-    engine.replace_modules();
+//     let max = 0;
 
-    let max = 0;
+//     engine.gchildren.forEach(element => {
+//       if (element.name.length > 0) {
+//         if ((element.x + element.w) > max) {
+//           max = element.x + element.w;
+//         }
+//       }
+//     });
 
-    engine.gchildren.forEach(element => {
-      if (element.name.length > 0) {
-        if ((element.x + element.w) > max) {
-          max = element.x + element.w;
-        }
-      }
-    });
+//     engine.gchildren[0].set_size(max - 1, engine.gchildren[0].h)
+//     engine.w = (max + 1) * engine.scale;
 
-    engine.gchildren[0].set_size(max - 1, engine.gchildren[0].h)
-    engine.w = (max + 1) * engine.scale;
+//     // console.log(engine.gchildren[0].x, engine.gchildren[0].y)
 
-    // console.log(engine.gchildren[0].x, engine.gchildren[0].y)
+//     aspect = engine.w / rackwidth;
 
-    aspect = engine.w / rackwidth;
+//     if (aspect > 1) {
+//       engine.set_size(pw, engine.h / aspect);
+//       engine.replace_modules();
 
-    if (aspect > 1) {
-      engine.set_size(pw, engine.h / aspect);
-      engine.replace_modules();
+//       max = 0;
 
-      max = 0;
+//       engine.gchildren.forEach(element => {
+//         if (element.name.length > 0) {
+//           if ((element.x + element.w) > max) {
+//             max = element.x + element.w;
+//           }
+//         }
+//       });
 
-      engine.gchildren.forEach(element => {
-        if (element.name.length > 0) {
-          if ((element.x + element.w) > max) {
-            max = element.x + element.w;
-          }
-        }
-      });
-
-      engine.gchildren[0].set_size(max - 1, engine.gchildren[0].h)
-    } 
+//       engine.gchildren[0].set_size(max - 1, engine.gchildren[0].h)
+//     } 
     
-  }, 50);
+//   }, 550);
   
-});
+// });
 
 function keyReleased() {
-  if (keyCode === 91) {
+  if (keyCode === 16) {
     engine.cmdpressed = false;
   }
 }
@@ -1667,9 +1696,10 @@ function engine_run() {
     let outputL = outputBuffer.getChannelData(0);
     let outputR = outputBuffer.getChannelData(1);
     for (let sample = 0; sample < outputL.length; sample++) {
-      engine.process();
-      outputL[sample] = engine.module0.L;
-      outputR[sample] = engine.module0.R;
+      if (engine.stop == false) engine.process();
+      outputL[sample] = engine.module0.L * engine.time ** 2;
+      outputR[sample] = engine.module0.R * engine.time ** 2;
+      if ((engine.stop == false) && (engine.time < 1)) engine.time += 1e-5;
     }
   }
 
