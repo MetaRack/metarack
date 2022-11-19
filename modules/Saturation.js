@@ -12,7 +12,7 @@ class Saturn extends Module {
 		this.out = 0;
 		this.LP = new LadderFilter();
 		this.LP.setResonance(0);
-		this.LP.setCutoffFreq(1500);
+		this.LP.setCutoffFreq(1501);
 	}
 
 	sigmoid(x) {
